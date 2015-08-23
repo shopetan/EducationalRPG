@@ -2,7 +2,7 @@ enchant();
 
 window.onload = function() {
 	var core = new Core(800, 600);
-	core.preload('img/worldMapBg.jpg','img/island.png','img/island_j.png','img/island_m.png','img/island_sc.png','img/island_so.png');
+	core.preload('img/worldMapBg.jpg','img/island.png','img/island_j.png','img/island_m.png','img/island_sc.png','img/island_so.png','img/Japanese.png');
 
 	var Island = Class.create(Sprite, {
 		initialize: function(x, y,img) {
@@ -22,12 +22,16 @@ window.onload = function() {
 	var IslandMap = Class.create(Scene, {
 		initialize: function() {
 			Scene.call(this);
+			var bg = new Sprite(800,600);
+			bg.image = core.assets['img/Japanese.png'];
+			bg.x = 0;
+			bg.y = 0;
+			this.addChild(bg);
 			var back = new Label('戻る');
 			this.addChild(back);
 			back.on('touchstart', function() {
 				core.popScene();
 			});
-			this.backgroundColor = 'red';
 		}
 	});
 
