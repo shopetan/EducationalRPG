@@ -11,14 +11,13 @@ window.onload = function() {
 			this.y = y;
 			this.image = core.assets[img];
 			core.rootScene.addChild(this);
-			this.on('touchstart', function() {
-				console.log(img);
-			});
 		}
 	});
 
 	core.fps = 15;
 	core.onload = function() {
+
+//World Map
 		var map = new Sprite(800,600);
 		map.image = core.assets['img/worldMapBg.jpg'];
 		map.x = 0;
@@ -30,6 +29,34 @@ window.onload = function() {
 		var science = new Island(0,344,'img/island_sc.png');
 		var social = new Island(544,344,'img/island_so.png');
 		var last = new Island(272,172,'img/island.png');
+
+//Island Map
+		var islandMap = new Scene();
+		var back = new Label('戻る');
+		islandMap.addChild(back);
+		back.on('touchstart', function() {
+			core.popScene();
+		});
+		japanese.on('touchstart', function() {
+			islandMap.backgroundColor = 'red';
+			core.pushScene(islandMap);
+		});
+		math.on('touchstart', function() {
+			islandMap.backgroundColor = 'blue';
+			core.pushScene(islandMap);
+		});
+		science.on('touchstart', function() {
+			islandMap.backgroundColor = 'green';
+			core.pushScene(islandMap);
+		});
+		social.on('touchstart', function() {
+			islandMap.backgroundColor = 'orange';
+			core.pushScene(islandMap);
+		});
+		last.on('touchstart', function() {
+			islandMap.backgroundColor = 'yellow';
+			core.pushScene(islandMap);
+		});
 
 
 /*
@@ -49,20 +76,6 @@ window.onload = function() {
 			player.x = e.x;
 			player.y = e.y;
 		})
-
-		var label = new Label();
-		label.x = 280;
-		label.y = 5;
-		label.color = 'red';
-		label.font = '14px "Arial"';
-		label.text = '0';
-		label.on('enterframe', function() {
-			label.text = (core.frame / core.fps).toFixed(2);
-		});
-		core.rootScene.addChild(label);
-
-		var gameOverScene = new Scene();
-		gameOverScene.backgroundColor = 'black';
 		*/
 
 	};
