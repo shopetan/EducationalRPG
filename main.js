@@ -2,48 +2,20 @@ enchant();
 
 window.onload = function() {
 	var core = new Core(800, 600);
-	core.preload('img/worldMapBg.jpg');
+	core.preload('img/worldMapBg.jpg','img/island.png','img/island_j.png','img/island_m.png','img/island_sc.png','img/island_so.png');
 
-	/*var Soldier = Class.create(Sprite, {
-		initialize: function(x, y) {
-			Sprite.call(this, 32, 32);
+	var Island = Class.create(Sprite, {
+		initialize: function(x, y,img) {
+			Sprite.call(this, 256, 256);
 			this.x = x;
 			this.y = y;
-			this.image = core.assets['chara5.png'];
-			this.on('enterframe', function() {
-				if (core.input.left) {
-					if (this.x > 0) {
-						this.x -= 5;
-					}
-					this.frame = this.x % 3 + 9;
-				}
-				if (core.input.right) {
-					if (this.x < 1103 - 32) {
-						this.x += 5;
-					}
-					this.frame = this.x % 3 + 18;
-				}
-				if (core.input.up) {
-					if (this.y > 0) {
-						this.y -= 5;
-					}
-					this.frame = this.y % 3 + 27;
-				}
-				if (core.input.down) {
-					if (this.y < 768 - 32) {
-						this.y += 5;
-					}
-					this.frame = this.y % 3;
-				}
-
-			});
+			this.image = core.assets[img];
 			core.rootScene.addChild(this);
+			this.on('touchstart', function() {
+				console.log(img);
+			});
 		}
-	});*/
-
-	function rand(n) {
- 	   return Math.floor(Math.random() * (n + 1));
-	}
+	});
 
 	core.fps = 15;
 	core.onload = function() {
@@ -53,8 +25,12 @@ window.onload = function() {
 		map.y = 0;
 		core.rootScene.addChild(map);
 
-		//var player = new Soldier(0,0);
-		//var enemy = new Soldier(0,100);
+		var japanese = new Island(0,5,'img/island_j.png');
+		var math = new Island(544,5,'img/island_m.png');
+		var science = new Island(0,344,'img/island_sc.png');
+		var social = new Island(544,344,'img/island_so.png');
+		var last = new Island(272,172,'img/island.png');
+
 
 /*
 		player.on('enterframe', function() {
