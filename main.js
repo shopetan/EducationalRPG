@@ -42,32 +42,7 @@ window.onload = function() {
 		var last = new Island(272,172,'img/island.png');
 
 //Island Map
-		/*var islandMap = new Scene();
-		var back = new Label('戻る');
-		islandMap.addChild(back);
-		back.on('touchstart', function() {
-			core.popScene();
-		});
-		japanese.on('touchstart', function() {
-			islandMap.backgroundColor = 'red';
-			core.pushScene(islandMap);
-		});
-		math.on('touchstart', function() {
-			islandMap.backgroundColor = 'blue';
-			core.pushScene(islandMap);
-		});
-		science.on('touchstart', function() {
-			islandMap.backgroundColor = 'green';
-			core.pushScene(islandMap);
-		});
-		social.on('touchstart', function() {
-			islandMap.backgroundColor = 'orange';
-			core.pushScene(islandMap);
-		});
-		last.on('touchstart', function() {
-			islandMap.backgroundColor = 'yellow';
-			core.pushScene(islandMap);
-		});*/
+
 
 
 /*
@@ -79,15 +54,7 @@ window.onload = function() {
 				}
 		});
 
-		player.on('touchstart', function() {
-			core.rootScene.removeChild(this);
-		});
-
-		core.rootScene.on('touchstart', function(e) {
-			player.x = e.x;
-			player.y = e.y;
-		})
-		*/
+*/
 
 	};
 	core.start();
