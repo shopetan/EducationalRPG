@@ -11,6 +11,17 @@ window.onload = function() {
 			this.y = y;
 			this.image = core.assets[img];
 			core.rootScene.addChild(this);
+
+			this.on('touchstart', function() {
+				var islandMap = new Scene();
+				var back = new Label('戻る');
+				islandMap.addChild(back);
+				back.on('touchstart', function() {
+					core.popScene();
+				});
+				islandMap.backgroundColor = 'red';
+				core.pushScene(islandMap);
+			});
 		}
 	});
 
@@ -31,7 +42,7 @@ window.onload = function() {
 		var last = new Island(272,172,'img/island.png');
 
 //Island Map
-		var islandMap = new Scene();
+		/*var islandMap = new Scene();
 		var back = new Label('戻る');
 		islandMap.addChild(back);
 		back.on('touchstart', function() {
@@ -56,7 +67,7 @@ window.onload = function() {
 		last.on('touchstart', function() {
 			islandMap.backgroundColor = 'yellow';
 			core.pushScene(islandMap);
-		});
+		});*/
 
 
 /*
