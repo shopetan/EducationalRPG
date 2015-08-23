@@ -13,15 +13,21 @@ window.onload = function() {
 			core.rootScene.addChild(this);
 
 			this.on('touchstart', function() {
-				var islandMap = new Scene();
-				var back = new Label('戻る');
-				islandMap.addChild(back);
-				back.on('touchstart', function() {
-					core.popScene();
-				});
-				islandMap.backgroundColor = 'red';
+				var islandMap = new IslandMap();
 				core.pushScene(islandMap);
 			});
+		}
+	});
+
+	var IslandMap = Class.create(Scene, {
+		initialize: function() {
+			Scene.call(this);
+			var back = new Label('戻る');
+			this.addChild(back);
+			back.on('touchstart', function() {
+				core.popScene();
+			});
+			this.backgroundColor = 'red';
 		}
 	});
 
