@@ -66,13 +66,40 @@ window.onload = function () {
         question.backgroundColor = "rgba(200, 255, 200, 0.5)";
         question.x = 100;
         question.y = 0;
-
-        scene.addChild(player);
-        scene.addChild(question);
-        game.pushScene(scene);
         
+        var enemy = new Sprite(800,400)
+        enemy.backgroundColor = "rgba(200, 200, 200, 0.5)";
+        enemy.y = 100;
+
+        var selectA = new Sprite(200,100)
+        selectA.backgroundColor = "rgba(150, 150, 150, 0.5)";
+        selectA.x = 0;
+        selectA.y = 500;
+
+        var selectB = new Sprite(200,100)
+        selectB.backgroundColor = "rgba(100, 100, 100, 0.5)";
+        selectB.x = 200;
+        selectB.y = 500;
+
+        var selectC = new Sprite(200,100)
+        selectC.backgroundColor = "rgba(50, 50, 50, 0.5)";
+        selectC.x = 400;
+        selectC.y = 500;
+
+        var selectD = new Sprite(200,100)
+        selectD.x = 600;
+        selectD.y = 500;
+        
+        
+        scene.addChild(player);
+        scene.addChild(enemy);
+        scene.addChild(question);
+        scene.addChild(selectA);
+        scene.addChild(selectB);
+        scene.addChild(selectC);
+        scene.addChild(selectD);
+        game.pushScene(scene);
         question.addEventListener('touchstart', function() {
-            console.log("test");
             hp--;
             status.text = text[hp];
         });
