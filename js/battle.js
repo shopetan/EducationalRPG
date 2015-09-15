@@ -1,4 +1,12 @@
 enchant();
+
+var text = new Array(
+    "HP : 1",
+    "HP : 2",
+    "HP : 3",
+    "HP : 4",
+    "HP : 5");
+
 window.onload = function () {
     var game = new Game(800, 600);
     game.fps = 30;
@@ -39,12 +47,13 @@ window.onload = function () {
         var backGround = new Sprite(800,600);
         game.rootScene.addChild(backGround);        
         game.score = 10;
-        var userHp = "HP : "
-        var hp = 5;
+        var userHp = "HP : ";
+        var hp = 4;
         userHp.font = "16px Tahoma";
 
-        var status = new Label(userHp + hp);
-        scene.addChild(status)
+        var status = new Label();
+        status.text = text[hp];
+        scene.addChild(status);
         
         var player = new Sprite(176,176);
         player.image = game.assets['./img/dq.jpg'];
@@ -60,18 +69,13 @@ window.onload = function () {
 
         scene.addChild(player);
         scene.addChild(question);
+        game.pushScene(scene);
         
         question.addEventListener('touchstart', function() {
-            console.log("hp");
-            hp -= 1;
-            var status = new Label(userHp + hp);
-            scene.addChild(status)
-            
-            var clean = new Label(userHp + "  ");
-            scene.addChild(clean)
-                        
+            console.log("test");
+            hp--;
+            status.text = text[hp];
         });
-        game.pushScene(scene);        
         
     };
     
