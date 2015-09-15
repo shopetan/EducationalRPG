@@ -3,7 +3,7 @@ enchant();
 //DBから受け取るユーザーの進捗情報
 var stateArray = [0,4,1,2,3]; //国数理社英
 
-var dungeonOrigin = [[80,140],[310,300],[570,225],[20,400],[480,500]];
+var dungeonOrigin = [[80,160],[310,300],[570,225],[20,400],[480,500]];
 var islandOrigin = [[0,5],[544,5],[0,344],[544,344],[272,172]];
 var islandImage = ['img/island_j.png', 'img/island_m.png', 'img/island_sc.png', 'img/island_so.png', 'img/island_e.png'];
 var boardImage = ['img/board_j.png','img/board_m.png','img/board_sc.png','img/board_so.png','img/board_e.png',];
@@ -20,7 +20,7 @@ var number_of_dungeon = 5;
 
 window.onload = function() {
 	var core = new Core(800, 600);
-	core.preload('img/worldMapBg.jpg','img/island_e.png','img/island_j.png','img/island_m.png','img/island_sc.png','img/island_so.png','img/Japanese.png','img/dungeon.png','img/dungeonMap.jpg','img/board_e.png','img/board_j.png','img/board_m.png','img/board_sc.png','img/board_so.png','img/arrow.png','img/complete.png','img/gray.png');
+	core.preload('img/worldMapBg.jpg','img/island_e.png','img/island_j.png','img/island_m.png','img/island_sc.png','img/island_so.png','img/Japanese.png','img/dungeon.png','img/dungeonMap.jpg','img/board_e.png','img/board_j.png','img/board_m.png','img/board_sc.png','img/board_so.png','img/arrow.png','img/complete.png','img/gray.png','img/backArrow.png');
 
 	var Island = Class.create(Sprite, {
 		initialize: function(x, y, subject) {
@@ -46,11 +46,7 @@ window.onload = function() {
 			bg.y = 0;
 			this.addChild(bg);
 
-			var backButton = new Label('他の島へ行く');
-			backButton.addEventListener('touchstart', function() {
-				core.popScene();
-            	});
-			this.addChild(backButton);
+			this.addChild(new BackArrow());
 
 			for (var i = 0; i < dungeonOrigin.length; i++){
  				this.addChild(new Dungeon(dungeonOrigin[i][0], dungeonOrigin[i][1]));
@@ -99,6 +95,16 @@ window.onload = function() {
 			this.y = dungeonOrigin[state][1] - 10;
 		}
 	})
+
+	var BackArrow = Class.create(Sprite, {
+		initialize: function(state) {
+			Sprite.call(this, 180, 70);
+			this.image = core.assets['img/backArrow.png'];
+		},
+		ontouchstart: function() {
+			core.popScene();
+		}
+	});
 
 	var Dungeon = Class.create(Sprite, {
 		initialize: function(x, y) {
