@@ -1,11 +1,12 @@
 enchant();
 
 //DBから受け取るユーザーの進捗情報
-var state = [0,4,1,2,3]; //国数理社英
+var stateArray = [0,4,1,2,3]; //国数理社英
 
 var dungeonOrigin = [[80,140],[310,300],[570,225],[20,400],[480,500]];
 var islandOrigin = [[0,5],[544,5],[0,344],[544,344],[272,172]];
 var islandImage = ['img/island_j.png', 'img/island_m.png', 'img/island_sc.png', 'img/island_so.png', 'img/island_e.png'];
+var boardImage = ['img/board_j.png','img/board_m.png','img/board_sc.png','img/board_so.png','img/board_e.png',];
 
 var subject = {
  japanese: 0,
@@ -19,7 +20,7 @@ var number_of_dungeon = 5;
 
 window.onload = function() {
 	var core = new Core(800, 600);
-	core.preload('img/worldMapBg.jpg','img/island_e.png','img/island_j.png','img/island_m.png','img/island_sc.png','img/island_so.png','img/Japanese.png','img/dungeon.png','img/dungeonMap.jpg','img/board_e.png','img/arrow.png','img/complete.png');
+	core.preload('img/worldMapBg.jpg','img/island_e.png','img/island_j.png','img/island_m.png','img/island_sc.png','img/island_so.png','img/Japanese.png','img/dungeon.png','img/dungeonMap.jpg','img/board_e.png','img/board_j.png','img/board_m.png','img/board_sc.png','img/board_so.png','img/arrow.png','img/complete.png','img/gray.png');
 
 	var Island = Class.create(Sprite, {
 		initialize: function(x, y, subject) {
@@ -31,15 +32,14 @@ window.onload = function() {
 			core.rootScene.addChild(this);
 		},
 		ontouchstart: function() {
-			var islandMap = new IslandMap(state[this.subject]);
+			var islandMap = new IslandMap(this.subject);
 			core.pushScene(islandMap);
         	}
 	});
 
 	var IslandMap = Class.create(Scene, {
-		initialize: function(state) {
+		initialize: function(subject) {
 			Scene.call(this);
-			console.log(state)
 			var bg = new Sprite(800,600);
 			bg.image = core.assets['img/Japanese.png'];
 			bg.x = 0;
@@ -56,15 +56,19 @@ window.onload = function() {
  				this.addChild(new Dungeon(dungeonOrigin[i][0], dungeonOrigin[i][1]));
 			}
 
+			var state = stateArray[subject];
 			this.addChild(new NextArrow(state));
 			for (var i = 0; i < state; i++) {
 				this.addChild(new Complete(i));
+			}
+			for(var i = state+1; i < number_of_dungeon; i++) {
+				this.addChild(new Gray(i));
 			}
 
 			var board = new Sprite(200,100);
 			board.x = 300;
 			board.y = 0;
-			board.image = core.assets['img/board_e.png'];
+			board.image = core.assets[boardImage[subject]];
 			this.addChild(board);
 		}
 	});
@@ -84,6 +88,15 @@ window.onload = function() {
 			this.image = core.assets['img/complete.png'];
 			this.x = dungeonOrigin[state][0];
 			this.y = dungeonOrigin[state][1];
+		}
+	})
+
+	var Gray = Class.create(Sprite, {
+		initialize: function(state) {
+			Sprite.call(this, 200, 222);
+			this.image = core.assets['img/gray.png'];
+			this.x = dungeonOrigin[state][0] - 10;
+			this.y = dungeonOrigin[state][1] - 10;
 		}
 	})
 
