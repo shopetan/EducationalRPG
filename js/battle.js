@@ -12,6 +12,8 @@ window.onload = function () {
     game.fps = 30;
     game.preload('./img/dq.jpg'); 
 
+    var gameOverScene = new Scene();
+    
     //Function:csvファイルをArray[][] の形に変換して出力
     //TODO:戦闘の度に逐一csvファイルを読み込んでいたら重いかもしれない．
     //ベストプラクティスがあるかも
@@ -40,6 +42,23 @@ window.onload = function () {
             return isAnswer;
         }
         return isAnswer;
+    }
+
+    //Function:hpが0になったらゲームオーバーシーンに遷移
+    function gameOver() {
+        var label = new Label();
+        label.x = 250;
+        label.y = 200;
+        label.color = 'red';
+        label.font = '48px "Arial"';
+        
+        var msg = 'Game Over !!! <br/>';
+        label.text = msg;
+        
+        gameOverScene.backgroundColor = 'black';
+        gameOverScene.addChild(label);
+        game.pushScene(gameOverScene);
+        game.stop();
     }
     
     game.onload = function () {
@@ -101,7 +120,11 @@ window.onload = function () {
         game.pushScene(scene);
         question.addEventListener('touchstart', function() {
             hp--;
-            status.text = text[hp];
+            if(hp < 0){
+                gameOver();
+            }else{
+                status.text = text[hp];
+            }
         });
         
     };
