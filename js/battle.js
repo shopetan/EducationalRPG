@@ -1,18 +1,24 @@
 enchant();
 
+//TODO: 拡張性に乏しい 取り敢えず配列で持たせておくのがベターらしい
 var text = new Array(
     "HP : 1",
     "HP : 2",
     "HP : 3",
     "HP : 4",
     "HP : 5");
-
+/** エフェクトの位置のバラ付き具合 */
+var EFFECT_RANGE = 64;
+/** 一回のタップで発生するエフェクトの数 */
+var EFFECT_NUM = 5;
+        
 window.onload = function () {
     var game = new Game(800, 600);
     game.fps = 30;
     game.preload('./img/dq.jpg'); 
 
     var gameOverScene = new Scene();
+    var Easing = enchant.Easing;
     
     //Function:csvファイルをArray[][] の形に変換して出力
     //TODO:戦闘の度に逐一csvファイルを読み込んでいたら重いかもしれない．
@@ -69,11 +75,49 @@ window.onload = function () {
         game.stop();
     }
     
-    function attackEffect(){
-        
+    /** 単体エフェクト作成 */
+    function makeSingleEffect(delay) {
+        var easing = Easing.SIN_EASEOUT; // イージングの種類.
+        var sprite = new Sprite(32, 32);
+        sprite.scaleX = 0.0;
+        sprite.scaleY = 0.0;
+        sprite.visible = false; // 最初は非表示.
+        // エフェクトの動作設定.
+        sprite.tl
+            .delay(delay) // 指定時間待つ.
+            .then(function() { sprite.visible = true; }) // ここで表示.
+            .scaleTo(1.0, game.fps * 0.1, easing)
+            .scaleTo(0.5, game.fps * 0.1, easing)
+            .scaleTo(2.0, game.fps * 1, easing)
+            .and().fadeOut(game.fps * 1, easing)
+            .then(function() { sprite.tl.removeFromScene(); });
+        return sprite;
     }
-    function damageEffect(){
-        
+    
+    /** ランダムな色を作成 */
+    function makeRandomColor() {
+        var r = 128 + Math.ceil(Math.random() * 128);
+        var g = 128 + Math.ceil(Math.random() * 128);
+        var b = 128 + Math.ceil(Math.random() * 128);
+        return 'rgb(' + r + ',' + g + ',' + b + ')';
+    }
+    
+    /** 指定位置の付近に複数エフェクトを追加 */
+    function addEffect(scene, x, y) {
+        for (var i = 0, iNum = EFFECT_NUM; i < iNum; ++i) {
+            var sprite = makeSingleEffect(i * game.fps * 0.1);
+            sprite.backgroundColor = makeRandomColor();
+            sprite.x = x - (sprite.width / 2) + Math.random() * EFFECT_RANGE - (EFFECT_RANGE / 2);
+            sprite.y = y - (sprite.height / 2) + Math.random() * EFFECT_RANGE - (EFFECT_RANGE / 2);
+            scene.addChild(sprite);
+        }
+    }
+    
+    function attackEffect(scene){
+        addEffect(scene, 400, 300);
+    }
+    function damageEffect(scene){
+        addEffect(scene, 400, 300);
     }
     
     game.onload = function () {
@@ -139,38 +183,38 @@ window.onload = function () {
         selectA.addEventListener('touchstart', function() {
             var playerAnswer = "A";
             if(isAnswer(playerAnswer,loadAnswer,hp,status)){
-                attackEffect();
+                attackEffect(scene);
             }else{
                 hp--;
-                damageEffect();
+                damageEffect(scene);
             }
         });
         
         selectB.addEventListener('touchstart', function() {
             var playerAnswer = "B";
             if(isAnswer(playerAnswer,loadAnswer,hp,status)){
-                attackEffect();
+                attackEffect(scene);
             }else{
                 hp--;
-                damageEffect();
+                damageEffect(scene);
             }
         });
         selectC.addEventListener('touchstart', function() {
             var playerAnswer = "C";
             if(isAnswer(playerAnswer,loadAnswer,hp,status)){
-                attackEffect();
+                attackEffect(scene);
             }else{
                 hp--;
-                damageEffect();
+                damageEffect(scene);
             }
         });
         selectD.addEventListener('touchstart', function() {
             var playerAnswer = "D";
             if(isAnswer(playerAnswer,loadAnswer,hp,status)){
-                attackEffect();
+                attackEffect(scene);
             }else{
                 hp--;
-                damageEffect();
+                damageEffect(scene);
             }
         });
     };
