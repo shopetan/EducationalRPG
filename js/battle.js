@@ -35,15 +35,23 @@ window.onload = function () {
     }
 
     //Function:解答のチェック
-    function isAnswer(playerAnswer,loadAnswer) {
-        var isAnswer = False;
+    function isAnswer(playerAnswer,loadAnswer,hp,status) {
+        var isAnswer = false;
         if (playerAnswer == loadAnswer) {
-            isAnswer = True;
+            isAnswer = true;
             return isAnswer;
         }
-        return isAnswer;
+        else{
+            hp--;
+            if(hp < 0){
+                gameOver();
+            }else{
+                status.text = text[hp];
+            }
+            return isAnswer;
+        }
     }
-
+    
     //Function:hpが0になったらゲームオーバーシーンに遷移
     function gameOver() {
         var label = new Label();
@@ -59,6 +67,13 @@ window.onload = function () {
         gameOverScene.addChild(label);
         game.pushScene(gameOverScene);
         game.stop();
+    }
+    
+    function attackEffect(){
+        
+    }
+    function damageEffect(){
+        
     }
     
     game.onload = function () {
@@ -86,26 +101,26 @@ window.onload = function () {
         question.x = 100;
         question.y = 0;
         
-        var enemy = new Sprite(800,400)
+        var enemy = new Sprite(800,400);
         enemy.backgroundColor = "rgba(200, 200, 200, 0.5)";
         enemy.y = 100;
 
-        var selectA = new Sprite(200,100)
+        var selectA = new Sprite(200,100);
         selectA.backgroundColor = "rgba(150, 150, 150, 0.5)";
         selectA.x = 0;
         selectA.y = 500;
 
-        var selectB = new Sprite(200,100)
+        var selectB = new Sprite(200,100);
         selectB.backgroundColor = "rgba(100, 100, 100, 0.5)";
         selectB.x = 200;
         selectB.y = 500;
 
-        var selectC = new Sprite(200,100)
+        var selectC = new Sprite(200,100);
         selectC.backgroundColor = "rgba(50, 50, 50, 0.5)";
         selectC.x = 400;
         selectC.y = 500;
 
-        var selectD = new Sprite(200,100)
+        var selectD = new Sprite(200,100);
         selectD.x = 600;
         selectD.y = 500;
         
@@ -118,15 +133,46 @@ window.onload = function () {
         scene.addChild(selectC);
         scene.addChild(selectD);
         game.pushScene(scene);
-        question.addEventListener('touchstart', function() {
-            hp--;
-            if(hp < 0){
-                gameOver();
+        
+        //TODO: loadAnswerははじめにCSVファイルで読み込む．
+        var loadAnswer = "A";
+        selectA.addEventListener('touchstart', function() {
+            var playerAnswer = "A";
+            if(isAnswer(playerAnswer,loadAnswer,hp,status)){
+                attackEffect();
             }else{
-                status.text = text[hp];
+                hp--;
+                damageEffect();
             }
         });
         
+        selectB.addEventListener('touchstart', function() {
+            var playerAnswer = "B";
+            if(isAnswer(playerAnswer,loadAnswer,hp,status)){
+                attackEffect();
+            }else{
+                hp--;
+                damageEffect();
+            }
+        });
+        selectC.addEventListener('touchstart', function() {
+            var playerAnswer = "C";
+            if(isAnswer(playerAnswer,loadAnswer,hp,status)){
+                attackEffect();
+            }else{
+                hp--;
+                damageEffect();
+            }
+        });
+        selectD.addEventListener('touchstart', function() {
+            var playerAnswer = "D";
+            if(isAnswer(playerAnswer,loadAnswer,hp,status)){
+                attackEffect();
+            }else{
+                hp--;
+                damageEffect();
+            }
+        });
     };
     
     game.start();
