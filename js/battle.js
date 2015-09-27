@@ -128,10 +128,9 @@ window.onload = function () {
         var scene = new Scene();
         var backGround = new Sprite(800,600);
         game.rootScene.addChild(backGround);        
-        game.score = 10;
-
-        var sound = game.assets[BATTLE_BGM].play();
-                
+        
+        var battleSound = game.assets[BATTLE_BGM].play();
+        
         var userHp = "HP : ";
         var hp = 4;
         userHp.font = "16px Tahoma";
@@ -140,25 +139,12 @@ window.onload = function () {
         status.text = text[hp];
         scene.addChild(status);
         
-        var player = new Sprite(100,100);
-        player.image = game.assets[PLAYER_IMG];
-
-        var question = new Sprite(500, 100);
-        question.backgroundColor = "rgba(200, 255, 200, 0.5)";
-        question.x = 100;
-        question.y = 0;
-        
-        var enemy = new Sprite(800,400);
-        enemy.backgroundColor = "rgba(200, 200, 200, 0.5)";
-        enemy.y = 100;
-
-                
+        var player = new Player();
+        var enemy = new Enemy();
+        var question = new Question();
         var selectA = new Select("A");
-
         var selectB = new Select("B");
-
         var selectC = new Select("C");
-
         var selectD = new Select("D");
         
         
@@ -215,7 +201,37 @@ window.onload = function () {
     game.start();
 
     /* Class */
+    var Player = Class.create(Sprite,{
+        initialize:function(){
+            Sprite.call(this,100,100);
+            this.image = game.assets[PLAYER_IMG];
+            this.x = 0;
+            this.y = 0;
+            game.rootScene.addChild(this);
+        }
+    });
+
+    var Enemy = Class.create(Sprite,{
+        initialize:function(){
+            Sprite.call(this,800,400);
+            this.backgroundColor = "rgba(200, 200, 200, 0.5)";
+            this.x = 0;
+            this.y = 100;
+            game.rootScene.addChild(this);
+        }
+    });
     
+    var Question = Class.create(Sprite, { 
+        initialize:function(){
+            Sprite.call(this,700,100);
+            this.image = game.assets[PLAYER_IMG];
+            this.backgroundColor = "rgba(200, 255, 200, 0.5)";
+            this.x = 100;
+            this.y = 0;
+            game.rootScene.addChild(this);
+        }
+    });
+        
     var Select = Class.create(Sprite, { 
         initialize:function(arg){
             if(arg == "A"){
