@@ -4,7 +4,8 @@ enchant();
 var stateArray = [0,4,1,2,3]; //国数理社英
 
 var dungeonOrigin = [[80,160],[310,300],[570,225],[20,400],[480,500]];
-var islandOrigin = [[0,5],[544,5],[0,344],[544,344],[272,172]];
+
+//画像
 var islandImage = ['img/island_j.png', 'img/island_m.png', 'img/island_sc.png', 'img/island_so.png', 'img/island_e.png'];
 var boardImage = ['img/board_j.png','img/board_m.png','img/board_sc.png','img/board_so.png','img/board_e.png',];
 
@@ -17,11 +18,33 @@ var subject = {
 };
 
 var number_of_dungeon = 5;
+var number_of_subject = 5;
 
 window.onload = function() {
 	var core = new Core(800, 600);
-	core.preload('img/worldMapBg.jpg','img/island_e.png','img/island_j.png','img/island_m.png','img/island_sc.png','img/island_so.png','img/Japanese.png','img/dungeon.png','img/dungeonMap.jpg','img/board_e.png','img/board_j.png','img/board_m.png','img/board_sc.png','img/board_so.png','img/arrow.png','img/complete.png','img/gray.png','img/backArrow.png');
+	core.preload('img/worldMapBg.jpg','img/Japanese.png','img/dungeon.png','img/dungeonMap.jpg','img/arrow.png','img/complete.png','img/gray.png','img/backArrow.png');
+	for(var i = 0; i < number_of_subject; i++) {
+		core.preload(islandImage[i]);
+		core.preload(boardImage[i]);
+	}
 
+
+//WorldMap
+	var WorldMap = Class.create(Scene, {
+		initialize: function(subject) {
+			var islandOrigin = [[0,5],[544,5],[0,344],[544,344],[272,172]];
+			Scene.call(this);
+			var bg = new Sprite(800,600);
+			bg.image = core.assets['img/worldMapBg.jpg'];
+			bg.x = 0;
+			bg.y = 0;
+			this.addChild(bg);
+			for (var i = 0; i < islandOrigin.length; i++) {
+				var island = new Island(islandOrigin[i][0], islandOrigin[i][1], i);
+				this.addChild(island);
+			}
+		}
+	});
 	var Island = Class.create(Sprite, {
 		initialize: function(x, y, subject) {
 			Sprite.call(this, 256, 256);
@@ -29,7 +52,6 @@ window.onload = function() {
 			this.y = y;
 			this.image = core.assets[islandImage[subject]];
 			this.subject = subject;
-			core.rootScene.addChild(this);
 		},
 		ontouchstart: function() {
 			var islandMap = new IslandMap(this.subject);
@@ -142,18 +164,7 @@ window.onload = function() {
 
 	core.fps = 15;
 	core.onload = function() {
-
-//World Map
-		var map = new Sprite(800,600);
-		map.image = core.assets['img/worldMapBg.jpg'];
-		map.x = 0;
-		map.y = 0;
-		core.rootScene.addChild(map);
-
-		for (var i = 0; i < islandOrigin.length; i++) {
-			new Island(islandOrigin[i][0], islandOrigin[i][1], i);
-		}
-
+		core.pushScene(new WorldMap());
 	};
 	core.start();
 };
