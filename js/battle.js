@@ -7,6 +7,10 @@ var text = new Array(
     "HP : 3",
     "HP : 4",
     "HP : 5");
+
+var BATTLE_BGM = './bgm/BATTLE_cyrf_energy.mp3';
+var PLAYER_IMG = './img/player.png';
+
 /** エフェクトの位置のバラ付き具合 */
 var EFFECT_RANGE = 64;
 /** 一回のタップで発生するエフェクトの数 */
@@ -15,7 +19,7 @@ var EFFECT_NUM = 5;
 window.onload = function () {
     var game = new Game(800, 600);
     game.fps = 30;
-    game.preload('./img/dq.jpg'); 
+    game.preload([BATTLE_BGM,PLAYER_IMG]); 
 
     var gameOverScene = new Scene();
     var Easing = enchant.Easing;
@@ -78,7 +82,7 @@ window.onload = function () {
     /** 単体エフェクト作成 */
     function makeSingleEffect(delay) {
         var easing = Easing.SIN_EASEOUT; // イージングの種類.
-        var sprite = new Sprite(32, 32);
+        var sprite = new Sprite(100, 100);
         sprite.scaleX = 0.0;
         sprite.scaleY = 0.0;
         sprite.visible = false; // 最初は非表示.
@@ -125,6 +129,9 @@ window.onload = function () {
         var backGround = new Sprite(800,600);
         game.rootScene.addChild(backGround);        
         game.score = 10;
+
+        var sound = game.assets[BATTLE_BGM].play();
+                
         var userHp = "HP : ";
         var hp = 4;
         userHp.font = "16px Tahoma";
@@ -133,13 +140,9 @@ window.onload = function () {
         status.text = text[hp];
         scene.addChild(status);
         
-        var player = new Sprite(176,176);
-        player.image = game.assets['./img/dq.jpg'];
-        player.scaleX = 0.5;
-        player.scaleY = 0.5;
-        player.x = -50;
-        player.y = -30;
-        
+        var player = new Sprite(100,100);
+        player.image = game.assets[PLAYER_IMG];
+
         var question = new Sprite(500, 100);
         question.backgroundColor = "rgba(200, 255, 200, 0.5)";
         question.x = 100;
@@ -149,24 +152,14 @@ window.onload = function () {
         enemy.backgroundColor = "rgba(200, 200, 200, 0.5)";
         enemy.y = 100;
 
-        var selectA = new Sprite(200,100);
-        selectA.backgroundColor = "rgba(150, 150, 150, 0.5)";
-        selectA.x = 0;
-        selectA.y = 500;
+                
+        var selectA = new Select("A");
 
-        var selectB = new Sprite(200,100);
-        selectB.backgroundColor = "rgba(100, 100, 100, 0.5)";
-        selectB.x = 200;
-        selectB.y = 500;
+        var selectB = new Select("B");
 
-        var selectC = new Sprite(200,100);
-        selectC.backgroundColor = "rgba(50, 50, 50, 0.5)";
-        selectC.x = 400;
-        selectC.y = 500;
+        var selectC = new Select("C");
 
-        var selectD = new Sprite(200,100);
-        selectD.x = 600;
-        selectD.y = 500;
+        var selectD = new Select("D");
         
         
         scene.addChild(player);
@@ -220,4 +213,39 @@ window.onload = function () {
     };
     
     game.start();
+
+    /* Class */
+    
+    var Select = Class.create(Sprite, { 
+        initialize:function(arg){
+            if(arg == "A"){
+                Sprite.call(this,200,100);
+                this.image = game.assets[PLAYER_IMG];
+                this.backgroundColor = "rgba(150, 150, 150, 0.5)";
+                this.x = 0;
+                this.y = 500;
+            }
+            else if(arg == "B"){
+                Sprite.call(this,200,100);
+                this.image = game.assets[PLAYER_IMG];
+                this.backgroundColor = "rgba(100, 100, 100, 0.5)";
+                this.x = 200;
+                this.y = 500;
+            }
+            else if(arg == "C"){
+                Sprite.call(this,200,100);
+                this.image = game.assets[PLAYER_IMG];
+                this.backgroundColor = "rgba(50, 50, 50, 0.5)";
+                this.x = 400;
+                this.y = 500;
+            }
+            else if(arg == "D"){
+                Sprite.call(this,200,100);
+                this.image = game.assets[PLAYER_IMG];
+                this.x = 600;
+                this.y = 500;
+            }
+            game.rootScene.addChild(this);
+        }
+    });
 }
