@@ -57,9 +57,9 @@ window.onload = function() {
 			for (var i = 0; i < state; i++) {
 				this.addChild(new Complete(i));
 			}
-			for(var i = state+1; i < number_of_dungeon; i++) {
-				this.addChild(new Gray(i));
-			}
+			// for(var i = state+1; i < number_of_dungeon; i++) {
+			// 	this.addChild(new Gray(i));
+			// }
 
 			var board = new Sprite(200,100);
 			board.x = 300;
