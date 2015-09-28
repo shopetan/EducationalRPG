@@ -44,6 +44,21 @@ window.onload = function () {
         return csvData;
     }
 
+    //凄く汚い実装かもしれないけど，2択or4択を判別して，いくつのボタン設置をするか返す
+    /*isFourChoiceQuestion:true => 4択問題
+      isFourChoiceQuestion:false => 2択問題
+     */
+    function isFourChoiceQuestion(choiceQuestion) {
+        var isFourChoiceQuestion = true;
+        if (choiceQuestion == 4) {
+            return isFourChoiceQuestion;
+        }
+        else {
+            isFourChoiceQuestion = false;
+            return isFourChoiceQuestion;
+        }
+    }
+    
     //Function:解答のチェック
     function isAnswer(playerAnswer,loadAnswer,hp,status) {
         var isAnswer = false;
@@ -128,24 +143,31 @@ window.onload = function () {
         var scene = new Scene();
         var backGround = new Sprite(800,600);
         game.rootScene.addChild(backGround);        
-        
-        var battleSound = game.assets[BATTLE_BGM].play();
-        
+
+        //ゲーム音関係
+//        var battleSound = game.assets[BATTLE_BGM].play();
+
+        //ユーザのHP関係
         var userHp = "HP : ";
         var hp = 4;
         userHp.font = "16px Tahoma";
-
         var status = new Label();
         status.text = text[hp];
         scene.addChild(status);
-        
+
+        //プレイヤー，敵キャラクタの画像関係
         var player = new Player();
         var enemy = new Enemy();
+
+        //設問，設問数などを管理する関係
         var question = new Question();
-        var selectA = new Select("A");
-        var selectB = new Select("B");
-        var selectC = new Select("C");
-        var selectD = new Select("D");
+        var choiceQuestion = 2;
+        
+        var isfourChoiceQuestion = isFourChoiceQuestion(choiceQuestion);
+        var selectA = new Select("A",isfourChoiceQuestion);
+        var selectB = new Select("B",isfourChoiceQuestion);
+        var selectC = new Select("C",isfourChoiceQuestion);
+        var selectD = new Select("D",isfourChoiceQuestion);
         
         
         scene.addChild(player);
@@ -157,7 +179,9 @@ window.onload = function () {
         scene.addChild(selectD);
         game.pushScene(scene);
         
+
         //TODO: loadAnswerははじめにCSVファイルで読み込む．
+        //TODO: もしくは，画面遷移時にその必要な 設問番号 設問文 答えを引数として受け取る 
         var loadAnswer = "A";
         selectA.addEventListener('touchstart', function() {
             var playerAnswer = "A";
@@ -233,33 +257,57 @@ window.onload = function () {
     });
         
     var Select = Class.create(Sprite, { 
-        initialize:function(arg){
-            if(arg == "A"){
-                Sprite.call(this,200,100);
-                this.image = game.assets[PLAYER_IMG];
-                this.backgroundColor = "rgba(150, 150, 150, 0.5)";
-                this.x = 0;
-                this.y = 500;
+        initialize:function(arg,isFourChoiceQuestion){
+            if(isFourChoiceQuestion == true) {                
+                if(arg == "A"){
+                    Sprite.call(this,200,100);
+                    this.image = game.assets[PLAYER_IMG];
+                    this.backgroundColor = "rgba(150, 150, 150, 0.5)";
+                    this.x = 0;
+                    this.y = 500;
+                }
+                else if(arg == "B"){
+                    Sprite.call(this,200,100);
+                    this.image = game.assets[PLAYER_IMG];
+                    this.backgroundColor = "rgba(100, 100, 100, 0.5)";
+                    this.x = 200;
+                    this.y = 500;
+                }
+                else if(arg == "C"){
+                    Sprite.call(this,200,100);
+                    this.image = game.assets[PLAYER_IMG];
+                    this.backgroundColor = "rgba(50, 50, 50, 0.5)";
+                    this.x = 400;
+                    this.y = 500;
+                }
+                else if(arg == "D"){
+                    Sprite.call(this,200,100);
+                    this.image = game.assets[PLAYER_IMG];
+                    this.x = 600;
+                    this.y = 500;
+                }
             }
-            else if(arg == "B"){
-                Sprite.call(this,200,100);
-                this.image = game.assets[PLAYER_IMG];
-                this.backgroundColor = "rgba(100, 100, 100, 0.5)";
-                this.x = 200;
-                this.y = 500;
-            }
-            else if(arg == "C"){
-                Sprite.call(this,200,100);
-                this.image = game.assets[PLAYER_IMG];
-                this.backgroundColor = "rgba(50, 50, 50, 0.5)";
-                this.x = 400;
-                this.y = 500;
-            }
-            else if(arg == "D"){
-                Sprite.call(this,200,100);
-                this.image = game.assets[PLAYER_IMG];
-                this.x = 600;
-                this.y = 500;
+            else {
+                if(arg == "A"){
+                    Sprite.call(this,400,100);
+                    this.image = game.assets[PLAYER_IMG];
+                    this.backgroundColor = "rgba(150, 150, 150, 0.5)";
+                    this.x = 0;
+                    this.y = 500;
+                }
+                else if(arg == "B"){
+                    Sprite.call(this,400,100);
+                    this.image = game.assets[PLAYER_IMG];
+                    this.backgroundColor = "rgba(100, 100, 100, 0.5)";
+                    this.x = 400;
+                    this.y = 500;
+                }
+                else if(arg == "C"){
+                    Sprite.call(this,0,0);
+                }
+                else if(arg == "D"){
+                    Sprite.call(this,0,0);
+                }
             }
             game.rootScene.addChild(this);
         }
