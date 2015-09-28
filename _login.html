@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="css/login.css">
+	<title>Login</title>
+</head>
+<body ng-app="app">
+	<div class="login_form">
+		<div>
+			<h1>登録</h1>
+			<p class="back"><a href="./index2.html"><i class="fa fa-reply"></i></a></p>
+		</div>	
+		<form action="" method="post" id="signup" ng-controller="login">
+			<fieldset>
+			<ul>
+				<li><span><label for="signup-name">名前：</label></span><input type="text" id="signup-name" placeholder="Input your name" ng-model="username"></li>
+				<li>
+					<span><label for="signup-grade">学年：</label></span>
+					<select name="grade" id="signup-grade" ng-model="grade" value>
+						<option value="es4">小学校４年生</option>
+						<option value="es5">小学校5年生</option>
+						<option value="es6">小学校6年生</option>
+						<option value="jhs1">中学校１年生</option>
+						<option value="jhs2">中学校2年生</option>
+						<option value="jhs3">中学校3年生</option>
+						<option value="others">高校生以上</option>
+					</select>
+				</li>
+				<li><span><label for="signup-email">メールアドレス：</label></span><input type="email" id="signup-email" placeholder="Input email-address" ng-model="Email"></li>			
+				<li><span><label for="signup-pass">パスワード：</label></span><input type="password" id="signup-pass" placeholder="Input password"></li>
+				<li class="submit_data"><input type="submit" value="登録" id="submit"></li>
+			</ul>
+			</fieldset>		
+		</form>
+
+		<h1>ログイン</h1>
+		<form action="" method="post" id="login">
+			<fieldset>
+			<ul>
+				<li><span><label for="login-email">メールアドレス：</label></span><input type="email" id="login-email" placeholder="Input email-address"></li>			
+				<li><span><label for="login-pass">パスワード：</label></span><input type="password" id="login-pass" placeholder="Input password"></li>
+				<li class="submit_data"><input type="submit" value="ログイン" id="submit"></li>
+			</ul>
+			</fieldset>		
+		</form>
+		<button id="logout">ログアウト</button>		
+	</div>
+
+	<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>   
+	<script src='https://cdn.mlkcca.com/v2.0.0/milkcocoa.js'></script>    
+    <script src="http://cdn.auth0.com/js/lock-7.5.min.js"></script>
+    <script src="https://cdn.auth0.com/w2/auth0-6.js"></script>
+    <script src="js/milkcocoa.js"></script>
+</body>
+</html>
