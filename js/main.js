@@ -123,7 +123,7 @@ window.onload = function() {
 		},
 		ontouchstart: function() {
 			var pattern = this.subject + this.number;
-			switch(pattern) {
+			switch(pattern%5) {
 				case 0:
 					core.pushScene(new DungeonMap(mapdata0));
 					break;
