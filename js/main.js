@@ -10,6 +10,14 @@ var directionImage = ["img/arrow_top.png","img/arrow_right.png","img/arrow_botto
 var battleImage = ['img/dq.jpg'];
 var dungeonMapImage = ["img/chara.png","img/minmap1.png","img/clear.png"];
 
+//ダンジョンマップ
+var mapdata0 = [[0,1,1,1,1],[0,3,0,0,1],[0,1,1,1,1],[0,0,1,0,1],[3,1,1,0,3],[0,0,1,1,1],[2,1,1,0,0]];
+var mapdata1 = [[],[],[],[],[],[],[]];
+var mapdata2 = [[],[],[],[],[],[],[]];
+var mapdata3 = [[],[],[],[],[],[],[]];
+var mapdata4 = [[],[],[],[],[],[],[]];
+
+
 var subject = {
  	japanese: 0,
  	math: 1,
@@ -113,7 +121,6 @@ window.onload = function() {
 	});
 
 //DungeonMap
-	var mapdata = [[0,1,1,1,1],[0,3,0,0,1],[0,1,1,1,1],[0,0,1,0,1],[3,1,1,0,3],[0,0,1,1,1],[2,1,1,0,0]];
 	var dungeon_x = 0;
 	var dungeon_y = mapdata[0].length - 1;
 	var direct = new Array();
