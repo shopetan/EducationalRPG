@@ -1,7 +1,8 @@
 enchant();
 
 //DBから受け取るユーザーの進捗情報
-var state_array = [[0,0,0,0,0],[1,0,0,1,1],[1,1,1,1,0],[0,0,1,1,0],[1,1,1,0,0],[1,1,1,0,0]]; //国数理社英
+var state_array = [[0,0,0,0,0],[1,0,0,1,1],[1,1,1,1,0],[0,0,1,1,0],[1,1,1,0,0],[0]]; //国数理社英
+//00011101100011111100100000
 
 //画像
 var islandImage = ['img/island_j.png', 'img/island_m.png', 'img/island_sc.png', 'img/island_so.png', 'img/island_e.png'];
@@ -44,6 +45,30 @@ window.onload = function() {
 	core.preload(boardImage);
 	core.preload(dungeonMapImage);
 	core.preload(directionImage);
+
+	//データの計算
+	function data_to_array (data) {
+		for (var i = 0; i < state_array.length; i++) {
+			for (var j = 0; j < state_array[i].length; j++) {
+				state_array[i][j] = data%2;
+				data -= data%2;
+				data /= 2;
+			}
+		}
+	}
+	function array_to_data (array) {
+		var n = 1;
+		var result = 0;
+		for (var i = 0; i < state_array.length; i++) {
+			for (var j = 0; j < state_array[i].length; j++) {
+				var value = state_array[i][j];
+				result += value*n;
+				n *= 2;
+			}
+		}
+		return result;
+	}
+
 
 //WorldMap
 	var WorldMap = Class.create(Scene, {
