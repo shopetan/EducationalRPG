@@ -15,15 +15,16 @@ var PLAYER_IMG = './img/player.png';
 var EFFECT_RANGE = 64;
 /** 一回のタップで発生するエフェクトの数 */
 var EFFECT_NUM = 5;
-        
+
 window.onload = function () {
     var game = new Game(800, 600);
     game.fps = 30;
-    game.preload([BATTLE_BGM,PLAYER_IMG]); 
+
+    game.preload([BATTLE_BGM,PLAYER_IMG]);
 
     var gameOverScene = new Scene();
     var Easing = enchant.Easing;
-    
+
     //Function:csvファイルをArray[][] の形に変換して出力
     //TODO:戦闘の度に逐一csvファイルを読み込んでいたら重いかもしれない．
     //ベストプラクティスがあるかも
@@ -32,7 +33,7 @@ window.onload = function () {
         var data = new XMLHttpRequest();
         data.open("GET", filePath, false); //true:非同期,false:同期
         data.send(null);
-        
+
         var LF = String.fromCharCode(10); //改行ｺｰﾄﾞ
         var lines = data.responseText.split(LF);
         for (var i = 0; i < lines.length;++i) {
@@ -58,7 +59,7 @@ window.onload = function () {
             return isFourChoiceQuestion;
         }
     }
-    
+
     //Function:解答のチェック
     function isAnswer(playerAnswer,loadAnswer,hp,status) {
         var isAnswer = false;
@@ -76,7 +77,7 @@ window.onload = function () {
             return isAnswer;
         }
     }
-    
+
     //Function:hpが0になったらゲームオーバーシーンに遷移
     function gameOver() {
         var label = new Label();
@@ -84,16 +85,17 @@ window.onload = function () {
         label.y = 200;
         label.color = 'red';
         label.font = '48px "Arial"';
-        
+
         var msg = 'Game Over !!! <br/>';
         label.text = msg;
-        
+
         gameOverScene.backgroundColor = 'black';
         gameOverScene.addChild(label);
         game.pushScene(gameOverScene);
         game.stop();
     }
-    
+
+
     /** 単体エフェクト作成 */
     function makeSingleEffect(delay) {
         var easing = Easing.SIN_EASEOUT; // イージングの種類.
@@ -112,7 +114,7 @@ window.onload = function () {
             .then(function() { sprite.tl.removeFromScene(); });
         return sprite;
     }
-    
+
     /** ランダムな色を作成 */
     function makeRandomColor() {
         var r = 128 + Math.ceil(Math.random() * 128);
@@ -120,7 +122,7 @@ window.onload = function () {
         var b = 128 + Math.ceil(Math.random() * 128);
         return 'rgb(' + r + ',' + g + ',' + b + ')';
     }
-    
+
     /** 指定位置の付近に複数エフェクトを追加 */
     function addEffect(scene, x, y) {
         for (var i = 0, iNum = EFFECT_NUM; i < iNum; ++i) {
@@ -131,18 +133,19 @@ window.onload = function () {
             scene.addChild(sprite);
         }
     }
-    
+
     function attackEffect(scene){
         addEffect(scene, 400, 300);
     }
     function damageEffect(scene){
         addEffect(scene, 400, 300);
     }
-    
+
     game.onload = function () {
         var scene = new Scene();
         var backGround = new Sprite(800,600);
-        game.rootScene.addChild(backGround);        
+
+        game.rootScene.addChild(backGround);
 
         //ゲーム音関係
 //        var battleSound = game.assets[BATTLE_BGM].play();
@@ -155,21 +158,23 @@ window.onload = function () {
         status.text = text[hp];
         scene.addChild(status);
 
+
         //プレイヤー，敵キャラクタの画像関係
         var player = new Player();
         var enemy = new Enemy();
 
+
         //設問，設問数などを管理する関係
         var question = new Question();
         var choiceQuestion = 2;
-        
+
         var isfourChoiceQuestion = isFourChoiceQuestion(choiceQuestion);
         var selectA = new Select("A",isfourChoiceQuestion);
         var selectB = new Select("B",isfourChoiceQuestion);
         var selectC = new Select("C",isfourChoiceQuestion);
         var selectD = new Select("D",isfourChoiceQuestion);
-        
-        
+
+
         scene.addChild(player);
         scene.addChild(enemy);
         scene.addChild(question);
@@ -178,10 +183,10 @@ window.onload = function () {
         scene.addChild(selectC);
         scene.addChild(selectD);
         game.pushScene(scene);
-        
+
 
         //TODO: loadAnswerははじめにCSVファイルで読み込む．
-        //TODO: もしくは，画面遷移時にその必要な 設問番号 設問文 答えを引数として受け取る 
+        //TODO: もしくは，画面遷移時にその必要な 設問番号 設問文 答えを引数として受け取る
         var loadAnswer = "A";
         selectA.addEventListener('touchstart', function() {
             var playerAnswer = "A";
@@ -192,7 +197,7 @@ window.onload = function () {
                 damageEffect(scene);
             }
         });
-        
+
         selectB.addEventListener('touchstart', function() {
             var playerAnswer = "B";
             if(isAnswer(playerAnswer,loadAnswer,hp,status)){
@@ -221,7 +226,7 @@ window.onload = function () {
             }
         });
     };
-    
+
     game.start();
 
     /* Class */
@@ -244,8 +249,8 @@ window.onload = function () {
             game.rootScene.addChild(this);
         }
     });
-    
-    var Question = Class.create(Sprite, { 
+
+    var Question = Class.create(Sprite, {
         initialize:function(){
             Sprite.call(this,700,100);
             this.image = game.assets[PLAYER_IMG];
@@ -255,10 +260,10 @@ window.onload = function () {
             game.rootScene.addChild(this);
         }
     });
-        
-    var Select = Class.create(Sprite, { 
+
+    var Select = Class.create(Sprite, {
         initialize:function(arg,isFourChoiceQuestion){
-            if(isFourChoiceQuestion == true) {                
+            if(isFourChoiceQuestion == true) {
                 if(arg == "A"){
                     Sprite.call(this,200,100);
                     this.image = game.assets[PLAYER_IMG];
