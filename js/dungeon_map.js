@@ -109,7 +109,7 @@ window.onload = function(){
 
 			if (now_y == mapdata[0].length - 1){
 				direction[2] = 0;
-			}																		
+			}
 			else if (mapdata[now_x][now_y + 1] != 0){
 				direction[2] = 1;
 			}
@@ -137,11 +137,11 @@ window.onload = function(){
 
 /*		var top = new Sprite(100,100);
 		var left = new Sprite(100,100);
-		var right = new Sprite(100,100);		
+		var right = new Sprite(100,100);
 		var bottom = new Sprite(100,100);
 */
 		var character = new Sprite(150,150);
-		
+
 
 		Sprite_info(direct[0], 350, 50, "img/arrow_top.png");
 		Sprite_info(direct[3], 50, 250, "img/arrow_left.png");
@@ -169,7 +169,7 @@ window.onload = function(){
 
 		var minMap = enchant.Class.create(Sprite, {
 			mapData: [],
-			direction: [],			
+			direction: [],
 			initialize: function (scene, mapdata){
 				Sprite.call(this, 250, 150);
 				var text = new Label();
@@ -185,11 +185,11 @@ window.onload = function(){
 				scene.addChild(this);
 //				this.addEventListener(EVENT.ENTER_FRAME, onClickEvent);
 			},
-			
+
 			toMoving: function(){
 				for (i=0;i<4;i++){
 					if(direction[i]){
-						
+
 					}
 				}
 			}
@@ -214,8 +214,8 @@ window.onload = function(){
                     scene.removeChild(message);
                     //scene.removeEventListner(enchant.Event.ENTER_FRAME);
                 }
-                
-            });    
+
+            });
 */
 		}
 
@@ -230,7 +230,7 @@ window.onload = function(){
 			back.on("touchstart", function (){
 				console.log("e");
 				core.popScene();
-				mapdata[x][y] = 1;			
+				mapdata[x][y] = 1;
 			});
 			scene.addChild(bg);
 			scene.addChild(back);
@@ -248,8 +248,8 @@ window.onload = function(){
 				core.removeScene(mapScene);
 				core.removeScene(scene);
 			});
-			
-		} 
+
+		}
 
 		function Event_Controller(trueFlag){
 			if (trueFlag == true){
