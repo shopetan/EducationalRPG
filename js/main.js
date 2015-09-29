@@ -1,7 +1,8 @@
 enchant();
 
 //DBから受け取るユーザーの進捗情報
-var state_array = [[0,0,0,0,0],[1,0,0,1,1],[1,1,1,1,0],[0,0,1,1,0],[1,1,1,0,0],[1,1,1,0,0]]; //国数理社英
+var state_array = [[0,0,0,0,0],[1,0,0,1,1],[1,1,1,1,0],[0,0,1,1,0],[1,1,1,0,0],[0]]; //国数理社英
+//00011101100011111100100000
 
 //画像
 var islandImage = ['img/island_j.png', 'img/island_m.png', 'img/island_sc.png', 'img/island_so.png', 'img/island_e.png'];
@@ -12,10 +13,10 @@ var dungeonMapImage = ["img/chara.png","img/minmap1.png","img/clear.png"];
 
 //ダンジョンマップ
 var mapdata0 = [[0,1,1,1,1],[0,3,0,0,1],[0,1,1,1,1],[0,0,1,0,1],[3,1,1,0,3],[0,0,1,1,1],[2,1,1,0,0]];
-var mapdata1 = [[],[],[],[],[],[],[]];
-var mapdata2 = [[],[],[],[],[],[],[]];
-var mapdata3 = [[],[],[],[],[],[],[]];
-var mapdata4 = [[],[],[],[],[],[],[]];
+var mapdata1 = [[0,0,3,0,1],[0,1,1,1,1],[0,1,0,1,0],[0,3,0,1,0],[0,1,1,1,3],[0,2,0,0,0],[0,0,0,0,0]];
+var mapdata2 = [[3,1,1,1,1],[0,1,0,3,0],[1,1,1,0,0],[1,0,1,1,0],[2,0,3,0,0],[0,0,0,0,0],[0,0,0,0,0]];
+var mapdata3 = [[3,1,1,0,1],[1,0,1,0,1],[1,1,1,1,1],[1,0,3,0,0],[1,3,0,0,0],[2,0,0,0,0],[0,0,0,0,0]];
+var mapdata4 = [[0,0,1,0,1],[0,3,1,1,1],[0,0,1,0,3],[0,0,1,1,1],[0,1,0,0,1],[0,1,1,3,1],[0,2,0,1,0]];
 
 
 var subject = {
@@ -44,6 +45,30 @@ window.onload = function() {
 	core.preload(boardImage);
 	core.preload(dungeonMapImage);
 	core.preload(directionImage);
+
+	//データの計算
+	function data_to_array (data) {
+		for (var i = 0; i < state_array.length; i++) {
+			for (var j = 0; j < state_array[i].length; j++) {
+				state_array[i][j] = data%2;
+				data -= data%2;
+				data /= 2;
+			}
+		}
+	}
+	function array_to_data (array) {
+		var n = 1;
+		var result = 0;
+		for (var i = 0; i < state_array.length; i++) {
+			for (var j = 0; j < state_array[i].length; j++) {
+				var value = state_array[i][j];
+				result += value*n;
+				n *= 2;
+			}
+		}
+		return result;
+	}
+
 
 //WorldMap
 	var WorldMap = Class.create(Scene, {
@@ -98,8 +123,23 @@ window.onload = function() {
 		},
 		ontouchstart: function() {
 			var pattern = this.subject + this.number;
-			//core.pushScene(new DungeonMap(pattern % 5));
-			core.pushScene(new DungeonMap());
+			switch(pattern%5) {
+				case 0:
+					core.pushScene(new DungeonMap(mapdata0));
+					break;
+				case 1:
+					core.pushScene(new DungeonMap(mapdata1));
+					break;
+				case 2:
+					core.pushScene(new DungeonMap(mapdata2));
+					break;
+				case 3:
+					core.pushScene(new DungeonMap(mapdata3));
+					break;
+				case 4:
+					core.pushScene(new DungeonMap(mapdata4));
+					break;
+			}
 		}
 	});
 	var BackArrow = Class.create(Sprite, {
@@ -121,12 +161,16 @@ window.onload = function() {
 	});
 
 //DungeonMap
-	var dungeon_x = 0;
-	var dungeon_y = mapdata[0].length - 1;
+	var dungeon_x;
+	var dungeon_y;
+	var mapdata;
 	var direct = new Array();
 	var DungeonMap = Class.create(Scene, {
-		initialize: function(mapData) {
+		initialize: function(data) {
 			Scene.call(this);
+			mapdata = data;
+			dungeon_x = 0;
+			dungeon_y = mapdata[0].length - 1;
 			this.addChild(new BackGround('img/dungeonMapBg.jpg'));
 			for (i = 0; i < 4; i++){
 				var d = new Direction(i);
@@ -427,8 +471,6 @@ window.onload = function() {
 			this.y = 0;
 		}
 	});
-
-
 
 	core.fps = 15;
 	core.onload = function() {
