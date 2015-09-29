@@ -4,7 +4,7 @@ var apiEndpoint = 'https://' + 'education-rpg.auth0.com' + '/api/v2/';
 var auth0 = new Auth0({
 	domain: 'education-rpg.auth0.com',
  	clientID: 'JelTeIAsjRphF41HAxSxOJ785mwpaSVF',
-		callbackURL: 'http://localhost:8000/'	 //サーバのアドレス
+	callbackURL: 'http://localhost:8000/'	 //サーバのアドレス
 });
 var lock = new Auth0Lock(
  	'JelTeIAsjRphF41HAxSxOJ785mwpaSVF',	
@@ -12,7 +12,11 @@ var lock = new Auth0Lock(
 );
 
 var User = null;
-var metadata = {};
+var metadata = {
+	"name": null,
+	"DungeonProgress": 1,
+	"MapProgress": 1
+};
 
 //問題のデータストア
 //ダンジョンによってchildを変える
@@ -142,18 +146,13 @@ function getUser(callback){
     	}
     	if (user){
     		var userDataStore = milkcocoa.dataStore('userdata');
-    		userDataStore.stream().size(1).next(function (err, user){
-    			userdata = user;
-    		})
-    		userDataStore.get("if3fzhj8DyWr40n", function (err, datum){
+    		userDataStore.get(user.sub, function (err, datum){
     			if (err){
     				console.log(err);
     				return;
     			}
     			console.log(datum);
     		})
-//	        		callback(null, user);
-        	console.log(user);
     	}
 /*	        	else {
     		$('#login').submit(function (e, profile, token) {
@@ -209,13 +208,24 @@ $("#logout").click(function (){
 })
 */
 
+//セーブ
+$("#btn_save").click(function (){
+	if (User){
+		Save(null, User, metadata);
+		console.log("save");
+	}
+	else {
+		alart("loginしてください");
+		return;
+	}
+})
+
 //セーブ関数
 //マップとダンジョンの進捗を更新のみ?
-function Save(err, user){
+function Save(err, user, metadata){
 	if (err){
 		console.log(err);
 		return;
 	}
-	userDataStore.set(user.sub, {"DungeonProgress": DungeonProgress,"MapProgress": mapProgress}, function (err){
-	});
+	userDataStore.set(user.sub, {"DungeonProgress": metadata.DungeonProgress,"MapProgress": metadata.mapProgress});
 }
