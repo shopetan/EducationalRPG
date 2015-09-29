@@ -4,12 +4,21 @@ enchant();
 var state_array = [[0,0,0,0,0],[1,0,0,1,1],[1,1,1,1,0],[0,0,1,1,0],[1,1,1,0,0],[0]]; //国数理社英
 //00011101100011111100100000
 
+var BATTLE_BGM = './bgm/BATTLE_cyrf_energy.mp3';
+var PLAYER_IMG = './img/Player.png';
+
 //画像
 var islandImage = ['img/island_j.png', 'img/island_m.png', 'img/island_sc.png', 'img/island_so.png', 'img/island_e.png'];
 var boardImage = ['img/board_j.png','img/board_m.png','img/board_sc.png','img/board_so.png','img/board_e.png',];
 var directionImage = ["img/arrow_top.png","img/arrow_right.png","img/arrow_bottom.png","img/arrow_left.png"];
-var battleImage = ['img/dq.jpg'];
+var battleImage = [PLAYER_IMG];
 var dungeonMapImage = ["img/chara.png","img/minmap1.png","img/clear.png"];
+
+/** エフェクトの位置のバラ付き具合 */
+var EFFECT_RANGE = 64;
+/** 一回のタップで発生するエフェクトの数 */
+var EFFECT_NUM = 5;
+
 
 //ダンジョンマップ
 var mapdata0 = [[0,1,1,1,1],[0,3,0,0,1],[0,1,1,1,1],[0,0,1,0,1],[3,1,1,0,3],[0,0,1,1,1],[2,1,1,0,0]];
@@ -17,7 +26,6 @@ var mapdata1 = [[0,0,3,0,1],[0,1,1,1,1],[0,1,0,1,0],[0,3,0,1,0],[0,1,1,1,3],[0,2
 var mapdata2 = [[3,1,1,1,1],[0,1,0,3,0],[1,1,1,0,0],[1,0,1,1,0],[2,0,3,0,0],[0,0,0,0,0],[0,0,0,0,0]];
 var mapdata3 = [[3,1,1,0,1],[1,0,1,0,1],[1,1,1,1,1],[1,0,3,0,0],[1,3,0,0,0],[2,0,0,0,0],[0,0,0,0,0]];
 var mapdata4 = [[0,0,1,0,1],[0,3,1,1,1],[0,0,1,0,3],[0,0,1,1,1],[0,1,0,0,1],[0,1,1,3,1],[0,2,0,1,0]];
-
 
 var subject = {
  	japanese: 0,
@@ -323,6 +331,7 @@ window.onload = function() {
     		"HP : 4",
     		"HP : 5");
 	var status = new Label();
+
 	var BattleScene = Class.create(Scene, {
 		initialize: function() {
 			Scene.call(this);
@@ -331,19 +340,19 @@ window.onload = function() {
 			core.hp = 4;
 			var userHp = "HP : ";
 			userHp.font = "16px Tahoma";
-        		var hp = core.hp;
-        		status.text = text[hp];
-        		this.addChild(status);
-        		this.addChild(new Player());
-        		this.addChild(new Enemy());
-        		this.addChild(new Question());
-        		this.addChild(new Selection(0));
-        		this.addChild(new Selection(1));
-        		this.addChild(new Selection(2));
-        		this.addChild(new Selection(3));
+        	var hp = core.hp;
+        	status.text = text[hp];
+        	this.addChild(status);
+        	this.addChild(new Player());
+        	this.addChild(new Enemy());
+        	this.addChild(new Question());
+        	this.addChild(new Selection(0));
+        	this.addChild(new Selection(1));
+        	this.addChild(new Selection(2));
+        	this.addChild(new Selection(3));
 
-        		var back = new Label('ダンジョンから抜け出す');
-        		back.x = 645;
+        	var back = new Label('ダンジョンから抜け出す');
+        	back.x = 645;
 			this.addChild(back);
 			back.on('touchstart', function() {
 				core.popScene();
@@ -352,8 +361,8 @@ window.onload = function() {
 	});
 	var Player = Class.create(Sprite, {
 		initialize: function() {
-			Sprite.call(this, 176, 176);
-			this.image = core.assets['img/dq.jpg'];
+			Sprite.call(this, 100, 100);
+			this.image = core.assets[PLAYER_IMG];
         		this.scaleX = 0.5;
         		this.scaleY = 0.5;
         		this.x = -50;
@@ -383,68 +392,72 @@ window.onload = function() {
 			this.x = origin[type][0];
 			this.y = origin[type][1];
 			switch(type) {
-				case 0:
-					this.backgroundColor = "rgba(150, 150, 150, 0.5)";
-					break;
-				case 1:
-					this.backgroundColor = "rgba(100, 100, 100, 0.5)";
-					break;
-				case 2:
-					this.backgroundColor = "rgba(50, 50, 50, 0.5)";
-					break;
-				case 3:
-					this.backgroundColor = "rgba(0, 0, 0, 0.5)";
-					break;
+			case 0:
+				this.backgroundColor = "rgba(150, 150, 150, 0.5)";
+				break;
+			case 1:
+				this.backgroundColor = "rgba(100, 100, 100, 0.5)";
+				break;
+			case 2:
+				this.backgroundColor = "rgba(50, 50, 50, 0.5)";
+				break;
+			case 3:
+				this.backgroundColor = "rgba(0, 0, 0, 0.5)";
+				break;
 			}
 		},
 		ontouchstart: function() {
 			var playerAnswer = this.type;
 			var loadAnswer = 0;
 			if(isAnswer(playerAnswer,loadAnswer)){
-                		attackEffect();
-            	} else {
-                		damageEffect();
-            	}
+                attackEffect();
+            } else {
+                damageEffect();
+            }
 		}
 	});
+    
 	function attackEffect(){
-
-    	}
-    	function damageEffect(){
-
-    	}
+        console.log(core.currentScene);
+        addEffect(400, 300);
+    }
+    
+    function damageEffect(){
+        addEffect(400, 300);
+    }
+    
 	var GameOverScene = Class.create(Scene, {
 		initialize: function() {
 			Scene.call(this);
 			this.backgroundColor = 'black';
 			var label = new Label();
-        		label.x = 250;
+        	label.x = 250;
        		label.y = 200;
-        		label.color = 'red';
-        		label.font = '48px "Arial"';
-        		label.text = 'Game Over !!! <br/>';
-        		this.addChild(label);
-        	}
+        	label.color = 'red';
+        	label.font = '48px "Arial"';
+        	label.text = 'Game Over !!! <br/>';
+        	this.addChild(label);
+        }
 	});
-
+    
 	function csv2Array(filePath) { //csvﾌｧｲﾙﾉ相対ﾊﾟｽor絶対ﾊﾟｽ
 		var csvData = new Array();
-	     	var data = new XMLHttpRequest();
+	    var data = new XMLHttpRequest();
 	   	data.open("GET", filePath, false); //true:非同期,false:同期
 	 	data.send(null);
-
+        
 	 	var LF = String.fromCharCode(10); //改行ｺｰﾄﾞ
 	 	var lines = data.responseText.split(LF);
 	 	for (var i = 0; i < lines.length;++i) {
 			var cells = lines[i].split(",");
 	  		if( cells.length != 1 ) {
-	    			csvData.push(cells);
+	    		csvData.push(cells);
 	  		}
 	  	}
 	 	return csvData;
-    	}
+    }
 
-    	function isAnswer(playerAnswer,loadAnswer) {
+    function isAnswer(playerAnswer,loadAnswer) {
         if (playerAnswer == loadAnswer) {
             return true;
         } else {
@@ -458,6 +471,57 @@ window.onload = function() {
         }
     }
 
+    function isFourChoiceQuestion(choiceQuestion) {
+        var isFourChoiceQuestion = true;
+        if (choiceQuestion == 4) {
+            return isFourChoiceQuestion;
+        }
+        else {
+            isFourChoiceQuestion = false;
+            return isFourChoiceQuestion;
+        }
+    }
+    
+    /** 単体エフェクト作成 */
+    function makeSingleEffect(delay) {
+        var Easing = enchant.Easing;
+        var easing = Easing.SIN_EASEOUT; // イージングの種類.
+        var sprite = new Sprite(100, 100);
+        sprite.scaleX = 0.0;
+        sprite.scaleY = 0.0;
+        sprite.visible = false; // 最初は非表示.
+        // エフェクトの動作設定.
+        sprite.tl
+            .delay(delay) // 指定時間待つ.
+            .then(function() { sprite.visible = true; }) // ここで表示.
+            .scaleTo(1.0, core.fps * 0.1, easing)
+            .scaleTo(0.5, core.fps * 0.1, easing)
+            .scaleTo(2.0, core.fps * 1, easing)
+            .and().fadeOut(core.fps * 1, easing)
+            .then(function() { sprite.tl.removeFromScene(); });
+        core.currentScene.addChild(sprite);
+        return sprite;
+    }
+
+    /** ランダムな色を作成 */
+    function makeRandomColor() {
+        var r = 128 + Math.ceil(Math.random() * 128);
+        var g = 128 + Math.ceil(Math.random() * 128);
+        var b = 128 + Math.ceil(Math.random() * 128);
+        return 'rgb(' + r + ',' + g + ',' + b + ')';
+    }
+
+    /** 指定位置の付近に複数エフェクトを追加 */
+    function addEffect(x, y) {
+        for (var i = 0, iNum = EFFECT_NUM; i < iNum; ++i) {
+            var sprite = makeSingleEffect(i * core.fps * 0.1);
+            sprite.backgroundColor = makeRandomColor();
+            sprite.x = x - (sprite.width / 2) + Math.random() * EFFECT_RANGE - (EFFECT_RANGE / 2);
+            sprite.y = y - (sprite.height / 2) + Math.random() * EFFECT_RANGE - (EFFECT_RANGE / 2);
+            core.currentScene.addChild(sprite);
+        }
+    }
+    
 	function gameOver() {
 		core.pushScene(new GameOverScene());
 	}
