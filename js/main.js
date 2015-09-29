@@ -288,7 +288,7 @@ window.onload = function() {
     		"HP : 4",
     		"HP : 5");
 	var status = new Label();
-    var Easing = enchant.Easing;    
+
 	var BattleScene = Class.create(Scene, {
 		initialize: function() {
 			Scene.call(this);
@@ -349,38 +349,38 @@ window.onload = function() {
 			this.x = origin[type][0];
 			this.y = origin[type][1];
 			switch(type) {
-				case 0:
-					this.backgroundColor = "rgba(150, 150, 150, 0.5)";
-					break;
-				case 1:
-					this.backgroundColor = "rgba(100, 100, 100, 0.5)";
-					break;
-				case 2:
-					this.backgroundColor = "rgba(50, 50, 50, 0.5)";
-					break;
-				case 3:
-					this.backgroundColor = "rgba(0, 0, 0, 0.5)";
-					break;
+			case 0:
+				this.backgroundColor = "rgba(150, 150, 150, 0.5)";
+				break;
+			case 1:
+				this.backgroundColor = "rgba(100, 100, 100, 0.5)";
+				break;
+			case 2:
+				this.backgroundColor = "rgba(50, 50, 50, 0.5)";
+				break;
+			case 3:
+				this.backgroundColor = "rgba(0, 0, 0, 0.5)";
+				break;
 			}
 		},
 		ontouchstart: function() {
 			var playerAnswer = this.type;
 			var loadAnswer = 0;
 			if(isAnswer(playerAnswer,loadAnswer)){
-                attackEffect(core.currentScene);
+                attackEffect();
             } else {
-                damageEffect(core.currentScene);
+                damageEffect();
             }
 		}
 	});
     
-	function attackEffect(scene){
+	function attackEffect(){
         console.log(core.currentScene);
-        addEffect(core.currentScene, 400, 300);
+        addEffect(400, 300);
     }
     
-    function damageEffect(scene){
-        addEffect(scene, 400, 300);
+    function damageEffect(){
+        addEffect(400, 300);
     }
     
 	var GameOverScene = Class.create(Scene, {
@@ -441,6 +441,7 @@ window.onload = function() {
     
     /** 単体エフェクト作成 */
     function makeSingleEffect(delay) {
+        var Easing = enchant.Easing;
         var easing = Easing.SIN_EASEOUT; // イージングの種類.
         var sprite = new Sprite(100, 100);
         sprite.scaleX = 0.0;
@@ -450,11 +451,12 @@ window.onload = function() {
         sprite.tl
             .delay(delay) // 指定時間待つ.
             .then(function() { sprite.visible = true; }) // ここで表示.
-            .scaleTo(1.0, game.fps * 0.1, easing)
-            .scaleTo(0.5, game.fps * 0.1, easing)
-            .scaleTo(2.0, game.fps * 1, easing)
-            .and().fadeOut(game.fps * 1, easing)
+            .scaleTo(1.0, core.fps * 0.1, easing)
+            .scaleTo(0.5, core.fps * 0.1, easing)
+            .scaleTo(2.0, core.fps * 1, easing)
+            .and().fadeOut(core.fps * 1, easing)
             .then(function() { sprite.tl.removeFromScene(); });
+        core.currentScene.addChild(sprite);
         return sprite;
     }
 
@@ -467,9 +469,9 @@ window.onload = function() {
     }
 
     /** 指定位置の付近に複数エフェクトを追加 */
-    function addEffect(scene, x, y) {
+    function addEffect(x, y) {
         for (var i = 0, iNum = EFFECT_NUM; i < iNum; ++i) {
-            var sprite = makeSingleEffect(i * game.fps * 0.1);
+            var sprite = makeSingleEffect(i * core.fps * 0.1);
             sprite.backgroundColor = makeRandomColor();
             sprite.x = x - (sprite.width / 2) + Math.random() * EFFECT_RANGE - (EFFECT_RANGE / 2);
             sprite.y = y - (sprite.height / 2) + Math.random() * EFFECT_RANGE - (EFFECT_RANGE / 2);
