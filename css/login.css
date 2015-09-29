@@ -1,0 +1,67 @@
+body, html {
+	margin: 0;
+	padding: 0;
+}
+.login_form {
+	background-color: #efefef;
+	width: 370px;
+	padding: 30px;
+
+}
+
+.login_form div p {
+	float: right;
+	margin-right: 15px;
+}
+
+.login_form div h1 {
+	float: left;
+}
+
+.login_form div p i {
+	font-size: 0.8em;
+	color: #000;
+}
+
+.login_form div:after {
+	content: "";
+	display: block;
+	clear: both;
+}
+
+.login_form ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+.login_form ul li {
+	padding-top: 5px;
+	padding-left: 10px;
+}
+.login_form ul li span {
+	font-family: 'メイリオ';
+	width: 130px;
+	display: inline-block;
+	text-align: right;
+}
+.login_form ul li span label:hover {
+	cursor: pointer;
+}
+.login_form ul li input {
+	padding: 2px 3px;
+}
+.login_form ul li select {
+	padding: 2px 0;
+	padding-left: 3px;
+}
+.login_form ul li select option {			
+	font-family: 'メイリオ';
+}
+.submit_data {
+	text-align: center;
+	padding-bottom: 10px;
+}
+#submit {
+	padding: 7px 15px;
+}
+
