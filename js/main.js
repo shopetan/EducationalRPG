@@ -88,8 +88,7 @@ window.onload = function() {
 		},
 		ontouchstart: function() {
 			//ログイン処理
-			console.log("start")
-        	}
+	  	}
 	});
 
 //WorldMap
