@@ -32,14 +32,14 @@ var subject = {
  	math: 1,
  	science: 2,
  	social: 3,
- 	english: 4,
+ 	english: 4
 };
 
 var direction = {
 	up: 0,
 	right: 1,
 	down: 2,
-	left: 3,
+	left: 3
 };
 
 var number_of_dungeon = 5;
@@ -363,10 +363,6 @@ window.onload = function() {
 		initialize: function() {
 			Sprite.call(this, 100, 100);
 			this.image = core.assets[PLAYER_IMG];
-        		this.scaleX = 0.5;
-        		this.scaleY = 0.5;
-        		this.x = -50;
-        		this.y = -30;
 		}
 	});
 	var Question = Class.create(Sprite, {
