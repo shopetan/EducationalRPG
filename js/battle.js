@@ -1,5 +1,6 @@
 enchant();
 
+//TODO: 拡張性に乏しい 取り敢えず配列で持たせておくのがベターらしい
 var text = new Array(
     "HP : 1",
     "HP : 2",
@@ -7,13 +8,23 @@ var text = new Array(
     "HP : 4",
     "HP : 5");
 
+var BATTLE_BGM = './bgm/BATTLE_cyrf_energy.mp3';
+var PLAYER_IMG = './img/player.png';
+
+/** エフェクトの位置のバラ付き具合 */
+var EFFECT_RANGE = 64;
+/** 一回のタップで発生するエフェクトの数 */
+var EFFECT_NUM = 5;
+
 window.onload = function () {
     var game = new Game(800, 600);
     game.fps = 30;
-    game.preload('./img/dq.jpg'); 
+
+    game.preload([BATTLE_BGM,PLAYER_IMG]);
 
     var gameOverScene = new Scene();
-    
+    var Easing = enchant.Easing;
+
     //Function:csvファイルをArray[][] の形に変換して出力
     //TODO:戦闘の度に逐一csvファイルを読み込んでいたら重いかもしれない．
     //ベストプラクティスがあるかも
@@ -22,7 +33,7 @@ window.onload = function () {
         var data = new XMLHttpRequest();
         data.open("GET", filePath, false); //true:非同期,false:同期
         data.send(null);
-        
+
         var LF = String.fromCharCode(10); //改行ｺｰﾄﾞ
         var lines = data.responseText.split(LF);
         for (var i = 0; i < lines.length;++i) {
@@ -32,6 +43,21 @@ window.onload = function () {
             }
         }
         return csvData;
+    }
+
+    //凄く汚い実装かもしれないけど，2択or4択を判別して，いくつのボタン設置をするか返す
+    /*isFourChoiceQuestion:true => 4択問題
+      isFourChoiceQuestion:false => 2択問題
+     */
+    function isFourChoiceQuestion(choiceQuestion) {
+        var isFourChoiceQuestion = true;
+        if (choiceQuestion == 4) {
+            return isFourChoiceQuestion;
+        }
+        else {
+            isFourChoiceQuestion = false;
+            return isFourChoiceQuestion;
+        }
     }
 
     //Function:解答のチェック
@@ -51,7 +77,7 @@ window.onload = function () {
             return isAnswer;
         }
     }
-    
+
     //Function:hpが0になったらゲームオーバーシーンに遷移
     function gameOver() {
         var label = new Label();
@@ -59,72 +85,96 @@ window.onload = function () {
         label.y = 200;
         label.color = 'red';
         label.font = '48px "Arial"';
-        
+
         var msg = 'Game Over !!! <br/>';
         label.text = msg;
-        
+
         gameOverScene.backgroundColor = 'black';
         gameOverScene.addChild(label);
         game.pushScene(gameOverScene);
         game.stop();
     }
-    
-    function attackEffect(){
-        
+
+
+    /** 単体エフェクト作成 */
+    function makeSingleEffect(delay) {
+        var easing = Easing.SIN_EASEOUT; // イージングの種類.
+        var sprite = new Sprite(100, 100);
+        sprite.scaleX = 0.0;
+        sprite.scaleY = 0.0;
+        sprite.visible = false; // 最初は非表示.
+        // エフェクトの動作設定.
+        sprite.tl
+            .delay(delay) // 指定時間待つ.
+            .then(function() { sprite.visible = true; }) // ここで表示.
+            .scaleTo(1.0, game.fps * 0.1, easing)
+            .scaleTo(0.5, game.fps * 0.1, easing)
+            .scaleTo(2.0, game.fps * 1, easing)
+            .and().fadeOut(game.fps * 1, easing)
+            .then(function() { sprite.tl.removeFromScene(); });
+        return sprite;
     }
-    function damageEffect(){
-        
+
+    /** ランダムな色を作成 */
+    function makeRandomColor() {
+        var r = 128 + Math.ceil(Math.random() * 128);
+        var g = 128 + Math.ceil(Math.random() * 128);
+        var b = 128 + Math.ceil(Math.random() * 128);
+        return 'rgb(' + r + ',' + g + ',' + b + ')';
     }
-    
+
+    /** 指定位置の付近に複数エフェクトを追加 */
+    function addEffect(scene, x, y) {
+        for (var i = 0, iNum = EFFECT_NUM; i < iNum; ++i) {
+            var sprite = makeSingleEffect(i * game.fps * 0.1);
+            sprite.backgroundColor = makeRandomColor();
+            sprite.x = x - (sprite.width / 2) + Math.random() * EFFECT_RANGE - (EFFECT_RANGE / 2);
+            sprite.y = y - (sprite.height / 2) + Math.random() * EFFECT_RANGE - (EFFECT_RANGE / 2);
+            scene.addChild(sprite);
+        }
+    }
+
+    function attackEffect(scene){
+        addEffect(scene, 400, 300);
+    }
+    function damageEffect(scene){
+        addEffect(scene, 400, 300);
+    }
+
     game.onload = function () {
         var scene = new Scene();
         var backGround = new Sprite(800,600);
-        game.rootScene.addChild(backGround);        
-        game.score = 10;
+
+        game.rootScene.addChild(backGround);
+
+        //ゲーム音関係
+//        var battleSound = game.assets[BATTLE_BGM].play();
+
+        //ユーザのHP関係
         var userHp = "HP : ";
         var hp = 4;
         userHp.font = "16px Tahoma";
-
         var status = new Label();
         status.text = text[hp];
         scene.addChild(status);
-        
-        var player = new Sprite(176,176);
-        player.image = game.assets['./img/dq.jpg'];
-        player.scaleX = 0.5;
-        player.scaleY = 0.5;
-        player.x = -50;
-        player.y = -30;
-        
-        var question = new Sprite(500, 100);
-        question.backgroundColor = "rgba(200, 255, 200, 0.5)";
-        question.x = 100;
-        question.y = 0;
-        
-        var enemy = new Sprite(800,400);
-        enemy.backgroundColor = "rgba(200, 200, 200, 0.5)";
-        enemy.y = 100;
 
-        var selectA = new Sprite(200,100);
-        selectA.backgroundColor = "rgba(150, 150, 150, 0.5)";
-        selectA.x = 0;
-        selectA.y = 500;
 
-        var selectB = new Sprite(200,100);
-        selectB.backgroundColor = "rgba(100, 100, 100, 0.5)";
-        selectB.x = 200;
-        selectB.y = 500;
+        //プレイヤー，敵キャラクタの画像関係
+        var player = new Player();
+        var enemy = new Enemy();
 
-        var selectC = new Sprite(200,100);
-        selectC.backgroundColor = "rgba(50, 50, 50, 0.5)";
-        selectC.x = 400;
-        selectC.y = 500;
 
-        var selectD = new Sprite(200,100);
-        selectD.x = 600;
-        selectD.y = 500;
-        
-        
+        //設問，設問数などを管理する関係
+        var question = new Question();
+        var choiceQuestion = 2;
+
+        var isfourChoiceQuestion = isFourChoiceQuestion(choiceQuestion);
+        var selectA = new Select("A",isfourChoiceQuestion);
+        var selectB = new Select("B",isfourChoiceQuestion);
+        var selectC = new Select("C",isfourChoiceQuestion);
+        var selectD = new Select("D",isfourChoiceQuestion);
+
+
         scene.addChild(player);
         scene.addChild(enemy);
         scene.addChild(question);
@@ -133,47 +183,138 @@ window.onload = function () {
         scene.addChild(selectC);
         scene.addChild(selectD);
         game.pushScene(scene);
-        
+
+
         //TODO: loadAnswerははじめにCSVファイルで読み込む．
+        //TODO: もしくは，画面遷移時にその必要な 設問番号 設問文 答えを引数として受け取る
         var loadAnswer = "A";
         selectA.addEventListener('touchstart', function() {
             var playerAnswer = "A";
             if(isAnswer(playerAnswer,loadAnswer,hp,status)){
-                attackEffect();
+                attackEffect(scene);
             }else{
                 hp--;
-                damageEffect();
+                damageEffect(scene);
             }
         });
-        
+
         selectB.addEventListener('touchstart', function() {
             var playerAnswer = "B";
             if(isAnswer(playerAnswer,loadAnswer,hp,status)){
-                attackEffect();
+                attackEffect(scene);
             }else{
                 hp--;
-                damageEffect();
+                damageEffect(scene);
             }
         });
         selectC.addEventListener('touchstart', function() {
             var playerAnswer = "C";
             if(isAnswer(playerAnswer,loadAnswer,hp,status)){
-                attackEffect();
+                attackEffect(scene);
             }else{
                 hp--;
-                damageEffect();
+                damageEffect(scene);
             }
         });
         selectD.addEventListener('touchstart', function() {
             var playerAnswer = "D";
             if(isAnswer(playerAnswer,loadAnswer,hp,status)){
-                attackEffect();
+                attackEffect(scene);
             }else{
                 hp--;
-                damageEffect();
+                damageEffect(scene);
             }
         });
     };
-    
+
     game.start();
+
+    /* Class */
+    var Player = Class.create(Sprite,{
+        initialize:function(){
+            Sprite.call(this,100,100);
+            this.image = game.assets[PLAYER_IMG];
+            this.x = 0;
+            this.y = 0;
+            game.rootScene.addChild(this);
+        }
+    });
+
+    var Enemy = Class.create(Sprite,{
+        initialize:function(){
+            Sprite.call(this,800,400);
+            this.backgroundColor = "rgba(200, 200, 200, 0.5)";
+            this.x = 0;
+            this.y = 100;
+            game.rootScene.addChild(this);
+        }
+    });
+
+    var Question = Class.create(Sprite, {
+        initialize:function(){
+            Sprite.call(this,700,100);
+            this.image = game.assets[PLAYER_IMG];
+            this.backgroundColor = "rgba(200, 255, 200, 0.5)";
+            this.x = 100;
+            this.y = 0;
+            game.rootScene.addChild(this);
+        }
+    });
+
+    var Select = Class.create(Sprite, {
+        initialize:function(arg,isFourChoiceQuestion){
+            if(isFourChoiceQuestion == true) {
+                if(arg == "A"){
+                    Sprite.call(this,200,100);
+                    this.image = game.assets[PLAYER_IMG];
+                    this.backgroundColor = "rgba(150, 150, 150, 0.5)";
+                    this.x = 0;
+                    this.y = 500;
+                }
+                else if(arg == "B"){
+                    Sprite.call(this,200,100);
+                    this.image = game.assets[PLAYER_IMG];
+                    this.backgroundColor = "rgba(100, 100, 100, 0.5)";
+                    this.x = 200;
+                    this.y = 500;
+                }
+                else if(arg == "C"){
+                    Sprite.call(this,200,100);
+                    this.image = game.assets[PLAYER_IMG];
+                    this.backgroundColor = "rgba(50, 50, 50, 0.5)";
+                    this.x = 400;
+                    this.y = 500;
+                }
+                else if(arg == "D"){
+                    Sprite.call(this,200,100);
+                    this.image = game.assets[PLAYER_IMG];
+                    this.x = 600;
+                    this.y = 500;
+                }
+            }
+            else {
+                if(arg == "A"){
+                    Sprite.call(this,400,100);
+                    this.image = game.assets[PLAYER_IMG];
+                    this.backgroundColor = "rgba(150, 150, 150, 0.5)";
+                    this.x = 0;
+                    this.y = 500;
+                }
+                else if(arg == "B"){
+                    Sprite.call(this,400,100);
+                    this.image = game.assets[PLAYER_IMG];
+                    this.backgroundColor = "rgba(100, 100, 100, 0.5)";
+                    this.x = 400;
+                    this.y = 500;
+                }
+                else if(arg == "C"){
+                    Sprite.call(this,0,0);
+                }
+                else if(arg == "D"){
+                    Sprite.call(this,0,0);
+                }
+            }
+            game.rootScene.addChild(this);
+        }
+    });
 }
