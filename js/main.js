@@ -10,6 +10,7 @@ var boardImage = ['img/board_j.png','img/board_m.png','img/board_sc.png','img/bo
 var directionImage = ["img/arrow_top.png","img/arrow_right.png","img/arrow_bottom.png","img/arrow_left.png"];
 var battleImage = ['img/dq.jpg'];
 var dungeonMapImage = ["img/chara.png","img/minmap1.png","img/clear.png"];
+var novelImage = ["img/novel.jpg"];
 
 //ダンジョンマップ
 var mapdata0 = [[0,1,1,1,1],[0,3,0,0,1],[0,1,1,1,1],[0,0,1,0,1],[3,1,1,0,3],[0,0,1,1,1],[2,1,1,0,0]];
@@ -39,7 +40,7 @@ var number_of_island = 5;
 
 window.onload = function() {
 	var core = new Core(800, 600);
-	core.preload('img/worldMapBg.jpg','img/islandMapBg.png','img/dungeon.png','img/dungeonMapBg.jpg','img/complete.png','img/backArrow.png');
+	core.preload('img/worldMapBg.jpg','img/islandMapBg.png','img/dungeon.png','img/dungeonMapBg.jpg','img/complete.png','img/backArrow.png','img/welcome.jpg','img/startButton.png');
 	core.preload(battleImage);
 	core.preload(islandImage);
 	core.preload(boardImage);
@@ -69,6 +70,27 @@ window.onload = function() {
 		return result;
 	}
 
+//Login
+	var WelcomeScene = Class.create(Scene, {
+		initialize: function(subject) {
+			Scene.call(this);
+			this.addChild(new BackGround('img/welcome.jpg'));
+			this.addChild(new StartButton());
+		}
+	});
+
+	var StartButton = Class.create(Sprite, {
+		initialize: function(x, y, subject) {
+			Sprite.call(this, 380, 100);
+			this.x = 400 - 190;
+			this.y = 600 - 100;
+			this.image = core.assets['img/startButton.png'];
+		},
+		ontouchstart: function() {
+			//ログイン処理
+			console.log("start")
+        	}
+	});
 
 //WorldMap
 	var WorldMap = Class.create(Scene, {
@@ -474,7 +496,7 @@ window.onload = function() {
 
 	core.fps = 15;
 	core.onload = function() {
-		core.pushScene(new WorldMap());
+		core.pushScene(new WelcomeScene());
 	};
 	core.start();
 };
