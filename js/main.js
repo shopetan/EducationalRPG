@@ -1,12 +1,12 @@
 enchant();
 
 //DBから受け取るユーザーの進捗情報
-var state_array = [[0,0,0,0,0],[1,0,0,1,1],[1,1,1,1,0],[0,0,1,1,0],[1,1,1,0,0],[0]]; //国数理社英
-//00011101100011111100100000
+var state_array = [[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0]]; //国数理社英
+var user_state = 0;
 
 //画像
-var islandImage = ['img/island_j.png', 'img/island_m.png', 'img/island_sc.png', 'img/island_so.png', 'img/island_e.png'];
-var boardImage = ['img/board_j.png','img/board_m.png','img/board_sc.png','img/board_so.png','img/board_e.png',];
+var islandImage = ['img/island_j.png', 'img/island_m.png', 'img/island_sc.png', 'img/island_so.png', 'img/island_e.png','img/island_e.png'];
+var boardImage = ['img/board_j.png','img/board_m.png','img/board_sc.png','img/board_so.png','img/board_e.png'];
 var directionImage = ["img/arrow_top.png","img/arrow_right.png","img/arrow_bottom.png","img/arrow_left.png"];
 var battleImage = ['img/dq.jpg'];
 var dungeonMapImage = ["img/chara.png","img/minmap1.png","img/clear.png"];
@@ -25,15 +25,15 @@ var subject = {
  	math: 1,
  	science: 2,
  	social: 3,
- 	english: 4,
-};
+ 	english: 4
+}
 
 var direction = {
 	up: 0,
 	right: 1,
 	down: 2,
-	left: 3,
-};
+	left: 3
+}
 
 var number_of_dungeon = 5;
 var number_of_island = 5;
@@ -88,21 +88,26 @@ window.onload = function() {
 		},
 		ontouchstart: function() {
 			//ログイン処理
+			core.pushScene(new WorldMap());
 	  	}
 	});
 
 //WorldMap
 	var WorldMap = Class.create(Scene, {
-		initialize: function(subject) {
-			var islandOrigin = [[0,5],[544,5],[0,344],[544,344],[272,172]];
+		initialize: function() {
+			var islandOrigin = [[272,5],[-20,100],[560,100],[110,344],[440,344],[272,200]];
+			data_to_array(user_state);
 			Scene.call(this);
 			this.addChild(new BackGround('img/worldMapBg.jpg'));
-			for (var i = 0; i < islandOrigin.length; i++) {
-				var island = new Island(islandOrigin[i][0], islandOrigin[i][1], i);
-				this.addChild(island);
+			for (var i = 0; i < islandOrigin.length-1; i++) {
+				this.addChild(new Island(islandOrigin[i][0], islandOrigin[i][1], i));
+			}
+			if (state_array[5][0]) {
+				this.addChild(new Island(islandOrigin[5][0], islandOrigin[5][1], 5));
 			}
 		}
 	});
+	var now_subject;
 	var Island = Class.create(Sprite, {
 		initialize: function(x, y, subject) {
 			Sprite.call(this, 256, 256);
@@ -113,6 +118,7 @@ window.onload = function() {
 		},
 		ontouchstart: function() {
 			core.pushScene(new IslandMap(this.subject));
+			now_subject = this.subject;
         	}
 	});
 
@@ -129,6 +135,7 @@ window.onload = function() {
 			}
 		}
 	});
+	var now_dungeon;
 	var Dungeon = Class.create(Sprite, {
 		initialize: function(x, y, subject, number) {
 			Sprite.call(this, 180, 90);
@@ -136,7 +143,7 @@ window.onload = function() {
 			this.y = y;
 			this.subject = subject;
 			this.number = number;
-			if (state_array[subject][number] == 1) {
+			if (state_array[subject][number] == 0) {
 				this.image = core.assets['img/dungeon.png'];
 			} else {
 				this.image = core.assets['img/complete.png'];
@@ -144,6 +151,7 @@ window.onload = function() {
 		},
 		ontouchstart: function() {
 			var pattern = this.subject + this.number;
+			now_dungeon = this.number;
 			switch(pattern%5) {
 				case 0:
 					core.pushScene(new DungeonMap(mapdata0));
@@ -223,6 +231,9 @@ window.onload = function() {
 		},
 		ontouchstart: function() {
 			core.popScene(core.currentScene);
+			core.popScene(core.currentScene);
+			core.popScene(core.currentScene);
+			core.pushScene(new IslandMap(now_subject));
 		}
 	});
 
@@ -278,11 +289,8 @@ window.onload = function() {
 		}
 
 		var EventFlag = mapdata[now_x][now_y];
-		if (EventFlag == 3){
-			core.pushScene(new BattleScene());
-		}
-		if (EventFlag == 2){
-			core.pushScene(new DungeonClearScene());
+		if (EventFlag == 2 || EventFlag == 3){
+			core.pushScene(new BattleScene(EventFlag));
 		}
 	}
 	function move_xy(next_x, next_y){
@@ -344,9 +352,11 @@ window.onload = function() {
     		"HP : 4",
     		"HP : 5");
 	var status = new Label();
+	var event_type;
 	var BattleScene = Class.create(Scene, {
-		initialize: function() {
+		initialize: function(eventFlag) {
 			Scene.call(this);
+			event_type = eventFlag;
 			this.addChild(new BackGround('img/dungeonMapBg.jpg'));
 			core.score = 10;
 			core.hp = 4;
@@ -423,11 +433,25 @@ window.onload = function() {
 			var loadAnswer = 0;
 			if(isAnswer(playerAnswer,loadAnswer)){
                 		attackEffect();
+                		if (event_type == 2) {
+                			clear_dungeon();
+                		} else if (event_type == 3) {
+                			win_battle();
+                		}
             	} else {
                 		damageEffect();
             	}
 		}
 	});
+	function win_battle () {
+		mapdata[dungeon_x][dungeon_y] = 1;
+		core.popScene();
+	}
+	function clear_dungeon (argument) {
+		state_array[now_subject][now_dungeon] = 1;
+		core.pushScene(new DungeonClearScene());
+	}
+
 	function attackEffect(){
 
     	}
