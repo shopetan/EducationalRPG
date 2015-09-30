@@ -455,7 +455,8 @@ window.onload = function() {
         	this.addChild(status);
         	this.addChild(new Player());
         	this.addChild(new Enemy());
-        	this.addChild(new Question());
+        	this.addChild(new QuestionBase());
+            this.addChild(new Question());
         	this.addChild(new Selection(0,choiceQuestion));
         	this.addChild(new Selection(1,choiceQuestion));
         	this.addChild(new Selection(2,choiceQuestion));
@@ -475,7 +476,7 @@ window.onload = function() {
 			this.image = core.assets[PLAYER_IMG];
 		}
 	});
-	var Question = Class.create(Sprite, {
+	var QuestionBase = Class.create(Sprite, {
 		initialize: function() {
 			Sprite.call(this, 500, 100);
 			this.backgroundColor = "rgba(200, 255, 200, 0.5)";
@@ -483,6 +484,15 @@ window.onload = function() {
         		this.y = 0;
 		}
 	});
+    var Question = Class.create(Sprite, {
+		initialize: function() {
+			Sprite.call(this, 500, 100);
+			this.backgroundColor = "rgba(200, 200, 200, 0.5)";
+            this.x = 100;
+        	this.y = 0;
+		}
+	});
+    
 	var Enemy = Class.create(Sprite, {
 		initialize: function() {
 			Sprite.call(this, 800, 400);
@@ -531,16 +541,6 @@ window.onload = function() {
             }
 		}
 	});
-    
-	function attackEffect(){
-        console.log(core.currentScene);
-        addEffect(400, 300);
-    }
-    
-    function damageEffect(){
-        addEffect(400, 300);
-    }
-    
 	var GameOverScene = Class.create(Scene, {
 		initialize: function() {
 			Scene.call(this);
@@ -552,9 +552,22 @@ window.onload = function() {
         	label.font = '48px "Arial"';
         	label.text = 'Game Over !!! <br/>';
         	this.addChild(label);
-        }
+        },
+        ontouchstart: function() {
+			core.pushScene(new WorldMap);
+		}
 	});
+        
     
+	function attackEffect(){
+        console.log(core.currentScene);
+        addEffect(400, 300);
+    }
+    
+    function damageEffect(){
+        addEffect(400, 300);
+    }
+        
 	function csv2Array(filePath) { //csvﾌｧｲﾙﾉ相対ﾊﾟｽor絶対ﾊﾟｽ
 		var csvData = new Array();
 	    var data = new XMLHttpRequest();
