@@ -66,7 +66,7 @@ window.onload = function() {
 	core.preload(boardImage);
 	core.preload(dungeonMapImage);
 	core.preload(directionImage);
-
+    
 	//データの計算
 	function data_to_array (data) {
 		for (var i = 0; i < state_array.length; i++) {
@@ -120,13 +120,13 @@ window.onload = function() {
 					'userid': user.user_id,
 					'date': date.getYear() +"/"+ date.getMonth() +"/"+ date.getDate() +"|"+ date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds(),
 					'loadScene': null
-				}
+				};
 
 				userDataStore.on("set", function (setted){
 					core.pushScene(new WorldMap(0));
 				});
 				userDataStore.set(user.user_id, metadata);
-			})
+			});
 			//auth0認証をした後にmilkcocoaに接続
 			function Auth(callback){
 				milkcocoa.user(function (err, user){
@@ -143,7 +143,7 @@ window.onload = function() {
 			    				return;
 			    			}
 			    			console.log(datum);
-			    		})
+			    		});
 			    	}
 			/*	        	else {
 			    		$('#login').submit(function (e, profile, token) {
