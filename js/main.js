@@ -445,7 +445,10 @@ window.onload = function() {
         	label.font = '48px "Arial"';
         	label.text = 'Game Over !!! <br/>';
         	this.addChild(label);
-        }
+        },
+        ontouchstart: function() {
+			core.pushScene(new WorldMap);
+		}
 	});
     
 	function csv2Array(filePath) { //csvﾌｧｲﾙﾉ相対ﾊﾟｽor絶対ﾊﾟｽ
