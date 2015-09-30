@@ -33,14 +33,14 @@ var subject = {
  	math: 1,
  	science: 2,
  	social: 3,
- 	english: 4,
+ 	english: 4
 };
 
 var direction = {
 	up: 0,
 	right: 1,
 	down: 2,
-	left: 3,
+	left: 3
 };
 
 var number_of_dungeon = 5;
@@ -449,14 +449,17 @@ window.onload = function() {
 			userHp.font = "16px Tahoma";
         	var hp = core.hp;
         	status.text = text[hp];
+
+            //TODO:問題の設問数に応じて変更を加える
+            var choiceQuestion = 2;
         	this.addChild(status);
         	this.addChild(new Player());
         	this.addChild(new Enemy());
         	this.addChild(new Question());
-        	this.addChild(new Selection(0));
-        	this.addChild(new Selection(1));
-        	this.addChild(new Selection(2));
-        	this.addChild(new Selection(3));
+        	this.addChild(new Selection(0,choiceQuestion));
+        	this.addChild(new Selection(1,choiceQuestion));
+        	this.addChild(new Selection(2,choiceQuestion));
+        	this.addChild(new Selection(3,choiceQuestion));
 
         	var back = new Label('ダンジョンから抜け出す');
         	back.x = 645;
@@ -470,10 +473,6 @@ window.onload = function() {
 		initialize: function() {
 			Sprite.call(this, 100, 100);
 			this.image = core.assets[PLAYER_IMG];
-        		this.scaleX = 0.5;
-        		this.scaleY = 0.5;
-        		this.x = -50;
-        		this.y = -30;
 		}
 	});
 	var Question = Class.create(Sprite, {
@@ -492,12 +491,21 @@ window.onload = function() {
 		}
 	});
 	var Selection = Class.create(Sprite, {
-		initialize: function(type) {
-			var origin = [[0,500],[200,500],[400,500],[600,500]];
-			Sprite.call(this, 200, 100);
-			this.type = type;
-			this.x = origin[type][0];
-			this.y = origin[type][1];
+		initialize: function(type,choiceQuestion) {
+			var fourChoiceQuestion = [[0,500],[200,500],[400,500],[600,500]];
+            var twoChoiceQuestion  = [[0,500],[400,500],[800,600],[800,600]];
+            if(isFourChoiceQuestion(choiceQuestion)) {
+                Sprite.call(this, 200, 100);
+                this.type = type;
+			    this.x = fourChoiceQuestion[type][0];
+			    this.y = fourChoiceQuestion[type][1];
+            }
+            else {
+                Sprite.call(this, 400, 100);
+                this.type = type;
+			    this.x = twoChoiceQuestion[type][0];
+			    this.y = twoChoiceQuestion[type][1];
+            }
 			switch(type) {
 			case 0:
 				this.backgroundColor = "rgba(150, 150, 150, 0.5)";
