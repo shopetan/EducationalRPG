@@ -46,7 +46,7 @@ var direction = {
 var number_of_dungeon = 5;
 var number_of_island = 5;
 
-var milkcocoa = new Milkcocoa("uniidd9umi3.mlkcca.com");
+var milkcocoa = new MilkCocoa("uniidd9umi3.mlkcca.com");
 var apiEndpoint = 'https://' + 'education-rpg.auth0.com' + '/api/v2/';
 var auth0 = new Auth0({
 	domain: 'education-rpg.auth0.com',
@@ -107,7 +107,7 @@ window.onload = function() {
 			this.image = core.assets['img/startButton.png'];
 		},
 		ontouchstart: function() {
-
+			//ログイン処理
 			Auth(function (err, user){
 				if (err){
 					alert(err);
@@ -118,9 +118,8 @@ window.onload = function() {
 
 				var metadata = {
 					'userid': user.user_id,
-					'date': date.getYear() +"/"+ date.getMonth() +"/"+ date.getDate() +"|"+ date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds(),
-					'loadScene': null
-				};
+					'latest-login-date': date.getYear() +"/"+ date.getMonth() +"/"+ date.getDate() +"|"+ date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds()
+				}
 
 				userDataStore.on("set", function (setted){
 					core.pushScene(new WorldMap(0));
@@ -136,39 +135,15 @@ window.onload = function() {
 			    		return;
 			    	}
 			    	if (user){
-			    		var userDataStore = milkcocoa.dataStore('userdata');
-			    		userDataStore.get(user.sub, function (err, datum){
-			    			if (err){
-			    				console.log(err);
-			    				return;
-			    			}
-			    			console.log(datum);
-			    		});
+			    		//userdataを取得する
 			    	}
-			/*	        	else {
-			    		$('#login').submit(function (e, profile, token) {
-							e.preventDefault();
-							auth0.login({
-						        sso: false,
-						        connection: 'Username-Password-Authentication',
-						        responseType: 'code',
-						        scope: 'openid email user_metadata',
-						        email: $('#login-email').val(),
-						        password: $('#login-pass').val(),
-						        callbackURL: 'http://localhost:8000/',	/*コールバックURL*/
-			/*					    	successCallback: MilkcocoaUser(e, profile, token)
-						    });
-						});
-
-			    	}
-			*/	    else {
+			    	else {
 			    		lock.show({ssp : false, usernameStyle : 'username'}, function (err, profile, token){
 			    			if (err){
 			    				console.log(err);
 			    				callback(err);
 			    				return;
 			    			}
-			    			console.log(err, profile, token);
 			    			milkcocoa.authWithToken(token, function(err, user){
 			    				if (err){
 			        				console.log(err);
@@ -180,9 +155,14 @@ window.onload = function() {
 			    		});
 			    	}	        	
 				});
-			}			
-			//ログイン処理
+			};			
 	  	}
+	});
+//logout
+	$("#logout").click(function logout(){
+		auth0.logout();
+		milkcocoa.logout();
+		window.location.href("index.html");
 	});
 
 //WorldMap
