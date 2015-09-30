@@ -13,6 +13,7 @@ var boardImage = ['img/board_j.png','img/board_m.png','img/board_sc.png','img/bo
 var directionImage = ["img/arrow_top.png","img/arrow_right.png","img/arrow_bottom.png","img/arrow_left.png"];
 var battleImage = [PLAYER_IMG];
 var dungeonMapImage = ["img/chara.png","img/minmap1.png","img/clear.png"];
+var novelImage = ["img/novel.jpg"];
 
 /** エフェクトの位置のバラ付き具合 */
 var EFFECT_RANGE = 64;
@@ -45,9 +46,21 @@ var direction = {
 var number_of_dungeon = 5;
 var number_of_island = 5;
 
+var milkcocoa = new Milkcocoa("uniidd9umi3.mlkcca.com");
+var apiEndpoint = 'https://' + 'education-rpg.auth0.com' + '/api/v2/';
+var auth0 = new Auth0({
+	domain: 'education-rpg.auth0.com',
+ 	clientID: 'JelTeIAsjRphF41HAxSxOJ785mwpaSVF',
+	callbackURL: 'http://localhost:8000/'	 //サーバのアドレス
+});
+var lock = new Auth0Lock(
+ 	'JelTeIAsjRphF41HAxSxOJ785mwpaSVF',	
+	'education-rpg.auth0.com'
+);
+
 window.onload = function() {
 	var core = new Core(800, 600);
-	core.preload('img/worldMapBg.jpg','img/islandMapBg.png','img/dungeon.png','img/dungeonMapBg.jpg','img/complete.png','img/backArrow.png');
+	core.preload('img/worldMapBg.jpg','img/islandMapBg.png','img/dungeon.png','img/dungeonMapBg.jpg','img/complete.png','img/backArrow.png','img/welcome.jpg','img/startButton.png');
 	core.preload(battleImage);
 	core.preload(islandImage);
 	core.preload(boardImage);
@@ -77,6 +90,100 @@ window.onload = function() {
 		return result;
 	}
 
+//Login
+	var WelcomeScene = Class.create(Scene, {
+		initialize: function(subject) {
+			Scene.call(this);
+			this.addChild(new BackGround('img/welcome.jpg'));
+			this.addChild(new StartButton());
+		}
+	});
+
+	var StartButton = Class.create(Sprite, {
+		initialize: function(x, y, subject) {
+			Sprite.call(this, 380, 100);
+			this.x = 400 - 190;
+			this.y = 600 - 100;
+			this.image = core.assets['img/startButton.png'];
+		},
+		ontouchstart: function() {
+
+			Auth(function (err, user){
+				if (err){
+					alert(err);
+					return;
+				}
+				var userDataStore = milkcocoa.dataStore('userdata');
+				var date = new Date();
+
+				var metadata = {
+					'userid': user.user_id,
+					'date': date.getYear() +"/"+ date.getMonth() +"/"+ date.getDate() +"|"+ date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds(),
+					'loadScene': null
+				}
+
+				userDataStore.on("set", function (setted){
+					core.pushScene(new WorldMap(0));
+				});
+				userDataStore.set(user.user_id, metadata);
+			})
+			//auth0認証をした後にmilkcocoaに接続
+			function Auth(callback){
+				milkcocoa.user(function (err, user){
+			    	if (err){
+			    		console.log(err);
+			    		callback(err);
+			    		return;
+			    	}
+			    	if (user){
+			    		var userDataStore = milkcocoa.dataStore('userdata');
+			    		userDataStore.get(user.sub, function (err, datum){
+			    			if (err){
+			    				console.log(err);
+			    				return;
+			    			}
+			    			console.log(datum);
+			    		})
+			    	}
+			/*	        	else {
+			    		$('#login').submit(function (e, profile, token) {
+							e.preventDefault();
+							auth0.login({
+						        sso: false,
+						        connection: 'Username-Password-Authentication',
+						        responseType: 'code',
+						        scope: 'openid email user_metadata',
+						        email: $('#login-email').val(),
+						        password: $('#login-pass').val(),
+						        callbackURL: 'http://localhost:8000/',	/*コールバックURL*/
+			/*					    	successCallback: MilkcocoaUser(e, profile, token)
+						    });
+						});
+
+			    	}
+			*/	    else {
+			    		lock.show({ssp : false, usernameStyle : 'username'}, function (err, profile, token){
+			    			if (err){
+			    				console.log(err);
+			    				callback(err);
+			    				return;
+			    			}
+			    			console.log(err, profile, token);
+			    			milkcocoa.authWithToken(token, function(err, user){
+			    				if (err){
+			        				console.log(err);
+			        				callback(err);	        					
+			    					return;
+			    				}
+			    				callback(null, profile);
+			    			});
+			    		});
+			    	}	        	
+				});
+			}			
+			//ログイン処理
+	  	}
+	});
 
 //WorldMap
 	var WorldMap = Class.create(Scene, {
@@ -538,7 +645,7 @@ window.onload = function() {
 
 	core.fps = 15;
 	core.onload = function() {
-		core.pushScene(new WorldMap());
+		core.pushScene(new WelcomeScene());
 	};
 	core.start();
 };
