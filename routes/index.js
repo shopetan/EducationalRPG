@@ -24,12 +24,13 @@ router.get('/game', function(req, res, next) {
     uid = req.user.uid;
     displayName = req.user.displayName;
     status = req.user.status;
+    console.log("STATE:" * status);
   }
   res.render('game', {
     title: "EducationalRPG",
     uid: uid,
     displayName: displayName,
-    status: 0
+    status: status
   });
 });
 

@@ -1,6 +1,4 @@
 var socketio = io.connect('http://localhost:3000');
-socketio.on("connect", function() {
-});
 
 enchant();
 
@@ -608,6 +606,14 @@ window.onload = function() {
 	}
 	function clear_dungeon (argument) {
 		state_array[now_subject][now_dungeon] = 1;
+		var status = array_to_data();
+		var uid = $("#uid").text();
+		var displayName = $("#name").text();
+		socketio.emit("updateState", {
+			status: status,
+			uid: uid,
+			displayName: displayName
+		});
 		core.pushScene(new DungeonClearScene());
 	}
 
@@ -745,6 +751,7 @@ window.onload = function() {
 	core.onload = function() {
 		var status = $("#status").text();
 		user_state = Number(status);
+		console.log("user_state:" + user_state);
 		data_to_array(user_state);
 		core.pushScene(new WelcomeScene());
 	};

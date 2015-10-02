@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 var debug = require('debug')('chat');
 var app = require('../app');
+var User = require('../models/user.js');
 
 app.set('port', process.env.PORT || 3000);
 
@@ -10,5 +11,26 @@ var server = app.listen(app.get('port'), function() {
 
 var io = require('socket.io')(server);
  io.on('connection', function(socket){
- 	console.log("connected!")
+ 	socket.on("updateState", function(data) {
+ 		console.log("state:" + data.status);
+ 		console.log("uid:" + data.uid);
+ 		console.log("name:" + data.displayName);
+ 		var uid = data.uid;
+ 		var status = data.status;
+ 		var displayName = data.displayName;
+ 		User.findOneAndUpdate({
+      		uid: uid
+    		}, {
+      	$set: {
+        		uid: uid,
+        		displayName: displayName,
+        		status: status
+      		}
+    		}, {
+      		upsert: true
+    		}, function(err, user) {
+      		console.log("findOneAndUpdate err:", err, "user: ", user);
+    		});
+ 	});
  });
+
