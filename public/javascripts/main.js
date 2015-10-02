@@ -66,6 +66,7 @@ window.onload = function() {
 	core.preload(EnemysImage);
 	core.preload(LastBossImage);
 	core.preload(DUNGEON_BGM);
+	core.preload("/images/minmapblock.jpeg");
 
 	//データの計算
 	function data_to_array(data) {
@@ -368,7 +369,7 @@ window.onload = function() {
 			mapData: [],
 			direction: [],
 			initialize: function (scene, mapdata){
-				Sprite.call(this, 250, 150);
+				Sprite.call(this, 300, 250);
 				var text = new Label();
 				text.text = "ミニマップ";
 				text.x = 520;
@@ -377,18 +378,26 @@ window.onload = function() {
 				this.x = 500;
 				this.y = 400;
 				this.backgroundColor = "#ccc";
-				this.img = core.assets["/images/minmap1.png"];
 				this.opacity = 0.5;
 				scene.addChild(this);
-			},
-			toMoving: function(){
-				for (i=0;i<4;i++){
-					if(direction[i]){
-
+				for (var i = 0; i < mapdata.length; i++){
+					for (var j = 0; j < mapdata[0].length; j++){
+						if (mapdata[i][j]){
+							scene.addChild(new MapBlock( 510 + 40 * i, 400 + 40 * j));
+						}
 					}
 				}
-			}
+			}	
 		});
+
+	var MapBlock = Class.create(Sprite, {
+		initialize: function (x, y){
+			Sprite.call(this, 30, 30); 
+			this.x = x;
+			this.y = y;
+			this.image = core.assets["/images/minmapblock.jpeg"];
+		}
+	});
 		function addChild_to_scene(scene, sprite){
 			scene.addChild(sprite);
 		}
