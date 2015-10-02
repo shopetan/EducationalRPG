@@ -1,4 +1,8 @@
 enchant();
+var express = require('express');
+var mongoose = require('mongoose');
+var Problem = require('../../moduls/problem.js');
+var db = mongoose.connect('mongodb://localhost/educationalRPG');
 
 //DBから受け取るユーザーの進捗情報
 var state_array = [[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0]]; //国数理社英
