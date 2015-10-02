@@ -378,8 +378,6 @@ window.onload = function() {
 			userHp.font = "16px Tahoma";
         	var hp = core.hp;
         	status.text = text[hp];
-            var problem = Problem.find({"subject_code":4},{"question":true});
-            console.log(problem);
 
             //TODO:問題の設問数に応じて変更を加える
             var choiceQuestion = 2;
