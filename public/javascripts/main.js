@@ -392,9 +392,9 @@ window.onload = function() {
 		function moveEffect_x(bg, dir){
 			var orignbackground = core.currentScene.firstChild;
 			var EffectForTrace = new BackGround(bg);
-			var scroll_spped = 100;
+			var scroll_spped = -100;
 			core.currentScene.insertBefore(EffectForTrace, core.currentScene.firstChild);
-			EffectForTrace.x = -800 * dir;
+			EffectForTrace.x = 800 * dir;
 
 			orignbackground.addEventListener("enterframe", function (){
 				this.x += scroll_spped * dir;
@@ -408,13 +408,13 @@ window.onload = function() {
 				this.x += scroll_spped * dir;
 				switch (dir){
 					case 1:
-						if (this.x > 0){
+						if (this.x < 0){
 							console.log('right');
 							core.currentScene.removeChild(this);
 						}
 						break;
 					case -1:
-						if (this.x < 0){
+						if (this.x > 0){
 							console.log('left');
 							core.currentScene.removeChild(this);
 						}
