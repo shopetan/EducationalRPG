@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 var debug = require('debug')('chat');
 var app = require('../app');
-
+var Problem = require('../models/problem.js');
 app.set('port', process.env.PORT || 3000);
 
 var server = app.listen(app.get('port'), function() {
@@ -9,6 +9,12 @@ var server = app.listen(app.get('port'), function() {
 });
 
 var io = require('socket.io')(server);
- io.on('connection', function(socket){
- 	console.log("connected!")
- });
+io.on('connection', function(socket){
+	socket.on('fetchDB', function(record){
+		//TODO: 問題が全て出揃ったら，data.subject, data.chapter, data.difficultyをfind()の中身指定でrecordを引っ張る処理を記述
+		Problem.find(function(err, records){
+      socket.emit('returnRecord', records);
+    });
+	});
+ console.log("connected!")
+});
