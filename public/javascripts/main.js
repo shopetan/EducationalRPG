@@ -1,8 +1,9 @@
+var socketio = io.connect('http://localhost:3000');
+
 enchant();
 
 //DBから受け取るユーザーの進捗情報
 var state_array = [[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0]]; //国数理社英
-var user_state = 0;
 
 var BATTLE_BGM = './bgm/BATTLE_cyrf_energy.mp3';
 var PLAYER_IMG = '/images/Player.png';
@@ -60,14 +61,16 @@ window.onload = function() {
 	core.preload(boardImage);
 	core.preload(dungeonMapImage);
 	core.preload(directionImage);
-	core.preload(EnemysImage);
+    for (var i = 0; i < EnemysImage.length; i++){
+        core.preload(EnemysImage[i]);
+    }
 	core.preload(LastBossImage);
 	core.preload(DUNGEON_BGM);
 	core.preload("/images/minmapblock.jpeg");
 	core.preload("/images/playerblock.jpeg");
 
 	//データの計算
-	function data_to_array (data) {
+	function data_to_array(data) {
 		for (var i = 0; i < state_array.length; i++) {
 			for (var j = 0; j < state_array[i].length; j++) {
 				state_array[i][j] = data%2;
@@ -76,7 +79,7 @@ window.onload = function() {
 			}
 		}
 	}
-	function array_to_data (array) {
+	function array_to_data() {
 		var n = 1;
 		var result = 0;
 		for (var i = 0; i < state_array.length; i++) {
@@ -188,7 +191,7 @@ window.onload = function() {
 					core.pushScene(new DungeonMap(mapdata4, this.subject, this.number));
 					break;
 			}
-		}	
+		}
 	});
 	var BackArrow = Class.create(Sprite, {
 		initialize: function(state) {
@@ -336,7 +339,7 @@ window.onload = function() {
 		}
 		else if (EventFlag == 7){
 			loopBgm_Ctrl(DUNGEON_BGM, 'stop');
-			core.pushScene(new BattleScene(EventFlag, subject_number, chapter_number, 5, LastBossImage));			
+			core.pushScene(new BattleScene(EventFlag, subject_number, chapter_number, 5, LastBossImage));
 //			core.pushScene(new DungeonClearScene());
 		}
 	}
@@ -491,7 +494,7 @@ window.onload = function() {
 			case 'stop':
 				BGM.src.loop = false;
 				BGM.stop();
-				break;		
+				break;
 		}
 	}
 
@@ -500,7 +503,7 @@ window.onload = function() {
 	//使用場所．　移動エフェクトをバトル画面に遷移する前に行う．
 	function Wait(callback){
 		callback(result);
-	}			
+	}
 
 //Battle
 	var text = new Array(
@@ -522,12 +525,27 @@ window.onload = function() {
 			userHp.font = "16px Tahoma";
         	var hp = core.hp;
         	status.text = text[hp];
-
-            //TODO:問題の設問数に応じて変更を加える
+            socketio.on( "connect", function() {} );
+            socketio.emit("fetchDB",{
+                subject: subject,
+                chapter: chapter,
+                difficulty: difficulty
+            });
+            socketio.on('returnRecord', function(records){
+                var problemSize = records.length
+                if(problemSize == 0){
+                    return;
+                }else{
+                    for(var i = 0; i < problemSize; i++){
+                        //TODO: Objectを別の変数に格納する．格納した変数はQuestionクラスなどに利用して問題文の提示，問題の正解不正解に応じた関数の実装を行う
+                        //isAnswer()はできているので，後はisKnockDown()という，全ての問題をクリアしたか否かという関数の実装を行う
+                    }
+                }
+            });
             var choiceQuestion = 2;
         	this.addChild(status);
         	this.addChild(new Player());
-        	this.addChild(new Enemy());
+        	this.addChild(new Enemy(EnemyImagePath));
         	this.addChild(new QuestionBase());
             this.addChild(new Question());
         	this.addChild(new Selection(0,choiceQuestion));
@@ -567,10 +585,11 @@ window.onload = function() {
 	});
 
 	var Enemy = Class.create(Sprite, {
-		initialize: function() {
+		initialize: function(EnemyImagePath) {
 			Sprite.call(this, 800, 400);
+            this.image = core.assets[EnemyImagePath];
 			this.backgroundColor = "rgba(200, 200, 200, 0.5)";
-        		this.y = 100;
+            this.y = 100;
 		}
 	});
 	var Selection = Class.create(Sprite, {
@@ -654,7 +673,6 @@ window.onload = function() {
 
 
 	function attackEffect(){
-        console.log(core.currentScene);
         addEffect(400, 300);
     }
 
@@ -760,6 +778,9 @@ window.onload = function() {
 
 	core.fps = 15;
 	core.onload = function() {
+		var status = $("#status").text();
+		user_state = Number(status);
+		data_to_array(user_state);
 		core.pushScene(new WelcomeScene());
 	};
 	core.start();
