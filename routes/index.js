@@ -16,9 +16,15 @@ router.get('/', function(req, res, next) {
 
 //game
 router.get('/game', function(req, res, next) {
-  console.log("game")
+  var displayName = "Anonymous";
+  var status = -1;
+  if (req.user)
+    displayName = req.user.displayName;
+    status = req.user.status;
   res.render('game', {
     title: "EducationalRPG",
+    displayName: displayName,
+    status: 71828
   });
 });
 

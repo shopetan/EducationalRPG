@@ -56,7 +56,8 @@ passport.use(new GoogleStrategy({
     }, {
       $set: {
         uid: uid,
-        displayName: 0
+        displayName: displayName,
+        status: 0
       }
     }, {
       upsert: true

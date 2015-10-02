@@ -2,7 +2,6 @@ enchant();
 
 //DBから受け取るユーザーの進捗情報
 var state_array = [[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0]]; //国数理社英
-var user_state = 0;
 
 var BATTLE_BGM = './bgm/BATTLE_cyrf_energy.mp3';
 var PLAYER_IMG = '/images/Player.png';
@@ -56,7 +55,7 @@ window.onload = function() {
 	core.preload(directionImage);
 
 	//データの計算
-	function data_to_array (data) {
+	function data_to_array(data) {
 		for (var i = 0; i < state_array.length; i++) {
 			for (var j = 0; j < state_array[i].length; j++) {
 				state_array[i][j] = data%2;
@@ -65,7 +64,7 @@ window.onload = function() {
 			}
 		}
 	}
-	function array_to_data (array) {
+	function array_to_data(array) {
 		var n = 1;
 		var result = 0;
 		for (var i = 0; i < state_array.length; i++) {
@@ -616,6 +615,9 @@ window.onload = function() {
 
 	core.fps = 15;
 	core.onload = function() {
+		var status = $("#status").text();
+		user_state = Number(status);
+		data_to_array(user_state);
 		core.pushScene(new WelcomeScene());
 	};
 	core.start();

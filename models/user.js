@@ -8,9 +8,10 @@ var User = new Schema({
     unique: true
   },
   // display name
-  status: {
-    type: Number
-  }
+  displayName: {
+    type: String
+  },
+  status : Number
 }, {
   // define this collection's name explicitly
   collection: "users"
