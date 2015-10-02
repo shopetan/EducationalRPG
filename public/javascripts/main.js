@@ -12,7 +12,7 @@ var DUNGEON_BGM = 'bgm/DUNGEON_cyrf_wafes_dungeon01.mp3';
 
 //画像
 var islandImage = ['/images/island_j.png', '/images/island_m.png', '/images/island_sc.png', '/images/island_so.png', '/images/island_e.png','/images/island_e.png'];
-var boardImage = ['/images/board_j.png','/images/board_m.png','/images/board_sc.png','/images/board_so.png','/images/board_e.png'];
+var boardImage = ['/images/board_j.png','/images/board_m.png','/images/board_sc.png','/images/board_so.png','/images/board_e.png','/images/board_e.png'];
 var directionImage = ["/images/arrow_top.png","/images/arrow_right.png","/images/arrow_bottom.png","/images/arrow_left.png"];
 var battleImage = [PLAYER_IMG];
 var dungeonMapImage = ["/images/chara.png","/images/minmap1.png","/images/clear.png"];
@@ -31,7 +31,7 @@ var mapdata0 = [[0,1,1,1,1],[0,2,0,0,1],[0,1,1,1,1],[0,0,1,0,1],[5,1,1,0,4],[0,0
 var mapdata1 = [[0,0,2,0,1],[0,1,1,1,1],[0,1,0,1,0],[0,3,0,1,0],[0,1,1,1,4],[0,5,0,0,0],[0,0,0,0,0]];
 var mapdata2 = [[2,1,1,1,1],[0,1,0,3,0],[1,1,1,0,0],[1,0,1,1,0],[4,0,5,0,0],[0,0,0,0,0],[0,0,0,0,0]];
 var mapdata3 = [[2,1,1,0,1],[1,0,1,0,1],[1,1,1,1,1],[1,0,5,0,0],[1,4,0,0,0],[3,0,0,0,0],[0,0,0,0,0]];
-var mapdata4 = [[0,0,1,0,1],[0,3,1,1,1],[0,0,1,0,3],[0,0,1,1,1],[0,1,0,0,1],[0,1,1,3,1],[0,2,0,1,0]];
+var mapdata4 = [[0,0,1,0,1],[0,2,1,1,1],[0,0,1,0,5],[0,0,1,1,1],[0,1,0,0,1],[0,1,1,3,1],[0,4,0,1,0]];
 var mapdata5 = [[6,1,1,1,1],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0]];
 var mapdata6 = [[7,1,1,1,1],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0]];
 
@@ -149,7 +149,15 @@ window.onload = function() {
 			for (var i = 0; i < islandOrigin.length-1; i++) {
 				this.addChild(new Island(islandOrigin[i][0], islandOrigin[i][1], i));
 			}
-			if (state_array[5][0]) {
+			var isClear = true;
+			for (var i = 0; i < 5; i++) {
+				for (var j = 0; j < 5; j++) {
+					if (state_array[i][j] == 0) {
+						isClear = false;
+					}
+				}
+			}
+			if (isClear) {
 				this.addChild(new Island(islandOrigin[5][0], islandOrigin[5][1], 5));
 			}
 		}
@@ -177,16 +185,20 @@ window.onload = function() {
 			this.addChild(new BackGround('/images/islandMapBg.png'));
 			this.addChild(new Board(subject));
 			this.addChild(new BackArrow());
-			isClear = true;
-			for (var i = 0; i < dungeonOrigin.length-1; i++){
- 				this.addChild(new Dungeon(dungeonOrigin[i][0], dungeonOrigin[i][1], subject, i));
- 				if (state_array[subject][i] == 0) {
- 					isClear = false;
- 				}
-			}
-			if (isClear) {
-				var i = dungeonOrigin.length - 1;
-				this.addChild(new Dungeon(dungeonOrigin[i][0], dungeonOrigin[i][1], subject, i));
+			if (subject == 5) {
+				this.addChild(new Dungeon(dungeonOrigin[4][0], dungeonOrigin[4][1], subject, 4));
+			} else {
+				isClear = true;
+				for (var i = 0; i < dungeonOrigin.length-1; i++){
+	 				this.addChild(new Dungeon(dungeonOrigin[i][0], dungeonOrigin[i][1], subject, i));
+	 				if (state_array[subject][i] == 0) {
+	 					isClear = false;
+	 				}
+				}
+				if (isClear) {
+					var i = dungeonOrigin.length - 1;
+					this.addChild(new Dungeon(dungeonOrigin[i][0], dungeonOrigin[i][1], subject, i));
+				}
 			}
 		}
 	});
@@ -198,7 +210,6 @@ window.onload = function() {
 			this.y = y;
 			this.subject = subject;
 			this.number = number;
-			now_dungeon = this.number;
 			if (state_array[subject][number] == 0) {
 				this.image = core.assets['/images/dungeon.png'];
 			} else {
@@ -206,6 +217,7 @@ window.onload = function() {
 			}
 		},
 		ontouchstart: function() {
+			now_dungeon = this.number;
 			if (now_dungeon == 4) {
 				core.pushScene(new DungeonMap(mapdata5, this.subject, this.number));
 			} else {
