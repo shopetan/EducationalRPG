@@ -61,7 +61,9 @@ window.onload = function() {
 	core.preload(boardImage);
 	core.preload(dungeonMapImage);
 	core.preload(directionImage);
-	core.preload(EnemysImage);
+    for (var i = 0; i < EnemysImage.length; i++){
+        core.preload(EnemysImage[i]);
+    }
 	core.preload(LastBossImage);
 	core.preload(DUNGEON_BGM);
 
@@ -503,7 +505,6 @@ window.onload = function() {
 			userHp.font = "16px Tahoma";
         	var hp = core.hp;
         	status.text = text[hp];
-
             //TODO:問題の設問数に応じて変更を加える
             var choiceQuestion = 2;
         	this.addChild(status);
@@ -636,7 +637,6 @@ window.onload = function() {
 
 
 	function attackEffect(){
-        console.log(core.currentScene);
         addEffect(400, 300);
     }
 
