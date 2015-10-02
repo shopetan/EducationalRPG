@@ -1,6 +1,4 @@
 var socketio = io.connect('http://localhost:3000');
-socketio.on("connect", function() {
-});
 
 enchant();
 
@@ -510,7 +508,7 @@ window.onload = function() {
             var choiceQuestion = 2;
         	this.addChild(status);
         	this.addChild(new Player());
-        	this.addChild(new Enemy());
+        	this.addChild(new Enemy(EnemyImagePath));
         	this.addChild(new QuestionBase());
             this.addChild(new Question());
         	this.addChild(new Selection(0,choiceQuestion));
@@ -550,10 +548,11 @@ window.onload = function() {
 	});
 
 	var Enemy = Class.create(Sprite, {
-		initialize: function() {
+		initialize: function(EnemyImagePath) {
 			Sprite.call(this, 800, 400);
+            this.image = core.assets[EnemyImagePath];
 			this.backgroundColor = "rgba(200, 200, 200, 0.5)";
-        		this.y = 100;
+            this.y = 100;
 		}
 	});
 	var Selection = Class.create(Sprite, {
