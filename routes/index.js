@@ -6,8 +6,9 @@ var router = express.Router();
 router.get('/', function(req, res, next) {
   console.log("GET / req.user:", req.user);
   var displayName = "Anonymous";
-  if (req.user)
+  if (req.user) {
     displayName = req.user.displayName;
+  }
   res.render('index', {
     title: "EducationalRPG",
     displayName: displayName
@@ -16,9 +17,19 @@ router.get('/', function(req, res, next) {
 
 //game
 router.get('/game', function(req, res, next) {
-  console.log("game")
+  var uid = 0;
+  var displayName = "Anonymous";
+  var status = 0;
+  if (req.user) {
+    uid = req.user.uid;
+    displayName = req.user.displayName;
+    status = req.user.status;
+  }
   res.render('game', {
     title: "EducationalRPG",
+    uid: uid,
+    displayName: displayName,
+    status: 0
   });
 });
 

@@ -9,6 +9,10 @@ var mongoose = require('mongoose');
 var passport = require('passport');
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 var User = require('./models/user.js');
+var http = require("http");
+var socketio = require("socket.io");
+var debug = require('debug')('chat');
+
 
 // API Access link for creating client ID and secret:
 // https://code.google.com/apis/console/
@@ -56,7 +60,8 @@ passport.use(new GoogleStrategy({
     }, {
       $set: {
         uid: uid,
-        displayName: 0
+        displayName: displayName,
+        status: 0
       }
     }, {
       upsert: true
@@ -128,6 +133,5 @@ app.use(function(err, req, res, next) {
     error: {}
   });
 });
-
 
 module.exports = app;

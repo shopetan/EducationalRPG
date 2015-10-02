@@ -1,8 +1,11 @@
+var socketio = io.connect('http://localhost:3000');
+socketio.on("connect", function() {
+});
+
 enchant();
 
 //DBから受け取るユーザーの進捗情報
 var state_array = [[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0]]; //国数理社英
-var user_state = 0;
 
 var BATTLE_BGM = './bgm/BATTLE_cyrf_energy.mp3';
 var PLAYER_IMG = '/images/Player.png';
@@ -65,7 +68,7 @@ window.onload = function() {
 	core.preload(DUNGEON_BGM);
 
 	//データの計算
-	function data_to_array (data) {
+	function data_to_array(data) {
 		for (var i = 0; i < state_array.length; i++) {
 			for (var j = 0; j < state_array[i].length; j++) {
 				state_array[i][j] = data%2;
@@ -74,7 +77,7 @@ window.onload = function() {
 			}
 		}
 	}
-	function array_to_data (array) {
+	function array_to_data() {
 		var n = 1;
 		var result = 0;
 		for (var i = 0; i < state_array.length; i++) {
@@ -186,7 +189,7 @@ window.onload = function() {
 					core.pushScene(new DungeonMap(mapdata4, this.subject, this.number));
 					break;
 			}
-		}	
+		}
 	});
 	var BackArrow = Class.create(Sprite, {
 		initialize: function(state) {
@@ -334,7 +337,7 @@ window.onload = function() {
 		}
 		else if (EventFlag == 7){
 			loopBgm_Ctrl(DUNGEON_BGM, 'stop');
-			core.pushScene(new BattleScene(EventFlag, subject_number, chapter_number, 5, LastBossImage));			
+			core.pushScene(new BattleScene(EventFlag, subject_number, chapter_number, 5, LastBossImage));
 //			core.pushScene(new DungeonClearScene());
 		}
 	}
@@ -418,8 +421,8 @@ window.onload = function() {
 							console.log('left');
 							core.currentScene.removeChild(this);
 						}
-						break;	
-				} 
+						break;
+				}
 			}
 		}
 
@@ -452,8 +455,8 @@ window.onload = function() {
 							console.log('bottom');
 							core.currentScene.removeChild(this);
 						}
-						break;	
-				} 
+						break;
+				}
 			}
 		}
 
@@ -471,7 +474,7 @@ window.onload = function() {
 				case 'stop':
 					BGM.src.loop = false;
 					BGM.stop();
-					break;		
+					break;
 			}
 		}
 
@@ -480,7 +483,7 @@ window.onload = function() {
 	//使用場所．　移動エフェクトをバトル画面に遷移する前に行う．
 	function Wait(callback){
 		callback(result);
-	}			
+	}
 
 //Battle
 	var text = new Array(
@@ -740,6 +743,9 @@ window.onload = function() {
 
 	core.fps = 15;
 	core.onload = function() {
+		var status = $("#status").text();
+		user_state = Number(status);
+		data_to_array(user_state);
 		core.pushScene(new WelcomeScene());
 	};
 	core.start();
