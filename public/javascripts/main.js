@@ -64,6 +64,7 @@ window.onload = function() {
 	core.preload(LastBossImage);
 	core.preload(DUNGEON_BGM);
 	core.preload("/images/minmapblock.jpeg");
+	core.preload("/images/playerblock.jpeg");
 
 	//データの計算
 	function data_to_array (data) {
@@ -363,29 +364,29 @@ window.onload = function() {
 		}
 	});
 	var minMap = Class.create(Sprite, {
-			mapData: [],
-			direction: [],
-			initialize: function (scene, mapdata){
-				Sprite.call(this, 300, 250);
-				var text = new Label();
-				text.text = "ミニマップ";
-				text.x = 520;
-				text.y = 420;
-				scene.addChild(text);
-				this.x = 500;
-				this.y = 400;
-				this.backgroundColor = "#ccc";
-				this.opacity = 0.5;
-				scene.addChild(this);
-				for (var i = 0; i < mapdata.length; i++){
-					for (var j = 0; j < mapdata[0].length; j++){
-						if (mapdata[i][j]){
-							scene.addChild(new MapBlock( 510 + 40 * i, 400 + 40 * j));
-						}
+		mapData: [],
+		direction: [],
+		initialize: function (scene, mapdata){
+			Sprite.call(this, 300, 250);
+			var text = new Label();
+			text.text = "ミニマップ";
+			text.x = 520;
+			text.y = 420;
+			scene.addChild(text);
+			this.x = 500;
+			this.y = 400;
+			this.backgroundColor = "#ccc";
+			this.opacity = 0.5;
+			scene.addChild(this);
+			for (var i = 0; i < mapdata.length; i++){
+				for (var j = 0; j < mapdata[0].length; j++){
+					if (mapdata[i][j]){
+						scene.addChild(new MapBlock( 510 + 40 * i, 400 + 40 * j));
 					}
 				}
-			}	
-		});
+			}
+		}	
+	});
 
 	var MapBlock = Class.create(Sprite, {
 		initialize: function (x, y){
@@ -395,94 +396,94 @@ window.onload = function() {
 			this.image = core.assets["/images/minmapblock.jpeg"];
 		}
 	});
-		function addChild_to_scene(scene, sprite){
-			scene.addChild(sprite);
-		}
-		function moveEffect_x(bg, dir){
-			var orignbackground = core.currentScene.firstChild;
-			var EffectForTrace = new BackGround(bg);
-			var scroll_spped = -100;
-			core.currentScene.insertBefore(EffectForTrace, core.currentScene.firstChild);
-			EffectForTrace.x = 800 * dir;
+	function addChild_to_scene(scene, sprite){
+		scene.addChild(sprite);
+	}
+	function moveEffect_x(bg, dir){
+		var orignbackground = core.currentScene.firstChild;
+		var EffectForTrace = new BackGround(bg);
+		var scroll_spped = -100;
+		core.currentScene.insertBefore(EffectForTrace, core.currentScene.firstChild);
+		EffectForTrace.x = 800 * dir;
 
-			orignbackground.addEventListener("enterframe", function (){
-				this.x += scroll_spped * dir;
-				if (this.x > 800 || this.x < -800){
-					this.x = 0;
-					this.removeEventListener("enterframe", arguments.callee);
-				}
-			});
-
-			EffectForTrace.onenterframe = function (){
-				this.x += scroll_spped * dir;
-				switch (dir){
-					case 1:
-						if (this.x < 0){
-							console.log('right');
-							core.currentScene.removeChild(this);
-						}
-						break;
-					case -1:
-						if (this.x > 0){
-							console.log('left');
-							core.currentScene.removeChild(this);
-						}
-						break;	
-				} 
+		orignbackground.addEventListener("enterframe", function (){
+			this.x += scroll_spped * dir;
+			if (this.x > 800 || this.x < -800){
+				this.x = 0;
+				this.removeEventListener("enterframe", arguments.callee);
 			}
-		}
+		});
 
-		function moveEffect_y(bg, dir){
-			var orignbackground = core.currentScene.firstChild;
-			var EffectForTrace = new BackGround(bg);
-			var scroll_spped = 60;
-			core.currentScene.insertBefore(EffectForTrace, core.currentScene.firstChild);
-			EffectForTrace.y = -600 * dir;
-
-			orignbackground.addEventListener("enterframe", function (){
-				this.y += scroll_spped * dir;
-				if (this.y > 600 || this.y < -600){
-					this.y = 0;
-					this.removeEventListener("enterframe", arguments.callee);
-				}
-			});
-
-			EffectForTrace.onenterframe = function (){
-				this.y += scroll_spped * dir;
-				switch (dir){
-					case 1:
-						if (this.y > 0){
-							console.log('up');
-							core.currentScene.removeChild(this);
-						}
-						break;
-					case -1:
-						if (this.y < -600){
-							console.log('bottom');
-							core.currentScene.removeChild(this);
-						}
-						break;	
-				} 
-			}
-		}
-
-		function loopBgm_Ctrl(bgm, command){
-			var BGM = core.assets[bgm];
-			switch (command){
-				case 'play':
-					BGM.play();
-					BGM.src.loop = true;
+		EffectForTrace.onenterframe = function (){
+			this.x += scroll_spped * dir;
+			switch (dir){
+				case 1:
+					if (this.x < 0){
+						console.log('right');
+						core.currentScene.removeChild(this);
+					}
 					break;
-				case 'pause':
-					BGM.src.loop = false;
-					BGM.pause();
-					break;
-				case 'stop':
-					BGM.src.loop = false;
-					BGM.stop();
-					break;		
-			}
+				case -1:
+					if (this.x > 0){
+						console.log('left');
+						core.currentScene.removeChild(this);
+					}
+					break;	
+			} 
 		}
+	}
+
+	function moveEffect_y(bg, dir){
+		var orignbackground = core.currentScene.firstChild;
+		var EffectForTrace = new BackGround(bg);
+		var scroll_spped = 60;
+		core.currentScene.insertBefore(EffectForTrace, core.currentScene.firstChild);
+		EffectForTrace.y = -600 * dir;
+
+		orignbackground.addEventListener("enterframe", function (){
+			this.y += scroll_spped * dir;
+			if (this.y > 600 || this.y < -600){
+				this.y = 0;
+				this.removeEventListener("enterframe", arguments.callee);
+			}
+		});
+
+		EffectForTrace.onenterframe = function (){
+			this.y += scroll_spped * dir;
+			switch (dir){
+				case 1:
+					if (this.y > 0){
+						console.log('up');
+						core.currentScene.removeChild(this);
+					}
+					break;
+				case -1:
+					if (this.y < -600){
+						console.log('bottom');
+						core.currentScene.removeChild(this);
+					}
+					break;	
+			} 
+		}
+	}
+
+	function loopBgm_Ctrl(bgm, command){
+		var BGM = core.assets[bgm];
+		switch (command){
+			case 'play':
+				BGM.play();
+				BGM.src.loop = true;
+				break;
+			case 'pause':
+				BGM.src.loop = false;
+				BGM.pause();
+				break;
+			case 'stop':
+				BGM.src.loop = false;
+				BGM.stop();
+				break;		
+		}
+	}
 
 	//関数の処理待ちをするために
 	//実装する必要あり
