@@ -9,6 +9,10 @@ var mongoose = require('mongoose');
 var passport = require('passport');
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 var User = require('./models/user.js');
+var http = require("http");
+var socketio = require("socket.io");
+var debug = require('debug')('chat');
+
 
 // API Access link for creating client ID and secret:
 // https://code.google.com/apis/console/
@@ -128,11 +132,6 @@ app.use(function(err, req, res, next) {
     message: err.message,
     error: {}
   });
-});
-
-app.post('/game', function(req, res) {
-    console.log(req.body);
-    res.render('index', { title: 'Express Sample Posted ver 0.0.1'});
 });
 
 module.exports = app;

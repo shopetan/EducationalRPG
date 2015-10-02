@@ -1,3 +1,7 @@
+var socketio = io.connect('http://localhost:3000');
+socketio.on("connect", function() {
+});
+
 enchant();
 
 //DBから受け取るユーザーの進捗情報
