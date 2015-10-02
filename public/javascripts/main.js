@@ -1,6 +1,4 @@
 var socketio = io.connect('http://localhost:3000');
-socketio.on("connect", function() {
-});
 
 enchant();
 
@@ -63,7 +61,9 @@ window.onload = function() {
 	core.preload(boardImage);
 	core.preload(dungeonMapImage);
 	core.preload(directionImage);
-	core.preload(EnemysImage);
+    for (var i = 0; i < EnemysImage.length; i++){
+        core.preload(EnemysImage[i]);
+    }
 	core.preload(LastBossImage);
 	core.preload(DUNGEON_BGM);
 	core.preload("/images/minmapblock.jpeg");
@@ -514,12 +514,27 @@ window.onload = function() {
 			userHp.font = "16px Tahoma";
         	var hp = core.hp;
         	status.text = text[hp];
-
-            //TODO:問題の設問数に応じて変更を加える
+            socketio.on( "connect", function() {} );
+            socketio.emit("fetchDB",{
+                subject: subject,
+                chapter: chapter,
+                difficulty: difficulty
+            });
+            socketio.on('returnRecord', function(records){
+                var problemSize = records.length
+                if(problemSize == 0){
+                    return;
+                }else{
+                    for(var i = 0; i < problemSize; i++){
+                        //TODO: Objectを別の変数に格納する．格納した変数はQuestionクラスなどに利用して問題文の提示，問題の正解不正解に応じた関数の実装を行う
+                        //isAnswer()はできているので，後はisKnockDown()という，全ての問題をクリアしたか否かという関数の実装を行う
+                    }
+                }
+            });
             var choiceQuestion = 2;
         	this.addChild(status);
         	this.addChild(new Player());
-        	this.addChild(new Enemy());
+        	this.addChild(new Enemy(EnemyImagePath));
         	this.addChild(new QuestionBase());
             this.addChild(new Question());
         	this.addChild(new Selection(0,choiceQuestion));
@@ -559,10 +574,11 @@ window.onload = function() {
 	});
 
 	var Enemy = Class.create(Sprite, {
-		initialize: function() {
+		initialize: function(EnemyImagePath) {
 			Sprite.call(this, 800, 400);
+            this.image = core.assets[EnemyImagePath];
 			this.backgroundColor = "rgba(200, 200, 200, 0.5)";
-        		this.y = 100;
+            this.y = 100;
 		}
 	});
 	var Selection = Class.create(Sprite, {
@@ -646,7 +662,6 @@ window.onload = function() {
 
 
 	function attackEffect(){
-        console.log(core.currentScene);
         addEffect(400, 300);
     }
 
