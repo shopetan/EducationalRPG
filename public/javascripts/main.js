@@ -342,8 +342,11 @@ window.onload = function() {
 	}
 
 	function move_xy(next_x, next_y){
+		core.currentScene.addChild(new MapBlock( 510 + 40 * dungeon_x, 400 + 40 * dungeon_y, "/images/minmapblock.jpeg", false));		
 		dungeon_x = next_x;
 		dungeon_y = next_y;
+		core.currentScene.addChild(new MapBlock( 510 + 40 * dungeon_x, 400 + 40 * dungeon_y, "/images/minmapblock.jpeg", false));		
+		core.currentScene.addChild(new MapBlock( 510 + 40 * dungeon_x, 400 + 40 * dungeon_y, "/images/playerblock.jpeg", true));
 	}
 	function Presented_Message(scene, msg){
 		var msg_box = new Sprite(400, 50);
@@ -378,22 +381,29 @@ window.onload = function() {
 			this.backgroundColor = "#ccc";
 			this.opacity = 0.5;
 			scene.addChild(this);
+/*			
 			for (var i = 0; i < mapdata.length; i++){
 				for (var j = 0; j < mapdata[0].length; j++){
 					if (mapdata[i][j]){
-						scene.addChild(new MapBlock( 510 + 40 * i, 400 + 40 * j));
+						scene.addChild(new MapBlock(510 + 40 * i, 400 + 40 * j, "/images/minmapblock.jpeg"));
 					}
 				}
 			}
+*/		scene.addChild(new MapBlock( 510 + 40 * dungeon_x, 400 + 40 * dungeon_y, "/images/minmapblock.jpeg", false));		
+		scene.addChild(new MapBlock(510 + 40 * dungeon_x, 400 + 40 * dungeon_y, "/images/playerblock.jpeg", true));
 		}	
 	});
 
 	var MapBlock = Class.create(Sprite, {
-		initialize: function (x, y){
+		initialize: function (x, y, MapBlockImage, playerFlag){
 			Sprite.call(this, 30, 30); 
 			this.x = x;
 			this.y = y;
-			this.image = core.assets["/images/minmapblock.jpeg"];
+			this.image = core.assets[MapBlockImage];
+			if (playerFlag){
+				var opacity = 1;
+				this.tl.delay(2).fadeOut(12).fadeIn(12).loop();
+			}
 		}
 	});
 	function addChild_to_scene(scene, sprite){
