@@ -3,7 +3,7 @@ var socketio = io.connect('http://localhost:3000');
 enchant();
 
 //DBから受け取るユーザーの進捗情報
-var state_array = [[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0]]; //国数理社英
+var state_array = [[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0]]; //国数理社英他(全クリア,初回完了)
 
 var BATTLE_BGM = './bgm/BATTLE_cyrf_energy.mp3';
 var PLAYER_IMG = '/images/Player.png';
@@ -89,6 +89,29 @@ window.onload = function() {
 		return result;
 	}
 
+	function saveData() {
+		var status = array_to_data();
+		var uid = $("#uid").text();
+		var displayName = $("#name").text();
+		socketio.emit("updateState", {
+			status: status,
+			uid: uid,
+			displayName: displayName
+		});
+	}
+
+//Novel
+	var NovelScene = Class.create(Scene, {
+		initialize: function() {
+			Scene.call(this);
+			this.backgroundColor = "red";
+		},
+		ontouchstart: function() {
+			core.popScene(core.currentScene);
+			core.pushScene(new WorldMap());
+		}
+	});
+
 //Login
 	var WelcomeScene = Class.create(Scene, {
 		initialize: function(subject) {
@@ -106,8 +129,13 @@ window.onload = function() {
 			this.image = core.assets['/images/startButton.png'];
 		},
 		ontouchstart: function() {
-			//ログイン処理
-			core.pushScene(new WorldMap());
+			if (state_array[5][1] == 0) {
+				core.pushScene(new NovelScene());
+				state_array[5][1] = 1;
+				saveData();
+			} else {
+				core.pushScene(new WorldMap());
+			}
 	  	}
 	});
 
@@ -144,13 +172,21 @@ window.onload = function() {
 //IslandMap
 	var IslandMap = Class.create(Scene, {
 		initialize: function(subject) {
-			var dungeonOrigin = [[80,160],[310,300],[570,225],[20,400],[480,500]];
+			var dungeonOrigin = [[80,160],[480,500],[570,225],[20,400],[310,300]];
 			Scene.call(this);
 			this.addChild(new BackGround('/images/islandMapBg.png'));
 			this.addChild(new Board(subject));
 			this.addChild(new BackArrow());
-			for (var i = 0; i < dungeonOrigin.length; i++){
+			isClear = true;
+			for (var i = 0; i < dungeonOrigin.length-1; i++){
  				this.addChild(new Dungeon(dungeonOrigin[i][0], dungeonOrigin[i][1], subject, i));
+ 				if (state_array[subject][i] == 0) {
+ 					isClear = false;
+ 				}
+			}
+			if (isClear) {
+				var i = dungeonOrigin.length - 1;
+				this.addChild(new Dungeon(dungeonOrigin[i][0], dungeonOrigin[i][1], subject, i));
 			}
 		}
 	});
@@ -169,24 +205,28 @@ window.onload = function() {
 			}
 		},
 		ontouchstart: function() {
-			var pattern = this.subject + this.number;
-			now_dungeon = this.number;
-			switch(pattern%5) {
-				case 0:
-					core.pushScene(new DungeonMap(mapdata0, this.subject, this.number));
-					break;
-				case 1:
-					core.pushScene(new DungeonMap(mapdata1, this.subject, this.number));
-					break;
-				case 2:
-					core.pushScene(new DungeonMap(mapdata2, this.subject, this.number));
-					break;
-				case 3:
-					core.pushScene(new DungeonMap(mapdata3, this.subject, this.number));
-					break;
-				case 4:
-					core.pushScene(new DungeonMap(mapdata4, this.subject, this.number));
-					break;
+			if (this.number == 4) {
+				core.pushScene(new DungeonMap(mapdata5, this.subject, this.number));
+			} else {
+				var pattern = this.subject + this.number;
+				now_dungeon = this.number;
+				switch(pattern%5) {
+					case 0:
+						core.pushScene(new DungeonMap(mapdata0, this.subject, this.number));
+						break;
+					case 1:
+						core.pushScene(new DungeonMap(mapdata1, this.subject, this.number));
+						break;
+					case 2:
+						core.pushScene(new DungeonMap(mapdata2, this.subject, this.number));
+						break;
+					case 3:
+						core.pushScene(new DungeonMap(mapdata3, this.subject, this.number));
+						break;
+					case 4:
+						core.pushScene(new DungeonMap(mapdata4, this.subject, this.number));
+						break;
+				}
 			}
 		}
 	});
@@ -385,12 +425,12 @@ window.onload = function() {
 						}
 					}
 				}
-			}	
+			}
 		});
 
 	var MapBlock = Class.create(Sprite, {
 		initialize: function (x, y){
-			Sprite.call(this, 30, 30); 
+			Sprite.call(this, 30, 30);
 			this.x = x;
 			this.y = y;
 			this.image = core.assets["/images/minmapblock.jpeg"];
@@ -615,14 +655,7 @@ window.onload = function() {
 	}
 	function clear_dungeon (argument) {
 		state_array[now_subject][now_dungeon] = 1;
-		var status = array_to_data();
-		var uid = $("#uid").text();
-		var displayName = $("#name").text();
-		socketio.emit("updateState", {
-			status: status,
-			uid: uid,
-			displayName: displayName
-		});
+		saveData();
 		core.pushScene(new DungeonClearScene());
 	}
 
