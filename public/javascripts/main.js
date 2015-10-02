@@ -198,6 +198,7 @@ window.onload = function() {
 			this.y = y;
 			this.subject = subject;
 			this.number = number;
+			now_dungeon = this.number;
 			if (state_array[subject][number] == 0) {
 				this.image = core.assets['/images/dungeon.png'];
 			} else {
@@ -205,11 +206,10 @@ window.onload = function() {
 			}
 		},
 		ontouchstart: function() {
-			if (this.number == 4) {
+			if (now_dungeon == 4) {
 				core.pushScene(new DungeonMap(mapdata5, this.subject, this.number));
 			} else {
 				var pattern = this.subject + this.number;
-				now_dungeon = this.number;
 				switch(pattern%5) {
 					case 0:
 						core.pushScene(new DungeonMap(mapdata0, this.subject, this.number));
@@ -639,9 +639,9 @@ window.onload = function() {
 			var loadAnswer = 0;
 			if(isAnswer(playerAnswer,loadAnswer)){
                 		attackEffect();
-                		if (event_type == 2) {
+                		if (event_type == 5 || event_type == 6 || event_type == 7) {
                 			clear_dungeon();
-                		} else if (event_type == 3) {
+                		} else if (event_type == 2 || event_type == 3 || event_type == 4) {
                 			win_battle();
                 		}
             	} else {
