@@ -7,6 +7,8 @@ var user_state = 0;
 var BATTLE_BGM = './bgm/BATTLE_cyrf_energy.mp3';
 var PLAYER_IMG = '/images/Player.png';
 
+var DUNGEON_BGM = 'bgm/DUNGEON_cyrf_wafes_dungeon01.mp3';
+
 //画像
 var islandImage = ['/images/island_j.png', '/images/island_m.png', '/images/island_sc.png', '/images/island_so.png', '/images/island_e.png','/images/island_e.png'];
 var boardImage = ['/images/board_j.png','/images/board_m.png','/images/board_sc.png','/images/board_so.png','/images/board_e.png'];
@@ -14,6 +16,8 @@ var directionImage = ["/images/arrow_top.png","/images/arrow_right.png","/images
 var battleImage = [PLAYER_IMG];
 var dungeonMapImage = ["/images/chara.png","/images/minmap1.png","/images/clear.png"];
 var novelImage = ["/images/novel.jpg"];
+var EnemysImage = [["/images/Japanese_Enemy01.PNG", "/images/Japanese_Enemy02.PNG", "/images/Japanese_Enemy03.PNG", "/images/Japanese_MiddleBoss01.PNG", "/images/Japanese_Boss01.PNG"], ["/images/Math_Enemy01.PNG", "/images/Math_Enemy02.PNG", "/images/Math_Enemy03.PNG", "/images/Math_MiddleBoss01.PNG", "/images/Math_Boss01.PNG"], ["/images/Science_Enemy01.PNG", "/images/Science_Enemy02.PNG", "/images/Science_Enemy03.PNG", "/images/Science_MiddleBoss01.PNG", "/images/Science_Boss01.PNG"], ["/images/Society_Enemy01.PNG", "/images/Society_Enemy02.PNG", "/images/Society_Enemy03.PNG", "/images/Society_MiddleBoss01.PNG", "/images/Society_Boss01.PNG"], ["/images/English_Enemy01.PNG", "/images/English_Enemy02.PNG", "/images/English_Enemy03.PNG", "/images/English_MiddleBoss01.PNG", "/images/English_Boss01.PNG"]];
+var LastBossImage = "/images/LastBoss01.PNG";
 
 /** エフェクトの位置のバラ付き具合 */
 var EFFECT_RANGE = 64;
@@ -22,11 +26,13 @@ var EFFECT_NUM = 5;
 
 
 //ダンジョンマップ
-var mapdata0 = [[0,1,1,1,1],[0,3,0,0,1],[0,1,1,1,1],[0,0,1,0,1],[3,1,1,0,3],[0,0,1,1,1],[2,1,1,0,0]];
-var mapdata1 = [[0,0,3,0,1],[0,1,1,1,1],[0,1,0,1,0],[0,3,0,1,0],[0,1,1,1,3],[0,2,0,0,0],[0,0,0,0,0]];
-var mapdata2 = [[3,1,1,1,1],[0,1,0,3,0],[1,1,1,0,0],[1,0,1,1,0],[2,0,3,0,0],[0,0,0,0,0],[0,0,0,0,0]];
-var mapdata3 = [[3,1,1,0,1],[1,0,1,0,1],[1,1,1,1,1],[1,0,3,0,0],[1,3,0,0,0],[2,0,0,0,0],[0,0,0,0,0]];
+var mapdata0 = [[0,1,1,1,1],[0,2,0,0,1],[0,1,1,1,1],[0,0,1,0,1],[5,1,1,0,4],[0,0,1,1,1],[3,1,1,0,0]];
+var mapdata1 = [[0,0,2,0,1],[0,1,1,1,1],[0,1,0,1,0],[0,3,0,1,0],[0,1,1,1,4],[0,5,0,0,0],[0,0,0,0,0]];
+var mapdata2 = [[2,1,1,1,1],[0,1,0,3,0],[1,1,1,0,0],[1,0,1,1,0],[4,0,5,0,0],[0,0,0,0,0],[0,0,0,0,0]];
+var mapdata3 = [[2,1,1,0,1],[1,0,1,0,1],[1,1,1,1,1],[1,0,5,0,0],[1,4,0,0,0],[3,0,0,0,0],[0,0,0,0,0]];
 var mapdata4 = [[0,0,1,0,1],[0,3,1,1,1],[0,0,1,0,3],[0,0,1,1,1],[0,1,0,0,1],[0,1,1,3,1],[0,2,0,1,0]];
+var mapdata5 = [[6,1,1,1,1],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0]];
+var mapdata6 = [[7,1,1,1,1],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0]];
 
 var subject = {
  	japanese: 0,
@@ -54,6 +60,9 @@ window.onload = function() {
 	core.preload(boardImage);
 	core.preload(dungeonMapImage);
 	core.preload(directionImage);
+	core.preload(EnemysImage);
+	core.preload(LastBossImage);
+	core.preload(DUNGEON_BGM);
 
 	//データの計算
 	function data_to_array (data) {
@@ -98,12 +107,6 @@ window.onload = function() {
 			//ログイン処理
 			core.pushScene(new WorldMap());
 	  	}
-	});
-//logout
-	$("#logout").click(function logout(){
-		/*auth0.logout();
-		milkcocoa.logout();
-		window.location.href("index.html");*/
 	});
 
 //WorldMap
@@ -168,22 +171,22 @@ window.onload = function() {
 			now_dungeon = this.number;
 			switch(pattern%5) {
 				case 0:
-					core.pushScene(new DungeonMap(mapdata0));
+					core.pushScene(new DungeonMap(mapdata0, this.subject, this.number));
 					break;
 				case 1:
-					core.pushScene(new DungeonMap(mapdata1));
+					core.pushScene(new DungeonMap(mapdata1, this.subject, this.number));
 					break;
 				case 2:
-					core.pushScene(new DungeonMap(mapdata2));
+					core.pushScene(new DungeonMap(mapdata2, this.subject, this.number));
 					break;
 				case 3:
-					core.pushScene(new DungeonMap(mapdata3));
+					core.pushScene(new DungeonMap(mapdata3, this.subject, this.number));
 					break;
 				case 4:
-					core.pushScene(new DungeonMap(mapdata4));
+					core.pushScene(new DungeonMap(mapdata4, this.subject, this.number));
 					break;
 			}
-		}
+		}	
 	});
 	var BackArrow = Class.create(Sprite, {
 		initialize: function(state) {
@@ -208,12 +211,15 @@ window.onload = function() {
 	var dungeon_y;
 	var mapdata;
 	var direct = new Array();
+	var now_chapter;
 	var DungeonMap = Class.create(Scene, {
-		initialize: function(data) {
+		initialize: function(data, subject, chapter) {
 			Scene.call(this);
 			mapdata = data;
 			dungeon_x = 0;
 			dungeon_y = mapdata[0].length - 1;
+			this.subject = subject;
+			now_chapter = chapter;
 			this.addChild(new BackGround('/images/dungeonMapBg.jpg'));
 			for (i = 0; i < 4; i++){
 				var d = new Direction(i);
@@ -222,15 +228,17 @@ window.onload = function() {
 			}
 
 			next_map(mapdata,dungeon_x,dungeon_y);
-			first_message(this, "目的：敵を全滅せよ");
+			Presented_Message(this, "目的：敵を全滅せよ");
 			this.addChild(new Character());
 			var minmap = new minMap(this, mapdata);
 
 			var back = new Label('ダンジョンから抜け出す');
 			this.addChild(back);
 			back.on('touchstart', function() {
+				loopBgm_Ctrl(DUNGEON_BGM, 'stop');
 				core.popScene();
 			});
+			loopBgm_Ctrl(DUNGEON_BGM, 'play');
 		}
 	});
 	var DungeonClearScene = Class.create(Scene, {
@@ -264,18 +272,22 @@ window.onload = function() {
 			switch(this.direction) {
 				case 0:
 					move_xy(dungeon_x, dungeon_y-1);
+					moveEffect_y('/images/dungeonMapBg.jpg', 1);
 					next_map(mapdata, dungeon_x, dungeon_y);
 					break;
 				case 1:
 					move_xy(dungeon_x + 1, dungeon_y);
+					moveEffect_x('/images/dungeonMapBg.jpg', 1);
 					next_map(mapdata, dungeon_x, dungeon_y);
 					break;
 				case 2:
 					move_xy(dungeon_x, dungeon_y + 1);
+					moveEffect_y('/images/dungeonMapBg.jpg', -1);
 					next_map(mapdata, dungeon_x, dungeon_y);
 					break;
 				case 3:
 					move_xy(dungeon_x - 1, dungeon_y);
+					moveEffect_x('/images/dungeonMapBg.jpg', -1);
 					next_map(mapdata, dungeon_x, dungeon_y);
 					break;
 			}
@@ -288,14 +300,14 @@ window.onload = function() {
 		if ((now_y != 0) && (mapdata[now_x][now_y - 1] != 0)){
 			direction[0] = true;
 		}
+		if ((now_x != mapdata.length - 1) && (mapdata[now_x + 1][now_y] != 0)){
+			direction[1] = true;
+		}
 		if ((now_y != mapdata[0].length - 1) && (mapdata[now_x][now_y + 1] != 0)){
 			direction[2] = true;
 		}
 		if ((now_x != 0) && (mapdata[now_x - 1][now_y] != 0)){
 			direction[3] = true;
-		}
-		if ((now_x != mapdata.length - 1) && (mapdata[now_x + 1][now_y] != 0)){
-			direction[1] = true;
 		}
 
 		for (i = 0; i < 4; i++){
@@ -303,15 +315,35 @@ window.onload = function() {
 		}
 
 		var EventFlag = mapdata[now_x][now_y];
-		if (EventFlag == 2 || EventFlag == 3){
-			core.pushScene(new BattleScene(EventFlag));
+		var subject_number = now_subject;
+		var chapter_number = now_chapter;
+
+		if (EventFlag >= 2 && EventFlag < 5){
+			var difficulty = EventFlag - 2;
+ 			loopBgm_Ctrl(DUNGEON_BGM, 'pause');
+ 			console.log(subject_number, chapter_number, difficulty, EventFlag, EnemysImage[subject_number][difficulty])
+			core.pushScene(new BattleScene(EventFlag, subject_number, chapter_number, difficulty, EnemysImage[subject_number][difficulty]));
+		}
+		else if (EventFlag >= 5){
+			loopBgm_Ctrl(DUNGEON_BGM, 'stop');
+			core.pushScene(new BattleScene(EventFlag, subject_number, chapter_number, 3, EnemysImage[subject_number][3]));
+		}
+		else if (EventFlag == 6){
+			loopBgm_Ctrl(DUNGEON_BGM, 'stop');
+			core.pushScene(new BattleScene(EventFlag, subject_number, chapter_number, 4, EnemysImage[subject_number][4]));
+		}
+		else if (EventFlag == 7){
+			loopBgm_Ctrl(DUNGEON_BGM, 'stop');
+			core.pushScene(new BattleScene(EventFlag, subject_number, chapter_number, 5, LastBossImage));			
+//			core.pushScene(new DungeonClearScene());
 		}
 	}
+
 	function move_xy(next_x, next_y){
 		dungeon_x = next_x;
 		dungeon_y = next_y;
 	}
-	function first_message(scene, msg){
+	function Presented_Message(scene, msg){
 		var msg_box = new Sprite(400, 50);
 		msg_box.moveTo(800 / 2 - 200, 25);
 		msg_box.backgroundColor = "rgba(200,200,200,0.4)";
@@ -357,6 +389,98 @@ window.onload = function() {
 		function addChild_to_scene(scene, sprite){
 			scene.addChild(sprite);
 		}
+		function moveEffect_x(bg, dir){
+			var orignbackground = core.currentScene.firstChild;
+			var EffectForTrace = new BackGround(bg);
+			var scroll_spped = -100;
+			core.currentScene.insertBefore(EffectForTrace, core.currentScene.firstChild);
+			EffectForTrace.x = 800 * dir;
+
+			orignbackground.addEventListener("enterframe", function (){
+				this.x += scroll_spped * dir;
+				if (this.x > 800 || this.x < -800){
+					this.x = 0;
+					this.removeEventListener("enterframe", arguments.callee);
+				}
+			});
+
+			EffectForTrace.onenterframe = function (){
+				this.x += scroll_spped * dir;
+				switch (dir){
+					case 1:
+						if (this.x < 0){
+							console.log('right');
+							core.currentScene.removeChild(this);
+						}
+						break;
+					case -1:
+						if (this.x > 0){
+							console.log('left');
+							core.currentScene.removeChild(this);
+						}
+						break;	
+				} 
+			}
+		}
+
+		function moveEffect_y(bg, dir){
+			var orignbackground = core.currentScene.firstChild;
+			var EffectForTrace = new BackGround(bg);
+			var scroll_spped = 60;
+			core.currentScene.insertBefore(EffectForTrace, core.currentScene.firstChild);
+			EffectForTrace.y = -600 * dir;
+
+			orignbackground.addEventListener("enterframe", function (){
+				this.y += scroll_spped * dir;
+				if (this.y > 600 || this.y < -600){
+					this.y = 0;
+					this.removeEventListener("enterframe", arguments.callee);
+				}
+			});
+
+			EffectForTrace.onenterframe = function (){
+				this.y += scroll_spped * dir;
+				switch (dir){
+					case 1:
+						if (this.y > 0){
+							console.log('up');
+							core.currentScene.removeChild(this);
+						}
+						break;
+					case -1:
+						if (this.y < -600){
+							console.log('bottom');
+							core.currentScene.removeChild(this);
+						}
+						break;	
+				} 
+			}
+		}
+
+		function loopBgm_Ctrl(bgm, command){
+			var BGM = core.assets[bgm];
+			switch (command){
+				case 'play':
+					BGM.play();
+					BGM.src.loop = true;
+					break;
+				case 'pause':
+					BGM.src.loop = false;
+					BGM.pause();
+					break;
+				case 'stop':
+					BGM.src.loop = false;
+					BGM.stop();
+					break;		
+			}
+		}
+
+	//関数の処理待ちをするために
+	//実装する必要あり
+	//使用場所．　移動エフェクトをバトル画面に遷移する前に行う．
+	function Wait(callback){
+		callback(result);
+	}			
 
 //Battle
 	var text = new Array(
@@ -368,7 +492,7 @@ window.onload = function() {
 	var status = new Label();
 	var event_type;
 	var BattleScene = Class.create(Scene, {
-		initialize: function(eventFlag) {
+		initialize: function(eventFlag, subject, chapter, difficulty, EnemyImagePath) {
 			Scene.call(this);
 			event_type = eventFlag;
 			this.addChild(new BackGround('/images/dungeonMapBg.jpg'));
