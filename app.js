@@ -130,5 +130,9 @@ app.use(function(err, req, res, next) {
   });
 });
 
+app.post('/game', function(req, res) {
+    console.log(req.body);
+    res.render('index', { title: 'Express Sample Posted ver 0.0.1'});
+});
 
 module.exports = app;
