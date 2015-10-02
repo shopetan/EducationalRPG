@@ -2,7 +2,7 @@
 var debug = require('debug')('chat');
 var app = require('../app');
 var User = require('../models/user.js');
-
+var Problem = require('../models/problem.js');
 app.set('port', process.env.PORT || 3000);
 
 var server = app.listen(app.get('port'), function() {
@@ -32,5 +32,11 @@ var io = require('socket.io')(server);
       		console.log("findOneAndUpdate err:", err, "user: ", user);
     		});
  	});
- });
 
+ 	socket.on('fetchDB', function(record){
+		//TODO: 問題が全て出揃ったら，data.subject, data.chapter, data.difficultyをfind()の中身指定でrecordを引っ張る処理を記述
+		Problem.find(function(err, records){
+      		socket.emit('returnRecord', records);
+    		});
+	});
+ });
