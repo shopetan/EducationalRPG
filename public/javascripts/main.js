@@ -1,8 +1,4 @@
 enchant();
-var express = require('express');
-var mongoose = require('mongoose');
-var Problem = require('../../moduls/problem.js');
-var db = mongoose.connect('mongodb://localhost/educationalRPG');
 
 //DBから受け取るユーザーの進捗情報
 var state_array = [[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0]]; //国数理社英
@@ -382,6 +378,8 @@ window.onload = function() {
 			userHp.font = "16px Tahoma";
         	var hp = core.hp;
         	status.text = text[hp];
+            var problem = Problem.find({"subject_code":4},{"question":true});
+            console.log(problem);
 
             //TODO:問題の設問数に応じて変更を加える
             var choiceQuestion = 2;
