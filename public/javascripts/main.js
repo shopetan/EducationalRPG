@@ -505,7 +505,23 @@ window.onload = function() {
 			userHp.font = "16px Tahoma";
         	var hp = core.hp;
         	status.text = text[hp];
-            //TODO:問題の設問数に応じて変更を加える
+            socketio.on( "connect", function() {} );
+            socketio.emit("fetchDB",{
+                subject: subject,
+                chapter: chapter,
+                difficulty: difficulty
+            });
+            socketio.on('returnRecord', function(records){
+                var problemSize = records.length
+                if(problemSize == 0){
+                    return;
+                }else{
+                    for(var i = 0; i < problemSize; i++){
+                        //TODO: Objectを別の変数に格納する．格納した変数はQuestionクラスなどに利用して問題文の提示，問題の正解不正解に応じた関数の実装を行う
+                        //isAnswer()はできているので，後はisKnockDown()という，全ての問題をクリアしたか否かという関数の実装を行う
+                    }
+                }
+            });
             var choiceQuestion = 2;
         	this.addChild(status);
         	this.addChild(new Player());
