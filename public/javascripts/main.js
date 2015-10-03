@@ -503,6 +503,7 @@ window.onload = function() {
     		"HP : 5");
 	var status = new Label();
 	var event_type;
+    var clearProblemNum = 0;
 	var BattleScene = Class.create(Scene, {
 		initialize: function(eventFlag, subject, chapter, difficulty, EnemyImagePath) {
 			Scene.call(this);
@@ -514,33 +515,30 @@ window.onload = function() {
 			userHp.font = "16px Tahoma";
         	var hp = core.hp;
         	status.text = text[hp];
-
             socketio.on( "connect", function() {} );
             socketio.emit("fetchDB",{
                 subject: subject,
                 chapter: chapter,
                 difficulty: difficulty
             });
-            //TODO: Objectを別の変数に格納する．格納した変数はQuestionクラスなどに利用して問題文の提示，問題の正解不正解に応じた関数の実装を行う
-            //isAnswer()はできているので，後はisKnockDown()という，全ての問題をクリアしたか否かという関数の実装を行う
             socketio.on('returnRecord', function(records){
                 var problemSize = records.length
                 if(problemSize == 0){
                     return;
                 }else{
-                    problemData = records;
-                    var isFourChoiceQuestion = records[0].istwochoceQuestion;
+                    var isFourChoiceQuestion = records[clearProblemNum].istwochoceQuestion;
+                    var problemText = records[clearProblemNum].question;
                     core.currentScene.addChild(status);
                     core.currentScene.addChild(new Selection(0,isFourChoiceQuestion));
                     core.currentScene.addChild(new Selection(1,isFourChoiceQuestion));
                     core.currentScene.addChild(new Selection(2,isFourChoiceQuestion));
                     core.currentScene.addChild(new Selection(3,isFourChoiceQuestion));
+                    core.currentScene.addChild(new Player());
+                    core.currentScene.addChild(new Enemy(EnemyImagePath));
+                    core.currentScene.addChild(new QuestionBase());
+                    core.currentScene.addChild(new Question(problemText));
                 }
             });
-            this.addChild(new Player());
-            this.addChild(new Enemy(EnemyImagePath));
-            this.addChild(new QuestionBase());
-            this.addChild(new Question());
 
         	var back = new Label('ダンジョンから抜け出す');
         	back.x = 645;
@@ -565,11 +563,15 @@ window.onload = function() {
 		}
 	});
     var Question = Class.create(Sprite, {
-		initialize: function() {
+		initialize: function(problemText) {
 			Sprite.call(this, 500, 100);
-			this.backgroundColor = "rgba(200, 200, 200, 0.5)";
             this.x = 100;
-        	this.y = 0;
+            this.y = 0;
+            this.backgroundColor = "rgba(200, 200, 200, 0.5)";
+            var problemText = new Label(problemText);
+            problemText.x = 100;
+            problemText.y = 0;
+            core.currentScene.addChild(problemText);
 		}
 	});
 
@@ -616,15 +618,16 @@ window.onload = function() {
 			var playerAnswer = this.type;
 			var loadAnswer = 0;
 			if(isAnswer(playerAnswer,loadAnswer)){
-                		attackEffect();
-                		if (event_type == 2) {
-                			clear_dungeon();
-                		} else if (event_type == 3) {
-                			win_battle();
-                		}
-            	} else {
-                		damageEffect();
-            	}
+                clearProblemNum++;
+        		attackEffect();
+        		if (event_type == 2) {
+        			clear_dungeon();
+        		} else if (event_type == 3) {
+        			win_battle();
+        		}
+            } else {
+                damageEffect();
+            }
 		}
 	});
 	function win_battle () {
@@ -667,23 +670,6 @@ window.onload = function() {
 
     function damageEffect(){
         addEffect(400, 300);
-    }
-
-	function csv2Array(filePath) { //csvﾌｧｲﾙﾉ相対ﾊﾟｽor絶対ﾊﾟｽ
-		var csvData = new Array();
-	    var data = new XMLHttpRequest();
-	   	data.open("GET", filePath, false); //true:非同期,false:同期
-	 	data.send(null);
-
-	 	var LF = String.fromCharCode(10); //改行ｺｰﾄﾞ
-	 	var lines = data.responseText.split(LF);
-	 	for (var i = 0; i < lines.length;++i) {
-			var cells = lines[i].split(",");
-	  		if( cells.length != 1 ) {
-	    		csvData.push(cells);
-	  		}
-	  	}
-	 	return csvData;
     }
 
     function isAnswer(playerAnswer,loadAnswer) {
