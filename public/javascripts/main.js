@@ -526,13 +526,14 @@ window.onload = function() {
                 if(problemSize == 0){
                     return;
                 }else{
-                    var isFourChoiceQuestion = records[clearProblemNum].istwochoceQuestion;
+                    var isFourChoiceQuestion = records[clearProblemNum].isFourChoiceQuestion;
                     var problemText = records[clearProblemNum].question;
+                    var problemAnswer = records[clearProblemNum].answer;
                     core.currentScene.addChild(status);
-                    core.currentScene.addChild(new Selection(0,isFourChoiceQuestion));
-                    core.currentScene.addChild(new Selection(1,isFourChoiceQuestion));
-                    core.currentScene.addChild(new Selection(2,isFourChoiceQuestion));
-                    core.currentScene.addChild(new Selection(3,isFourChoiceQuestion));
+                    core.currentScene.addChild(new Selection(0,isFourChoiceQuestion,problemAnswer));
+                    core.currentScene.addChild(new Selection(1,isFourChoiceQuestion,problemAnswer));
+                    core.currentScene.addChild(new Selection(2,isFourChoiceQuestion,problemAnswer));
+                    core.currentScene.addChild(new Selection(3,isFourChoiceQuestion,problemAnswer));
                     core.currentScene.addChild(new Player());
                     core.currentScene.addChild(new Enemy(EnemyImagePath));
                     core.currentScene.addChild(new QuestionBase());
@@ -584,18 +585,20 @@ window.onload = function() {
 		}
 	});
 	var Selection = Class.create(Sprite, {
-		initialize: function(type,isFourChoiceQuestion) {
+		initialize: function(type,isTwoChoiceQuestion,problemAnswer) {
 			var fourChoiceQuestion = [[0,500],[200,500],[400,500],[600,500]];
             var twoChoiceQuestion  = [[0,500],[400,500],[800,600],[800,600]];
-            if(isFourChoiceQuestion) {
+            if(isTwoChoiceQuestion) {
                 Sprite.call(this, 200, 100);
                 this.type = type;
+                this.problemAnswer = problemAnswer;
                 this.x = twoChoiceQuestion[type][0];
                 this.y = twoChoiceQuestion[type][1];
             }
             else {
                 Sprite.call(this, 400, 100);
                 this.type = type;
+                this.problemAnswer = problemAnswer;
                 this.x = fourChoiceQuestion[type][0];
                 this.y = fourChoiceQuestion[type][1];
             }
@@ -616,8 +619,8 @@ window.onload = function() {
 		},
 		ontouchstart: function() {
 			var playerAnswer = this.type;
-			var loadAnswer = 0;
-			if(isAnswer(playerAnswer,loadAnswer)){
+            var problemAnswer = this.problemAnswer;
+			if(isAnswer(playerAnswer,problemAnswer)){
                 clearProblemNum++;
         		attackEffect();
         		if (event_type == 2) {
@@ -673,6 +676,8 @@ window.onload = function() {
     }
 
     function isAnswer(playerAnswer,loadAnswer) {
+        console.log(playerAnswer);
+        console.log(loadAnswer);
         if (playerAnswer == loadAnswer) {
             return true;
         } else {
