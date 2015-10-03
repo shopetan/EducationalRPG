@@ -387,12 +387,12 @@ window.onload = function() {
 						}
 					}
 				}
-			}	
+			}
 		});
 
 	var MapBlock = Class.create(Sprite, {
 		initialize: function (x, y){
-			Sprite.call(this, 30, 30); 
+			Sprite.call(this, 30, 30);
 			this.x = x;
 			this.y = y;
 			this.image = core.assets["/images/minmapblock.jpeg"];
@@ -514,33 +514,33 @@ window.onload = function() {
 			userHp.font = "16px Tahoma";
         	var hp = core.hp;
         	status.text = text[hp];
+
             socketio.on( "connect", function() {} );
             socketio.emit("fetchDB",{
                 subject: subject,
                 chapter: chapter,
                 difficulty: difficulty
             });
+            //TODO: Objectを別の変数に格納する．格納した変数はQuestionクラスなどに利用して問題文の提示，問題の正解不正解に応じた関数の実装を行う
+            //isAnswer()はできているので，後はisKnockDown()という，全ての問題をクリアしたか否かという関数の実装を行う
             socketio.on('returnRecord', function(records){
                 var problemSize = records.length
                 if(problemSize == 0){
                     return;
                 }else{
-                    for(var i = 0; i < problemSize; i++){
-                        //TODO: Objectを別の変数に格納する．格納した変数はQuestionクラスなどに利用して問題文の提示，問題の正解不正解に応じた関数の実装を行う
-                        //isAnswer()はできているので，後はisKnockDown()という，全ての問題をクリアしたか否かという関数の実装を行う
-                    }
+                    problemData = records;
+                    var isFourChoiceQuestion = records[0].istwochoceQuestion;
+                    core.currentScene.addChild(status);
+                    core.currentScene.addChild(new Selection(0,isFourChoiceQuestion));
+                    core.currentScene.addChild(new Selection(1,isFourChoiceQuestion));
+                    core.currentScene.addChild(new Selection(2,isFourChoiceQuestion));
+                    core.currentScene.addChild(new Selection(3,isFourChoiceQuestion));
                 }
             });
-            var choiceQuestion = 2;
-        	this.addChild(status);
-        	this.addChild(new Player());
-        	this.addChild(new Enemy(EnemyImagePath));
-        	this.addChild(new QuestionBase());
+            this.addChild(new Player());
+            this.addChild(new Enemy(EnemyImagePath));
+            this.addChild(new QuestionBase());
             this.addChild(new Question());
-        	this.addChild(new Selection(0,choiceQuestion));
-        	this.addChild(new Selection(1,choiceQuestion));
-        	this.addChild(new Selection(2,choiceQuestion));
-        	this.addChild(new Selection(3,choiceQuestion));
 
         	var back = new Label('ダンジョンから抜け出す');
         	back.x = 645;
@@ -548,7 +548,7 @@ window.onload = function() {
 			back.on('touchstart', function() {
 				core.popScene();
 			});
-        	}
+        }
 	});
 	var Player = Class.create(Sprite, {
 		initialize: function() {
@@ -582,20 +582,20 @@ window.onload = function() {
 		}
 	});
 	var Selection = Class.create(Sprite, {
-		initialize: function(type,choiceQuestion) {
+		initialize: function(type,isFourChoiceQuestion) {
 			var fourChoiceQuestion = [[0,500],[200,500],[400,500],[600,500]];
             var twoChoiceQuestion  = [[0,500],[400,500],[800,600],[800,600]];
-            if(isFourChoiceQuestion(choiceQuestion)) {
+            if(isFourChoiceQuestion) {
                 Sprite.call(this, 200, 100);
                 this.type = type;
-			    this.x = fourChoiceQuestion[type][0];
-			    this.y = fourChoiceQuestion[type][1];
+                this.x = twoChoiceQuestion[type][0];
+                this.y = twoChoiceQuestion[type][1];
             }
             else {
                 Sprite.call(this, 400, 100);
                 this.type = type;
-			    this.x = twoChoiceQuestion[type][0];
-			    this.y = twoChoiceQuestion[type][1];
+                this.x = fourChoiceQuestion[type][0];
+                this.y = fourChoiceQuestion[type][1];
             }
 			switch(type) {
 			case 0:
@@ -700,14 +700,11 @@ window.onload = function() {
         }
     }
 
-    function isFourChoiceQuestion(choiceQuestion) {
-        var isFourChoiceQuestion = true;
-        if (choiceQuestion == 4) {
-            return isFourChoiceQuestion;
-        }
-        else {
-            isFourChoiceQuestion = false;
-            return isFourChoiceQuestion;
+    function isKnockDown(clearProblemNum, problemDataSize){
+        if(clearProblemNum == ProblemDataSize){
+            return true;
+        }else{
+            return false;
         }
     }
 
