@@ -618,7 +618,7 @@ window.onload = function() {
             var problemAnswer = this.problemAnswer;
 			if(isAnswer(playerAnswer,problemAnswer)){
                 clearProblemNum++;
-                getProblem(this.event_type,this.subject, this.chapter, this.difficulty, this.EnemyImagePath);
+                core.pushScene(new BattleScene(this.event_type, this.subject, this.chapter, this.difficulty , this.EnemyImagePath));
                 attackEffect();
             } else {
                 damageEffect();
@@ -626,7 +626,6 @@ window.onload = function() {
 		}
 	});
     function getProblem(event_type,subject, chapter, difficulty, EnemyImagePath){
-        var count = 0;
         socketio.emit("fetchDB",{
             subject: subject,
             chapter: chapter,
@@ -637,7 +636,6 @@ window.onload = function() {
             if(problemSize == 0){
                 return;
             }else{
-                count++;
                 if(isKnockDown(clearProblemNum, problemSize)){
                     clearProblemNum = 0;
                     if (event_type > 2 && event_type < 5) {
@@ -646,40 +644,26 @@ window.onload = function() {
                         clear_dungeon();
             		}
                 }else{
-                    console.log("Count:" + count);
-                    console.log("Num: " + clearProblemNum);
-                    if(count == 1){
-                        if(clearProblemNum != 0){
-                            core.rootScene.removeChild(Selection);
-                            core.rootScene.removeChild(Player);
-                            core.rootScene.removeChild(Enemy);
-                            core.rootScene.removeChild(QuestionBase);
-                            core.rootScene.removeChild(Question);
-                            console.log("test1");
-                        }
-                        var isFourChoiceQuestion = records[clearProblemNum].isFourChoiceQuestion;
-                        var problemText = records[clearProblemNum].question;
-                        var problemAnswer = records[clearProblemNum].answer;
-                        var problemSelect = new Array();
-                        problemSelect[0] = records[clearProblemNum].choice0;
-                        problemSelect[1] = records[clearProblemNum].choice1;
-                        problemSelect[2] = records[clearProblemNum].choice2;
-                        problemSelect[3] = records[clearProblemNum].choice3;
-                        core.currentScene.addChild(status);
-                        core.currentScene.addChild(new Selection(0,isFourChoiceQuestion,problemAnswer,subject,chapter,difficulty,EnemyImagePath));
-                        core.currentScene.addChild(new Selection(1,isFourChoiceQuestion,problemAnswer,subject,chapter,difficulty,EnemyImagePath));
-                        core.currentScene.addChild(new Selection(2,isFourChoiceQuestion,problemAnswer,subject,chapter,difficulty,EnemyImagePath));
-                        core.currentScene.addChild(new Selection(3,isFourChoiceQuestion,problemAnswer,subject,chapter,difficulty,EnemyImagePath));
-                        core.currentScene.addChild(new Player());
-                        core.currentScene.addChild(new Enemy(EnemyImagePath));
-                        core.currentScene.addChild(new QuestionBase());
-                        core.currentScene.addChild(new Question(problemText,problemSelect));
-                        console.log("test2");
-                    }
+                    var isFourChoiceQuestion = records[clearProblemNum].isFourChoiceQuestion;
+                    var problemText = records[clearProblemNum].question;
+                    var problemAnswer = records[clearProblemNum].answer;
+                    var problemSelect = new Array();
+                    problemSelect[0] = records[clearProblemNum].choice0;
+                    problemSelect[1] = records[clearProblemNum].choice1;
+                    problemSelect[2] = records[clearProblemNum].choice2;
+                    problemSelect[3] = records[clearProblemNum].choice3;
+                    core.currentScene.addChild(status);
+                    core.currentScene.addChild(new Selection(0,isFourChoiceQuestion,problemAnswer,subject,chapter,difficulty,EnemyImagePath));
+                    core.currentScene.addChild(new Selection(1,isFourChoiceQuestion,problemAnswer,subject,chapter,difficulty,EnemyImagePath));
+                    core.currentScene.addChild(new Selection(2,isFourChoiceQuestion,problemAnswer,subject,chapter,difficulty,EnemyImagePath));
+                    core.currentScene.addChild(new Selection(3,isFourChoiceQuestion,problemAnswer,subject,chapter,difficulty,EnemyImagePath));
+                    core.currentScene.addChild(new Player());
+                    core.currentScene.addChild(new Enemy(EnemyImagePath));
+                    core.currentScene.addChild(new QuestionBase());
+                    core.currentScene.addChild(new Question(problemText,problemSelect));
                 }
             }
         });
-        console.log("===============================");
     }
 
 	function win_battle () {
