@@ -17,21 +17,23 @@ router.get('/', function(req, res, next) {
 
 //game
 router.get('/game', function(req, res, next) {
-  var uid = 0;
-  var displayName = "Anonymous";
-  var status = 0;
-  if (req.user) {
-    uid = req.user.uid;
-    displayName = req.user.displayName;
-    status = req.user.status;
-    console.log("STATE:" * status);
-  }
-  res.render('game', {
-    title: "EducationalRPG",
-    uid: uid,
-    displayName: displayName,
-    status: status
-  });
+    var uid = 0;
+    var displayName = "Anonymous";
+    var status = 0;
+    if (req.user) {
+        uid = req.user.uid;
+        displayName = req.user.displayName;
+        status = req.user.status;
+        console.log("STATE:" * status);
+        res.render('game', {
+          title: "EducationalRPG",
+          uid: uid,
+          displayName: displayName,
+          status: status
+        });
+    } else {
+      res.redirect('/');
+    }
 });
 
 /* for Google OAuth link. */
