@@ -28,6 +28,8 @@ var EFFECT_RANGE = 64;
 /** 一回のタップで発生するエフェクトの数 */
 var EFFECT_NUM = 5;
 
+/*許してくれッ… こんなグローバル変数を用意した愚かな@ss_shopetanを…*/
+var win_flag = false;
 
 //ダンジョンマップ
 var mapdata0 = [[0,1,1,1,1],[0,2,0,0,1],[0,1,1,1,1],[0,0,1,0,1],[5,1,1,0,4],[0,0,1,1,1],[3,1,1,0,0]];
@@ -327,19 +329,23 @@ window.onload = function() {
 
 		if (EventFlag >= 2 && EventFlag < 5){
 			var difficulty = EventFlag - 2;
+            win_flag = false;
  			loopBgm_Ctrl(DUNGEON_BGM, 'pause');
  			console.log(subject_number, chapter_number, difficulty, EventFlag, EnemysImage[subject_number][difficulty])
 			core.pushScene(new BattleScene(EventFlag, subject_number, chapter_number, difficulty, EnemysImage[subject_number][difficulty]));
 		}
 		else if (EventFlag >= 5){
+            win_flag = false;
 			loopBgm_Ctrl(DUNGEON_BGM, 'stop');
 			core.pushScene(new BattleScene(EventFlag, subject_number, chapter_number, 3, EnemysImage[subject_number][3]));
 		}
 		else if (EventFlag == 6){
+            win_flag = false;
 			loopBgm_Ctrl(DUNGEON_BGM, 'stop');
 			core.pushScene(new BattleScene(EventFlag, subject_number, chapter_number, 4, EnemysImage[subject_number][4]));
 		}
 		else if (EventFlag == 7){
+            win_flag = false;
 			loopBgm_Ctrl(DUNGEON_BGM, 'stop');
 			core.pushScene(new BattleScene(EventFlag, subject_number, chapter_number, 5, LastBossImage));
 //			core.pushScene(new DungeonClearScene());
@@ -621,7 +627,7 @@ window.onload = function() {
             var problemAnswer = this.problemAnswer;
 			if(isAnswer(playerAnswer,problemAnswer)){
                 clearProblemNum++;
-                core.popScene(core.parentNode);
+                core.popScene(core.currentScene);
                 core.pushScene(new BattleScene(this.event_type, this.subject, this.chapter, this.difficulty , this.EnemyImagePath));
                 attackEffect();
             } else {
@@ -635,36 +641,42 @@ window.onload = function() {
             chapter: chapter,
             difficulty: difficulty
         });
+        var count = 0;
         socketio.on('returnRecord', function(records){
+            count++;
             var problemSize = records.length
             if(problemSize == 0){
                 return;
             }else{
                 if(isKnockDown(clearProblemNum, problemSize)){
                     clearProblemNum = 0;
-                    if (event_type > 2 && event_type < 5) {
+                    if (event_type >= 2 && event_type < 5) {
                         win_battle();
+                        return;
             		} else if (event_type >= 5) {
                         clear_dungeon();
+                        return;
             		}
                 }else{
-                    var isFourChoiceQuestion = records[clearProblemNum].isFourChoiceQuestion;
-                    var problemText = records[clearProblemNum].question;
-                    var problemAnswer = records[clearProblemNum].answer;
-                    var problemSelect = new Array();
-                    problemSelect[0] = records[clearProblemNum].choice0;
-                    problemSelect[1] = records[clearProblemNum].choice1;
-                    problemSelect[2] = records[clearProblemNum].choice2;
-                    problemSelect[3] = records[clearProblemNum].choice3;
-                    core.currentScene.addChild(status);
-                    core.currentScene.addChild(new Selection(0,isFourChoiceQuestion,problemAnswer,subject,chapter,difficulty,EnemyImagePath));
-                    core.currentScene.addChild(new Selection(1,isFourChoiceQuestion,problemAnswer,subject,chapter,difficulty,EnemyImagePath));
-                    core.currentScene.addChild(new Selection(2,isFourChoiceQuestion,problemAnswer,subject,chapter,difficulty,EnemyImagePath));
-                    core.currentScene.addChild(new Selection(3,isFourChoiceQuestion,problemAnswer,subject,chapter,difficulty,EnemyImagePath));
-                    core.currentScene.addChild(new Player());
-                    core.currentScene.addChild(new Enemy(EnemyImagePath));
-                    core.currentScene.addChild(new QuestionBase());
-                    core.currentScene.addChild(new Question(problemText,problemSelect));
+                    if(count <= 1 && !(isKnockDown(clearProblemNum, problemSize)) && !(win_flag) ){
+                        var isFourChoiceQuestion = records[clearProblemNum].isFourChoiceQuestion;
+                        var problemText = records[clearProblemNum].question;
+                        var problemAnswer = records[clearProblemNum].answer;
+                        var problemSelect = new Array();
+                        problemSelect[0] = records[clearProblemNum].choice0;
+                        problemSelect[1] = records[clearProblemNum].choice1;
+                        problemSelect[2] = records[clearProblemNum].choice2;
+                        problemSelect[3] = records[clearProblemNum].choice3;
+                        core.currentScene.addChild(status);
+                        core.currentScene.addChild(new Selection(0,isFourChoiceQuestion,problemAnswer,subject,chapter,difficulty,EnemyImagePath));
+                        core.currentScene.addChild(new Selection(1,isFourChoiceQuestion,problemAnswer,subject,chapter,difficulty,EnemyImagePath));
+                        core.currentScene.addChild(new Selection(2,isFourChoiceQuestion,problemAnswer,subject,chapter,difficulty,EnemyImagePath));
+                        core.currentScene.addChild(new Selection(3,isFourChoiceQuestion,problemAnswer,subject,chapter,difficulty,EnemyImagePath));
+                        core.currentScene.addChild(new Player());
+                        core.currentScene.addChild(new Enemy(EnemyImagePath));
+                        core.currentScene.addChild(new QuestionBase());
+                        core.currentScene.addChild(new Question(problemText,problemSelect));
+                    }
                 }
             }
         });
@@ -672,10 +684,12 @@ window.onload = function() {
 
 	function win_battle () {
 		mapdata[dungeon_x][dungeon_y] = 1;
+        win_flag = true;
         core.popScene(core.currentScene);
 	}
 	function clear_dungeon (argument) {
 		state_array[now_subject][now_dungeon] = 1;
+        win_flag = true;
 		core.pushScene(new DungeonClearScene());
 	}
 
