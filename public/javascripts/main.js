@@ -20,6 +20,7 @@ var novelImage = ["/images/novel.jpg"];
 var EnemysImage = [["/images/Japanese_Enemy01.PNG", "/images/Japanese_Enemy02.PNG", "/images/Japanese_Enemy03.PNG", "/images/Japanese_MiddleBoss01.PNG", "/images/Japanese_Boss01.PNG"], ["/images/Math_Enemy01.PNG", "/images/Math_Enemy02.PNG", "/images/Math_Enemy03.PNG", "/images/Math_MiddleBoss01.PNG", "/images/Math_Boss01.PNG"], ["/images/Science_Enemy01.PNG", "/images/Science_Enemy02.PNG", "/images/Science_Enemy03.PNG", "/images/Science_MiddleBoss01.PNG", "/images/Science_Boss01.PNG"], ["/images/Society_Enemy01.PNG", "/images/Society_Enemy02.PNG", "/images/Society_Enemy03.PNG", "/images/Society_MiddleBoss01.PNG", "/images/Society_Boss01.PNG"], ["/images/English_Enemy01.PNG", "/images/English_Enemy02.PNG", "/images/English_Enemy03.PNG", "/images/English_MiddleBoss01.PNG", "/images/English_Boss01.PNG"]];
 var LastBossImage = "/images/LastBoss01.PNG";
 var BattleBackGroundImage = [["/images/Memoria_BackGround_Japanese_Enemy.png", "/images/Memoria_BackGround_Japanese_Boss.png"], ["/images/Memoria_BackGround_Math_Enemy.png", "/images/Memoria_BackGround_Math_Boss.png"], ["/images/Memoria_BackGround_Science_Enemy.png", "/images/Memoria_BackGround_Science_Boss.png"], ["/images/Memoria_BackGround_Society_Enemy.png", "/images/Memoria_BackGround_Society_Boss.png"], ["/images/Memoria_BackGround_English_Enemy.png", "/images/Memoria_BackGround_English_Boss.png"], ["/images/Memoria_BackGround_LastBoss_Enemy.png", "/images/Memoria_BackGround_LastBoss_Boss.png"]];
+var MinMapBlockImage = ["/images/minmapblock.jpeg", "/images/playerblock.jpeg"];
 
 /** エフェクトの位置のバラ付き具合 */
 var EFFECT_RANGE = 64;
@@ -70,7 +71,7 @@ window.onload = function() {
     }
 	core.preload(LastBossImage);
 	core.preload(DUNGEON_BGM);
-	core.preload("/images/minmapblock.jpeg");
+	core.preload(MinMapBlockImage);
 
 	//データの計算
 	function data_to_array(data) {
@@ -332,7 +333,7 @@ window.onload = function() {
  			console.log(subject_number, chapter_number, difficulty, EventFlag, EnemysImage[subject_number][difficulty])
 			core.pushScene(new BattleScene(EventFlag, subject_number, chapter_number, difficulty, EnemysImage[subject_number][difficulty], BattleBackGroundImage[subject_number][0]));
 		}
-		else if (EventFlag >= 5){
+		else if (EventFlag == 5){
 			loopBgm_Ctrl(DUNGEON_BGM, 'stop');
 			core.pushScene(new BattleScene(EventFlag, subject_number, chapter_number, 3, EnemysImage[subject_number][3], BattleBackGroundImage[subject_number][1]));
 		}
@@ -348,8 +349,11 @@ window.onload = function() {
 	}
 
 	function move_xy(next_x, next_y){
+		core.currentScene.addChild(new MapBlock( 510 + 40 * dungeon_x, 400 + 40 * dungeon_y, MinMapBlockImage[0], false));		
 		dungeon_x = next_x;
 		dungeon_y = next_y;
+		core.currentScene.addChild(new MapBlock( 510 + 40 * dungeon_x, 400 + 40 * dungeon_y, MinMapBlockImage[0], false));		
+		core.currentScene.addChild(new MapBlock( 510 + 40 * dungeon_x, 400 + 40 * dungeon_y, MinMapBlockImage[1], true));
 	}
 	function Presented_Message(scene, msg){
 		var msg_box = new Sprite(400, 50);
@@ -384,22 +388,29 @@ window.onload = function() {
 				this.backgroundColor = "#ccc";
 				this.opacity = 0.5;
 				scene.addChild(this);
-				for (var i = 0; i < mapdata.length; i++){
+/*				for (var i = 0; i < mapdata.length; i++){
 					for (var j = 0; j < mapdata[0].length; j++){
 						if (mapdata[i][j]){
 							scene.addChild(new MapBlock( 510 + 40 * i, 400 + 40 * j));
 						}
 					}
 				}
+*/
+			scene.addChild(new MapBlock( 510 + 40 * dungeon_x, 400 + 40 * dungeon_y, MinMapBlockImage[0], false));		
+			scene.addChild(new MapBlock(510 + 40 * dungeon_x, 400 + 40 * dungeon_y, MinMapBlockImage[1], true));				
 			}	
 		});
 
 	var MapBlock = Class.create(Sprite, {
-		initialize: function (x, y){
+		initialize: function (x, y, MapBlockImage, playerFlag){
 			Sprite.call(this, 30, 30); 
 			this.x = x;
 			this.y = y;
-			this.image = core.assets["/images/minmapblock.jpeg"];
+			this.image = core.assets[MapBlockImage];
+			if (playerFlag){
+				var opacity = 1;
+				this.tl.delay(2).fadeOut(12).fadeIn(12).loop();
+			}
 		}
 	});
 		function addChild_to_scene(scene, sprite){
