@@ -7,6 +7,9 @@ var state_array = [[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[
 
 var BATTLE_BGM = './bgm/BATTLE_cyrf_energy.mp3';
 var PLAYER_IMG = '/images/Player.png';
+var BATTLE4_IMG = '/images/Battle.png';
+var BATTLE2_IMG = '/images/Battle2.png';
+
 
 var DUNGEON_BGM = 'bgm/DUNGEON_cyrf_wafes_dungeon01.mp3';
 
@@ -14,7 +17,7 @@ var DUNGEON_BGM = 'bgm/DUNGEON_cyrf_wafes_dungeon01.mp3';
 var islandImage = ['/images/island_j.png', '/images/island_m.png', '/images/island_sc.png', '/images/island_so.png', '/images/island_e.png','/images/island_e.png'];
 var boardImage = ['/images/board_j.png','/images/board_m.png','/images/board_sc.png','/images/board_so.png','/images/board_e.png'];
 var directionImage = ["/images/arrow_top.png","/images/arrow_right.png","/images/arrow_bottom.png","/images/arrow_left.png"];
-var battleImage = [PLAYER_IMG];
+var battleImage = [PLAYER_IMG,BATTLE_BGM,BATTLE4_IMG,BATTLE2_IMG];
 var dungeonMapImage = ["/images/chara.png","/images/minmap1.png","/images/clear.png"];
 var novelImage = ["/images/novel.jpg"];
 var EnemysImage = [["/images/Japanese_Enemy01.PNG", "/images/Japanese_Enemy02.PNG", "/images/Japanese_Enemy03.PNG", "/images/Japanese_MiddleBoss01.PNG", "/images/Japanese_Boss01.PNG"], ["/images/Math_Enemy01.PNG", "/images/Math_Enemy02.PNG", "/images/Math_Enemy03.PNG", "/images/Math_MiddleBoss01.PNG", "/images/Math_Boss01.PNG"], ["/images/Science_Enemy01.PNG", "/images/Science_Enemy02.PNG", "/images/Science_Enemy03.PNG", "/images/Science_MiddleBoss01.PNG", "/images/Science_Boss01.PNG"], ["/images/Society_Enemy01.PNG", "/images/Society_Enemy02.PNG", "/images/Society_Enemy03.PNG", "/images/Society_MiddleBoss01.PNG", "/images/Society_Boss01.PNG"], ["/images/English_Enemy01.PNG", "/images/English_Enemy02.PNG", "/images/English_Enemy03.PNG", "/images/English_MiddleBoss01.PNG", "/images/English_Boss01.PNG"]];
@@ -508,7 +511,7 @@ window.onload = function() {
 		initialize: function(eventFlag, subject, chapter, difficulty, EnemyImagePath) {
 			Scene.call(this);
 			event_type = eventFlag;
-			this.addChild(new BackGround('/images/dungeonMapBg.jpg'));
+			this.addChild(new BackGround(BATTLE4_IMG));
 			core.score = 10;
 			core.hp = 4;
 			var userHp = "HP : ";
@@ -579,8 +582,8 @@ window.onload = function() {
 	});
 	var Selection = Class.create(Sprite, {
 		initialize: function(type,isTwoChoiceQuestion,problemAnswer,subject,chapter,difficulty,EnemyImagePath) {
-			var fourChoiceQuestion = [[0,500],[200,500],[400,500],[600,500]];
-            var twoChoiceQuestion  = [[0,500],[400,500],[800,600],[800,600]];
+			var fourChoiceQuestion = [[0,550],[200,550],[400,550],[600,550]];
+            var twoChoiceQuestion  = [[0,550],[400,550],[800,600],[800,600]];
             this.type = type;
             this.problemAnswer = problemAnswer;
             this.event_type = event_type;
@@ -589,12 +592,12 @@ window.onload = function() {
             this.difficulty = difficulty;
             this.EnemyImagePath = EnemyImagePath;
             if(isTwoChoiceQuestion) {
-                Sprite.call(this, 200, 100);
+                Sprite.call(this, 200, 50);
                 this.x = twoChoiceQuestion[type][0];
                 this.y = twoChoiceQuestion[type][1];
             }
             else {
-                Sprite.call(this, 400, 100);
+                Sprite.call(this, 400, 50);
                 this.x = fourChoiceQuestion[type][0];
                 this.y = fourChoiceQuestion[type][1];
             }
@@ -618,6 +621,7 @@ window.onload = function() {
             var problemAnswer = this.problemAnswer;
 			if(isAnswer(playerAnswer,problemAnswer)){
                 clearProblemNum++;
+                core.popScene(core.parentNode);
                 core.pushScene(new BattleScene(this.event_type, this.subject, this.chapter, this.difficulty , this.EnemyImagePath));
                 attackEffect();
             } else {
