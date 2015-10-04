@@ -19,6 +19,7 @@ var dungeonMapImage = ["/images/chara.png","/images/minmap1.png","/images/clear.
 var novelImage = ["/images/novel.jpg"];
 var EnemysImage = [["/images/Japanese_Enemy01.PNG", "/images/Japanese_Enemy02.PNG", "/images/Japanese_Enemy03.PNG", "/images/Japanese_MiddleBoss01.PNG", "/images/Japanese_Boss01.PNG"], ["/images/Math_Enemy01.PNG", "/images/Math_Enemy02.PNG", "/images/Math_Enemy03.PNG", "/images/Math_MiddleBoss01.PNG", "/images/Math_Boss01.PNG"], ["/images/Science_Enemy01.PNG", "/images/Science_Enemy02.PNG", "/images/Science_Enemy03.PNG", "/images/Science_MiddleBoss01.PNG", "/images/Science_Boss01.PNG"], ["/images/Society_Enemy01.PNG", "/images/Society_Enemy02.PNG", "/images/Society_Enemy03.PNG", "/images/Society_MiddleBoss01.PNG", "/images/Society_Boss01.PNG"], ["/images/English_Enemy01.PNG", "/images/English_Enemy02.PNG", "/images/English_Enemy03.PNG", "/images/English_MiddleBoss01.PNG", "/images/English_Boss01.PNG"]];
 var LastBossImage = "/images/LastBoss01.PNG";
+var BattleBackGroundImage = [["/images/Memoria_BackGround_Japanese_Enemy.png", "/images/Memoria_BackGround_Japanese_Boss.png"], ["/images/Memoria_BackGround_Math_Enemy.png", "/images/Memoria_BackGround_Math_Boss.png"], ["/images/Memoria_BackGround_Science_Enemy.png", "/images/Memoria_BackGround_Science_Boss.png"], ["/images/Memoria_BackGround_Society_Enemy.png", "/images/Memoria_BackGround_Society_Boss.png"], ["/images/Memoria_BackGround_English_Enemy.png", "/images/Memoria_BackGround_English_Boss.png"], ["/images/Memoria_BackGround_LastBoss_Enemy.png", "/images/Memoria_BackGround_LastBoss_Boss.png"]];
 
 /** エフェクトの位置のバラ付き具合 */
 var EFFECT_RANGE = 64;
@@ -63,6 +64,9 @@ window.onload = function() {
 	core.preload(directionImage);
     for (var i = 0; i < EnemysImage.length; i++){
         core.preload(EnemysImage[i]);
+    }
+    for (var i = 0; i < BattleBackGroundImage.length; i++){
+        core.preload(BattleBackGroundImage[i]);
     }
 	core.preload(LastBossImage);
 	core.preload(DUNGEON_BGM);
@@ -326,19 +330,19 @@ window.onload = function() {
 			var difficulty = EventFlag - 2;
  			loopBgm_Ctrl(DUNGEON_BGM, 'pause');
  			console.log(subject_number, chapter_number, difficulty, EventFlag, EnemysImage[subject_number][difficulty])
-			core.pushScene(new BattleScene(EventFlag, subject_number, chapter_number, difficulty, EnemysImage[subject_number][difficulty]));
+			core.pushScene(new BattleScene(EventFlag, subject_number, chapter_number, difficulty, EnemysImage[subject_number][difficulty], BattleBackGroundImage[subject_number][0]));
 		}
 		else if (EventFlag >= 5){
 			loopBgm_Ctrl(DUNGEON_BGM, 'stop');
-			core.pushScene(new BattleScene(EventFlag, subject_number, chapter_number, 3, EnemysImage[subject_number][3]));
+			core.pushScene(new BattleScene(EventFlag, subject_number, chapter_number, 3, EnemysImage[subject_number][3], BattleBackGroundImage[subject_number][1]));
 		}
 		else if (EventFlag == 6){
 			loopBgm_Ctrl(DUNGEON_BGM, 'stop');
-			core.pushScene(new BattleScene(EventFlag, subject_number, chapter_number, 4, EnemysImage[subject_number][4]));
+			core.pushScene(new BattleScene(EventFlag, subject_number, chapter_number, 4, EnemysImage[subject_number][4], BattleBackGroundImage[subject_number][1]));
 		}
 		else if (EventFlag == 7){
 			loopBgm_Ctrl(DUNGEON_BGM, 'stop');
-			core.pushScene(new BattleScene(EventFlag, subject_number, chapter_number, 5, LastBossImage));
+			core.pushScene(new BattleScene(EventFlag, subject_number, chapter_number, 5, LastBossImage, BattleBackGroundImage[subject_number][1]));
 //			core.pushScene(new DungeonClearScene());
 		}
 	}
@@ -504,7 +508,7 @@ window.onload = function() {
 	var status = new Label();
 	var event_type;
 	var BattleScene = Class.create(Scene, {
-		initialize: function(eventFlag, subject, chapter, difficulty, EnemyImagePath) {
+		initialize: function(eventFlag, subject, chapter, difficulty, EnemyImagePath, BackGroundImagePath) {
 			Scene.call(this);
 			event_type = eventFlag;
 			this.addChild(new BackGround('/images/dungeonMapBg.jpg'));
