@@ -551,7 +551,6 @@ window.onload = function() {
 			Sprite.call(this, 800, 100);
             this.x = 0;
             this.y = 450;
-            this.backgroundColor = "rgba(200, 200, 200, 0.5)";
             var problemText = new Label(problemText);
             var problemSelect0 = new Label(problemSelect[0]);
             var problemSelect1 = new Label(problemSelect[1]);
@@ -579,9 +578,9 @@ window.onload = function() {
 
 	var Enemy = Class.create(Sprite, {
 		initialize: function(EnemyImagePath) {
-			Sprite.call(this, 800, 400);
+			Sprite.call(this, 400, 400);
             this.image = core.assets[EnemyImagePath];
-			this.backgroundColor = "rgba(200, 200, 200, 0.5)";
+            this.x = 200;
             this.y = 100;
 		}
 	});
