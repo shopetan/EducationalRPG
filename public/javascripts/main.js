@@ -541,17 +541,16 @@ window.onload = function() {
 	});
 	var QuestionBase = Class.create(Sprite, {
 		initialize: function() {
-			Sprite.call(this, 500, 100);
-			this.backgroundColor = "rgba(200, 255, 200, 0.5)";
-        		this.x = 100;
-        		this.y = 0;
+			Sprite.call(this, 800, 100);
+        		this.x = 0;
+        		this.y = 450;
 		}
 	});
     var Question = Class.create(Sprite, {
 		initialize: function(problemText,problemSelect) {
-			Sprite.call(this, 500, 100);
-            this.x = 100;
-            this.y = 0;
+			Sprite.call(this, 800, 100);
+            this.x = 0;
+            this.y = 450;
             this.backgroundColor = "rgba(200, 200, 200, 0.5)";
             var problemText = new Label(problemText);
             var problemSelect0 = new Label(problemSelect[0]);
@@ -559,16 +558,16 @@ window.onload = function() {
             var problemSelect2 = new Label(problemSelect[2]);
             var problemSelect3 = new Label(problemSelect[3]);
 
-            problemText.x = 100;
-            problemText.y = 0;
-            problemSelect0.x = 100;
-            problemSelect0.y = 20;
-            problemSelect1.x = 100;
-            problemSelect1.y = 40;
-            problemSelect2.x = 100;
-            problemSelect2.y = 60;
-            problemSelect3.x = 100;
-            problemSelect3.y = 80;
+            problemText.x = 0;
+            problemText.y = 450;
+            problemSelect0.x = 0;
+            problemSelect0.y = 470;
+            problemSelect1.x = 0;
+            problemSelect1.y = 490;
+            problemSelect2.x = 0;
+            problemSelect2.y = 510;
+            problemSelect3.x = 0;
+            problemSelect3.y = 530;
 
             core.currentScene.addChild(problemText);
             core.currentScene.addChild(problemSelect0);
@@ -609,16 +608,12 @@ window.onload = function() {
             }
 			switch(type) {
 			case 0:
-				this.backgroundColor = "rgba(150, 150, 150, 0.5)";
 				break;
 			case 1:
-				this.backgroundColor = "rgba(100, 100, 100, 0.5)";
 				break;
 			case 2:
-				this.backgroundColor = "rgba(50, 50, 50, 0.5)";
 				break;
 			case 3:
-				this.backgroundColor = "rgba(0, 0, 0, 0.5)";
 				break;
 			}
 		},
