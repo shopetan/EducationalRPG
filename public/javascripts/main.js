@@ -550,7 +550,7 @@ window.onload = function() {
                             return;
                         }
                     }else{
-                        if(count <= 1 && !(isKnockDown(clearProblemNum, problemSize)) && !(win_flag) ){
+                        if(count <= 1 && !(win_flag) ){
                             var isFourChoiceQuestion = records[clearProblemNum].isFourChoiceQuestion;
                             var problemText = records[clearProblemNum].question;
                             var problemAnswer = records[clearProblemNum].answer;
