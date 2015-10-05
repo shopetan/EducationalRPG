@@ -55,7 +55,7 @@ var number_of_island = 5;
 
 window.onload = function() {
 	var core = new Core(800, 600);
-	core.preload('/images/worldMapBg.jpg','/images/islandMapBg.png','/images/dungeon.png','/images/dungeonMapBg.jpg','/images/complete.png','/images/backArrow.png','/images/welcome.jpg','/images/startButton.png');
+	core.preload('/images/worldMapBg.jpg','/images/islandMapBg.png','/images/dungeon.png','/images/dungeonMapBg.jpg','/images/complete.png','/images/backArrow.png','/images/Title.png');
 	core.preload(battleImage);
 	core.preload(islandImage);
 	core.preload(boardImage);
@@ -118,17 +118,7 @@ window.onload = function() {
 	var WelcomeScene = Class.create(Scene, {
 		initialize: function(subject) {
 			Scene.call(this);
-			this.addChild(new BackGround('/images/welcome.jpg'));
-			this.addChild(new StartButton());
-		}
-	});
-
-	var StartButton = Class.create(Sprite, {
-		initialize: function(x, y, subject) {
-			Sprite.call(this, 380, 100);
-			this.x = 400 - 190;
-			this.y = 600 - 100;
-			this.image = core.assets['/images/startButton.png'];
+			this.addChild(new BackGround('/images/Title.png'));
 		},
 		ontouchstart: function() {
 			if (state_array[5][1] == 0) {
