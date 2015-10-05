@@ -606,6 +606,12 @@ window.onload = function() {
             var problemSelect2 = new Label(problemSelect[2]);
             var problemSelect3 = new Label(problemSelect[3]);
 
+            problemText.font = "20px 游ゴシック体";
+            problemSelect0.font = "20px 游ゴシック体";
+            problemSelect1.font = "20px 游ゴシック体";
+            problemSelect2.font = "20px 游ゴシック体";
+            problemSelect3.font = "20px 游ゴシック体";
+
             problemText.x = 0;
             problemText.y = 450;
             problemSelect0.x = 0;
