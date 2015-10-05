@@ -561,7 +561,7 @@ window.onload = function() {
                             problemSelect[3] = records[clearProblemNum].choice3;
                             core.currentScene.addChild(status);
                             core.currentScene.addChild(new BackGround(BackGroundImagePath));
-                            core.currentScene.addChild(new BackGround(BATTLE4_IMG));
+                            core.currentScene.addChild(new BattleBackGround(isFourChoiceQuestion));
                             core.currentScene.addChild(new Selection(0,isFourChoiceQuestion,problemAnswer,subject,chapter,difficulty,EnemyImagePath,BackGroundImagePath,problemSelect));
                             core.currentScene.addChild(new Selection(1,isFourChoiceQuestion,problemAnswer,subject,chapter,difficulty,EnemyImagePath,BackGroundImagePath,problemSelect));
                             core.currentScene.addChild(new Selection(2,isFourChoiceQuestion,problemAnswer,subject,chapter,difficulty,EnemyImagePath,BackGroundImagePath,problemSelect));
@@ -695,7 +695,6 @@ window.onload = function() {
                 clearProblemNum++;
                 core.popScene(core.currentScene);
                 core.pushScene(new BattleScene(this.event_type, this.subject, this.chapter, this.difficulty , this.EnemyImagePath,this.BackGroundImagePath));
-                attackEffect();
             } else {
                 damageEffect();
             }
@@ -812,6 +811,22 @@ window.onload = function() {
 			this.image = core.assets[img];
 			this.x = 0;
 			this.y = 0;
+		}
+	});
+
+    var BattleBackGround = Class.create(Sprite, {
+		initialize: function(isTwoChoiceQuestion) {
+			Sprite.call(this, 800, 600);
+            if(isTwoChoiceQuestion){
+                this.image = core.assets[BATTLE2_IMG];
+    			this.x = 0;
+    			this.y = 0;
+            }else{
+                this.image = core.assets[BATTLE4_IMG];
+    			this.x = 0;
+    			this.y = 0;
+            }
+
 		}
 	});
 
