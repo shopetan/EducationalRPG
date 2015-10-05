@@ -524,7 +524,50 @@ window.onload = function() {
 			userHp.font = "16px Tahoma";
         	var hp = core.hp;
         	status.text = text[hp];
-            getProblem(eventFlag, subject, chapter, difficulty, EnemyImagePath);
+            socketio.emit("fetchDB",{
+                subject: subject,
+                chapter: chapter,
+                difficulty: difficulty
+            });
+            var count = 0;
+            socketio.on('returnRecord', function(records){
+                count++;
+                var problemSize = records.length
+                if(problemSize == 0){
+                    return;
+                }else{
+                    if(isKnockDown(clearProblemNum, problemSize)){
+                        clearProblemNum = 0;
+                        if (event_type >= 2  && event_type <= 4) {
+                            win_battle();
+                            return;
+                        } else if (event_type >= 5) {
+                            clear_dungeon();
+                            return;
+                        }
+                    }else{
+                        if(count <= 1 && !(isKnockDown(clearProblemNum, problemSize)) && !(win_flag) ){
+                            var isFourChoiceQuestion = records[clearProblemNum].isFourChoiceQuestion;
+                            var problemText = records[clearProblemNum].question;
+                            var problemAnswer = records[clearProblemNum].answer;
+                            var problemSelect = new Array();
+                            problemSelect[0] = records[clearProblemNum].choice0;
+                            problemSelect[1] = records[clearProblemNum].choice1;
+                            problemSelect[2] = records[clearProblemNum].choice2;
+                            problemSelect[3] = records[clearProblemNum].choice3;
+                            core.currentScene.addChild(status);
+                            core.currentScene.addChild(new Selection(0,isFourChoiceQuestion,problemAnswer,subject,chapter,difficulty,EnemyImagePath));
+                            core.currentScene.addChild(new Selection(1,isFourChoiceQuestion,problemAnswer,subject,chapter,difficulty,EnemyImagePath));
+                            core.currentScene.addChild(new Selection(2,isFourChoiceQuestion,problemAnswer,subject,chapter,difficulty,EnemyImagePath));
+                            core.currentScene.addChild(new Selection(3,isFourChoiceQuestion,problemAnswer,subject,chapter,difficulty,EnemyImagePath));
+                            core.currentScene.addChild(new Player());
+                            core.currentScene.addChild(new Enemy(EnemyImagePath));
+                            core.currentScene.addChild(new QuestionBase());
+                            core.currentScene.addChild(new Question(problemText,problemSelect));
+                        }
+                    }
+                }
+            });
         	var back = new Label('ダンジョンから抜け出す');
         	back.x = 645;
 			this.addChild(back);
@@ -622,59 +665,13 @@ window.onload = function() {
 			if(isAnswer(playerAnswer,problemAnswer)){
                 clearProblemNum++;
                 core.popScene(core.currentScene);
-                core.pushScene(new BattleScene(this.event_type, this.subject, this.chapter, this.difficulty , this.EnemyImagePath));
                 attackEffect();
+                core.pushScene(new BattleScene(this.event_type, this.subject, this.chapter, this.difficulty , this.EnemyImagePath));
             } else {
                 damageEffect();
             }
 		}
 	});
-    function getProblem(event_type,subject, chapter, difficulty, EnemyImagePath){
-        socketio.emit("fetchDB",{
-            subject: subject,
-            chapter: chapter,
-            difficulty: difficulty
-        });
-        var count = 0;
-        socketio.on('returnRecord', function(records){
-            count++;
-            var problemSize = records.length
-            if(problemSize == 0){
-                return;
-            }else{
-                if(isKnockDown(clearProblemNum, problemSize)){
-                    clearProblemNum = 0;
-                    if (event_type >= 2 && event_type < 5) {
-                        win_battle();
-                        return;
-            		} else if (event_type >= 5) {
-                        clear_dungeon();
-                        return;
-            		}
-                }else{
-                    if(count <= 1 && !(isKnockDown(clearProblemNum, problemSize)) && !(win_flag) ){
-                        var isFourChoiceQuestion = records[clearProblemNum].isFourChoiceQuestion;
-                        var problemText = records[clearProblemNum].question;
-                        var problemAnswer = records[clearProblemNum].answer;
-                        var problemSelect = new Array();
-                        problemSelect[0] = records[clearProblemNum].choice0;
-                        problemSelect[1] = records[clearProblemNum].choice1;
-                        problemSelect[2] = records[clearProblemNum].choice2;
-                        problemSelect[3] = records[clearProblemNum].choice3;
-                        core.currentScene.addChild(status);
-                        core.currentScene.addChild(new Selection(0,isFourChoiceQuestion,problemAnswer,subject,chapter,difficulty,EnemyImagePath));
-                        core.currentScene.addChild(new Selection(1,isFourChoiceQuestion,problemAnswer,subject,chapter,difficulty,EnemyImagePath));
-                        core.currentScene.addChild(new Selection(2,isFourChoiceQuestion,problemAnswer,subject,chapter,difficulty,EnemyImagePath));
-                        core.currentScene.addChild(new Selection(3,isFourChoiceQuestion,problemAnswer,subject,chapter,difficulty,EnemyImagePath));
-                        core.currentScene.addChild(new Player());
-                        core.currentScene.addChild(new Enemy(EnemyImagePath));
-                        core.currentScene.addChild(new QuestionBase());
-                        core.currentScene.addChild(new Question(problemText,problemSelect));
-                    }
-                }
-            }
-        });
-    }
 
 	function win_battle () {
 		mapdata[dungeon_x][dungeon_y] = 1;
@@ -684,6 +681,7 @@ window.onload = function() {
 	function clear_dungeon (argument) {
 		state_array[now_subject][now_dungeon] = 1;
         win_flag = true;
+        core.popScene(core.currentScene);
 		core.pushScene(new DungeonClearScene());
 	}
 
