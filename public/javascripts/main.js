@@ -11,7 +11,24 @@ var PLAYER_IMG = '/images/Player.png';
 var DUNGEON_BGM = 'bgm/DUNGEON_cyrf_wafes_dungeon01.mp3';
 
 //画像
-var islandImage = ['/images/island_j.png', '/images/island_m.png', '/images/island_sc.png', '/images/island_so.png', '/images/island_e.png','/images/island_e.png'];
+var backgroundImage =	[["/images/Memoria_BackGround_Japanese_Boss.png","/images/Memoria_BackGround_Japanese_Enemy.png"],
+							["/images/Memoria_BackGround_Math_Boss.png","/images/Memoria_BackGround_Math_Enemy.png"],
+							["/images/Memoria_BackGround_Science_Boss.png","/images/Memoria_BackGround_Science_Enemy.png"],
+							["/images/Memoria_BackGround_Society_Boss.png","/images/Memoria_BackGround_Society_Enemy.png"],
+							["/images/Memoria_BackGround_English_Boss.png","/images/Memoria_BackGround_English_Enemy.png"],
+							["/images/Memoria_BackGround_LastBoss_Boss.png","/images/Memoria_BackGround_LastBoss_Enemy.png"]];
+var dungeonImage_150 = [
+["/images/Dungeon_150/DUNGEON_HOLE_01.PNG","/images/Dungeon_150/DUNGEON_HOLE_02.PNG","/images/Dungeon_150/DUNGEON_HOLE_03.PNG","/images/Dungeon_150/DUNGEON_HOLE_04.PNG","/images/Dungeon_150/DUNGEON_HOLE_05.PNG"],
+["/images/Dungeon_150/DUNGEON_ROCK_01.PNG","/images/Dungeon_150/DUNGEON_ROCK_02.PNG","/images/Dungeon_150/DUNGEON_ROCK_03.PNG","/images/Dungeon_150/DUNGEON_ROCK_04.PNG","/images/Dungeon_150/DUNGEON_ROCK_05.PNG"],
+["/images/Dungeon_150/DUNGEON_CRYSTAL_01.PNG","/images/Dungeon_150/DUNGEON_CRYSTAL_02.PNG","/images/Dungeon_150/DUNGEON_CRYSTAL_03.PNG","/images/Dungeon_150/DUNGEON_CRYSTAL_04.PNG","/images/Dungeon_150/DUNGEON_CRYSTAL_05.PNG"],
+["/images/Dungeon_150/DUNGEON_SATELITE_01.PNG","/images/Dungeon_150/DUNGEON_SATELITE_02.PNG","/images/Dungeon_150/DUNGEON_SATELITE_03.PNG","/images/Dungeon_150/DUNGEON_SATELITE_04.PNG","/images/Dungeon_150/DUNGEON_SATELITE_05.PNG"],
+["/images/Dungeon_150/DUNGEON_CRYSTAL_01.PNG","/images/Dungeon_150/DUNGEON_CRYSTAL_02.PNG","/images/Dungeon_150/DUNGEON_CRYSTAL_03.PNG","/images/Dungeon_150/DUNGEON_CRYSTAL_04.PNG","/images/Dungeon_150/DUNGEON_CRYSTAL_05.PNG"]];
+var dungeonImage_200 = [
+["/images/Dungeon_200/DUNGEON_HOLE_01.PNG","/images/Dungeon_200/DUNGEON_HOLE_02.PNG","/images/Dungeon_200/DUNGEON_HOLE_03.PNG","/images/Dungeon_200/DUNGEON_HOLE_04.PNG","/images/Dungeon_200/DUNGEON_HOLE_05.PNG"],
+["/images/Dungeon_200/DUNGEON_ROCK_01.PNG","/images/Dungeon_200/DUNGEON_ROCK_02.PNG","/images/Dungeon_200/DUNGEON_ROCK_03.PNG","/images/Dungeon_200/DUNGEON_ROCK_04.PNG","/images/Dungeon_200/DUNGEON_ROCK_05.PNG"],
+["/images/Dungeon_200/DUNGEON_CRYSTAL_01.PNG","/images/Dungeon_200/DUNGEON_CRYSTAL_02.PNG","/images/Dungeon_200/DUNGEON_CRYSTAL_03.PNG","/images/Dungeon_200/DUNGEON_CRYSTAL_04.PNG","/images/Dungeon_200/DUNGEON_CRYSTAL_05.PNG"],
+["/images/Dungeon_200/DUNGEON_SATELITE_01.PNG","/images/Dungeon_200/DUNGEON_SATELITE_02.PNG","/images/Dungeon_200/DUNGEON_SATELITE_03.PNG","/images/Dungeon_200/DUNGEON_SATELITE_04.PNG","/images/Dungeon_200/DUNGEON_SATELITE_05.PNG"],
+["/images/Dungeon_200/DUNGEON_CRYSTAL_01.PNG","/images/Dungeon_200/DUNGEON_CRYSTAL_02.PNG","/images/Dungeon_200/DUNGEON_CRYSTAL_03.PNG","/images/Dungeon_200/DUNGEON_CRYSTAL_04.PNG","/images/Dungeon_200/DUNGEON_CRYSTAL_05.PNG"]];
 var boardImage = ['/images/board_j.png','/images/board_m.png','/images/board_sc.png','/images/board_so.png','/images/board_e.png','/images/board_e.png'];
 var directionImage = ["/images/arrow_top.png","/images/arrow_right.png","/images/arrow_bottom.png","/images/arrow_left.png"];
 var battleImage = [PLAYER_IMG];
@@ -55,19 +72,25 @@ var number_of_island = 5;
 
 window.onload = function() {
 	var core = new Core(800, 600);
-	core.preload('/images/worldMapBg.jpg','/images/islandMapBg.png','/images/dungeon.png','/images/dungeonMapBg.jpg','/images/complete.png','/images/backArrow.png','/images/Title.png');
+	core.preload('/images/dungeon.png','/images/dungeonMapBg.jpg','/images/complete.png','/images/backArrow.png','/images/Title.png');
 
 	core.preload(battleImage);
-	core.preload(islandImage);
 	core.preload(boardImage);
 	core.preload(dungeonMapImage);
 	core.preload(directionImage);
-    for (var i = 0; i < EnemysImage.length; i++){
-        core.preload(EnemysImage[i]);
-    }
+	preloadImage(backgroundImage);
+	preloadImage(EnemysImage);
+	preloadImage(dungeonImage_150);
+	preloadImage(dungeonImage_200);
 	core.preload(LastBossImage);
 	core.preload(DUNGEON_BGM);
 	core.preload("/images/minmapblock.jpeg");
+
+	function preloadImage(array) {
+		for (var i = 0; i < array.length; i++) {
+			core.preload(array[i]);
+		}
+	}
 
 	//データの計算
 	function data_to_array(data) {
@@ -135,10 +158,10 @@ window.onload = function() {
 //WorldMap
 	var WorldMap = Class.create(Scene, {
 		initialize: function() {
-			var islandOrigin = [[272,5],[-20,100],[560,100],[110,344],[440,344],[272,200]];
+			var islandOrigin = [[300,10],[10,200],[610,200],[150,420],[450,420],[300,200]];
 			data_to_array(user_state);
 			Scene.call(this);
-			this.addChild(new BackGround('/images/worldMapBg.jpg'));
+			this.addChild(new BackGround(backgroundImage[5][0]));
 			for (var i = 0; i < islandOrigin.length-1; i++) {
 				this.addChild(new Island(islandOrigin[i][0], islandOrigin[i][1], i));
 			}
@@ -158,10 +181,10 @@ window.onload = function() {
 	var now_subject;
 	var Island = Class.create(Sprite, {
 		initialize: function(x, y, subject) {
-			Sprite.call(this, 256, 256);
+			Sprite.call(this, 200, 200);
 			this.x = x;
 			this.y = y;
-			this.image = core.assets[islandImage[subject]];
+			this.image = core.assets[dungeonImage_200[subject][0]];
 			this.subject = subject;
 		},
 		ontouchstart: function() {
@@ -175,7 +198,7 @@ window.onload = function() {
 		initialize: function(subject) {
 			var dungeonOrigin = [[80,160],[480,500],[570,225],[20,400],[310,300]];
 			Scene.call(this);
-			this.addChild(new BackGround('/images/islandMapBg.png'));
+			this.addChild(new BackGround(backgroundImage[subject][0]));
 			this.addChild(new Board(subject));
 			this.addChild(new BackArrow());
 			if (subject == 5) {
