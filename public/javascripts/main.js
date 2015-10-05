@@ -56,6 +56,7 @@ var number_of_island = 5;
 window.onload = function() {
 	var core = new Core(800, 600);
 	core.preload('/images/worldMapBg.jpg','/images/islandMapBg.png','/images/dungeon.png','/images/dungeonMapBg.jpg','/images/complete.png','/images/backArrow.png','/images/Title.png');
+
 	core.preload(battleImage);
 	core.preload(islandImage);
 	core.preload(boardImage);
