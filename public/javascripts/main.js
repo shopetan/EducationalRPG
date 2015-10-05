@@ -335,7 +335,7 @@ window.onload = function() {
  			core.pushScene(new BattleScene(EventFlag, subject_number, chapter_number, difficulty, EnemysImage[subject_number][difficulty], BattleBackGroundImage[subject_number][0]));
 		}
 		else if (EventFlag == 5){
-			winflag = false;
+			win_flag = false;
 			loopBgm_Ctrl(DUNGEON_BGM, 'stop');
 			core.pushScene(new BattleScene(EventFlag, subject_number, chapter_number, 3, EnemysImage[subject_number][3], BattleBackGroundImage[subject_number][1]));
 		}
