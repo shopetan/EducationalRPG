@@ -17,7 +17,7 @@ var DUNGEON_BGM = 'bgm/DUNGEON_cyrf_wafes_dungeon01.mp3';
 var islandImage = ['/images/island_j.png', '/images/island_m.png', '/images/island_sc.png', '/images/island_so.png', '/images/island_e.png','/images/island_e.png'];
 var boardImage = ['/images/board_j.png','/images/board_m.png','/images/board_sc.png','/images/board_so.png','/images/board_e.png'];
 var directionImage = ["/images/arrow_top.png","/images/arrow_right.png","/images/arrow_bottom.png","/images/arrow_left.png"];
-var battleImage = [PLAYER_IMG];
+var battleImage = [PLAYER_IMG,BATTLE4_IMG,BATTLE2_IMG];
 var dungeonMapImage = ["/images/PlayerInDungeon.PNG","/images/minmap1.png","/images/clear.png"];
 var novelImage = ["/images/novel.jpg"];
 var EnemysImage = [["/images/Japanese_Enemy01.PNG", "/images/Japanese_Enemy02.PNG", "/images/Japanese_Enemy03.PNG", "/images/Japanese_MiddleBoss01.PNG", "/images/Japanese_Boss01.PNG"], ["/images/Math_Enemy01.PNG", "/images/Math_Enemy02.PNG", "/images/Math_Enemy03.PNG", "/images/Math_MiddleBoss01.PNG", "/images/Math_Boss01.PNG"], ["/images/Science_Enemy01.PNG", "/images/Science_Enemy02.PNG", "/images/Science_Enemy03.PNG", "/images/Science_MiddleBoss01.PNG", "/images/Science_Boss01.PNG"], ["/images/Society_Enemy01.PNG", "/images/Society_Enemy02.PNG", "/images/Society_Enemy03.PNG", "/images/Society_MiddleBoss01.PNG", "/images/Society_Boss01.PNG"], ["/images/English_Enemy01.PNG", "/images/English_Enemy02.PNG", "/images/English_Enemy03.PNG", "/images/English_MiddleBoss01.PNG", "/images/English_Boss01.PNG"]];
@@ -550,8 +550,9 @@ window.onload = function() {
                             return;
                         }
                     }else{
-                        if(count <= 1 && !(isKnockDown(clearProblemNum, problemSize)) && !(win_flag) ){
+                        if(count <= 1 && !(win_flag) ){
                             var isFourChoiceQuestion = records[clearProblemNum].isFourChoiceQuestion;
+                            isFourChoiceQuestion = !(isFourChoiceQuestion)
                             var problemText = records[clearProblemNum].question;
                             var problemAnswer = records[clearProblemNum].answer;
                             var problemSelect = new Array();
@@ -559,16 +560,17 @@ window.onload = function() {
                             problemSelect[1] = records[clearProblemNum].choice1;
                             problemSelect[2] = records[clearProblemNum].choice2;
                             problemSelect[3] = records[clearProblemNum].choice3;
-                            core.currentScene.addChild(new BackGround(BackGroundImagePath));
                             core.currentScene.addChild(status);
-                            core.currentScene.addChild(new Selection(0,isFourChoiceQuestion,problemAnswer,subject,chapter,difficulty,EnemyImagePath,BackGroundImagePath));
-                            core.currentScene.addChild(new Selection(1,isFourChoiceQuestion,problemAnswer,subject,chapter,difficulty,EnemyImagePath,BackGroundImagePath));
-                            core.currentScene.addChild(new Selection(2,isFourChoiceQuestion,problemAnswer,subject,chapter,difficulty,EnemyImagePath,BackGroundImagePath));
-                            core.currentScene.addChild(new Selection(3,isFourChoiceQuestion,problemAnswer,subject,chapter,difficulty,EnemyImagePath,BackGroundImagePath));
+                            core.currentScene.addChild(new BackGround(BackGroundImagePath));
+                            core.currentScene.addChild(new BattleBackGround(isFourChoiceQuestion));
+                            core.currentScene.addChild(new Selection(0,isFourChoiceQuestion,problemAnswer,subject,chapter,difficulty,EnemyImagePath,BackGroundImagePath,problemSelect));
+                            core.currentScene.addChild(new Selection(1,isFourChoiceQuestion,problemAnswer,subject,chapter,difficulty,EnemyImagePath,BackGroundImagePath,problemSelect));
+                            core.currentScene.addChild(new Selection(2,isFourChoiceQuestion,problemAnswer,subject,chapter,difficulty,EnemyImagePath,BackGroundImagePath,problemSelect));
+                            core.currentScene.addChild(new Selection(3,isFourChoiceQuestion,problemAnswer,subject,chapter,difficulty,EnemyImagePath,BackGroundImagePath,problemSelect));
                             core.currentScene.addChild(new Player());
                             core.currentScene.addChild(new Enemy(EnemyImagePath));
                             core.currentScene.addChild(new QuestionBase());
-                            core.currentScene.addChild(new Question(problemText,problemSelect));
+                            core.currentScene.addChild(new Question(problemText));
                         }
                     }
                 }
@@ -595,32 +597,18 @@ window.onload = function() {
 		}
 	});
     var Question = Class.create(Sprite, {
-		initialize: function(problemText,problemSelect) {
+		initialize: function(problemText) {
 			Sprite.call(this, 800, 100);
             this.x = 0;
             this.y = 450;
             var problemText = new Label(problemText);
-            var problemSelect0 = new Label(problemSelect[0]);
-            var problemSelect1 = new Label(problemSelect[1]);
-            var problemSelect2 = new Label(problemSelect[2]);
-            var problemSelect3 = new Label(problemSelect[3]);
 
-            problemText.x = 0;
-            problemText.y = 450;
-            problemSelect0.x = 0;
-            problemSelect0.y = 470;
-            problemSelect1.x = 0;
-            problemSelect1.y = 490;
-            problemSelect2.x = 0;
-            problemSelect2.y = 510;
-            problemSelect3.x = 0;
-            problemSelect3.y = 530;
+            problemText.font = "20px 游ゴシック体";
+
+            problemText.x = 20;
+            problemText.y = 470;
 
             core.currentScene.addChild(problemText);
-            core.currentScene.addChild(problemSelect0);
-            core.currentScene.addChild(problemSelect1);
-            core.currentScene.addChild(problemSelect2);
-            core.currentScene.addChild(problemSelect3);
 		}
 	});
 
@@ -633,9 +621,23 @@ window.onload = function() {
 		}
 	});
 	var Selection = Class.create(Sprite, {
-		initialize: function(type,isTwoChoiceQuestion,problemAnswer,subject,chapter,difficulty,EnemyImagePath, BackGroundImagePath) {
+		initialize: function(type,isTwoChoiceQuestion,problemAnswer,subject,chapter,difficulty,EnemyImagePath, BackGroundImagePath,problemSelect) {
+
+            var problemSelect0 = new Label(problemSelect[0]);
+            var problemSelect1 = new Label(problemSelect[1]);
+            var problemSelect2 = new Label(problemSelect[2]);
+            var problemSelect3 = new Label(problemSelect[3]);
+
+            problemSelect0.font = "20px 游ゴシック体";
+            problemSelect1.font = "20px 游ゴシック体";
+            problemSelect2.font = "20px 游ゴシック体";
+            problemSelect3.font = "20px 游ゴシック体";
+
 			var fourChoiceQuestion = [[0,550],[200,550],[400,550],[600,550]];
-            var twoChoiceQuestion  = [[0,550],[400,550],[800,600],[800,600]];
+			var twoChoiceQuestion = [[0,550],[200,550],[400,550],[600,550]];
+            var fourChoiceQuestionText = [[10,550],[210,550],[410,550],[610,550]];
+            var twoChoiceQuestionText  = [[10,550],[410,550],[800,600],[800,600]];
+
             this.type = type;
             this.problemAnswer = problemAnswer;
             this.event_type = event_type;
@@ -648,22 +650,44 @@ window.onload = function() {
                 Sprite.call(this, 200, 50);
                 this.x = twoChoiceQuestion[type][0];
                 this.y = twoChoiceQuestion[type][1];
+                problemSelect0.x = twoChoiceQuestionText[type][0];
+                problemSelect0.y = twoChoiceQuestionText[type][1];
+                problemSelect1.x = twoChoiceQuestionText[type][0];
+                problemSelect1.y = twoChoiceQuestionText[type][1];
+                problemSelect2.x = twoChoiceQuestionText[type][0];
+                problemSelect2.y = twoChoiceQuestionText[type][1];
+                problemSelect3.x = twoChoiceQuestionText[type][0];
+                problemSelect3.y = twoChoiceQuestionText[type][1];
             }
             else {
                 Sprite.call(this, 400, 50);
                 this.x = fourChoiceQuestion[type][0];
                 this.y = fourChoiceQuestion[type][1];
+                problemSelect0.x = fourChoiceQuestionText[type][0];
+                problemSelect0.y = fourChoiceQuestionText[type][1];
+                problemSelect1.x = fourChoiceQuestionText[type][0];
+                problemSelect1.y = fourChoiceQuestionText[type][1];
+                problemSelect2.x = fourChoiceQuestionText[type][0];
+                problemSelect2.y = fourChoiceQuestionText[type][1];
+                problemSelect3.x = fourChoiceQuestionText[type][0];
+                problemSelect3.y = fourChoiceQuestionText[type][1];
+
             }
 			switch(type) {
 			case 0:
+                core.currentScene.addChild(problemSelect0);
 				break;
 			case 1:
+                core.currentScene.addChild(problemSelect1);
 				break;
 			case 2:
+                core.currentScene.addChild(problemSelect2);
 				break;
 			case 3:
+                core.currentScene.addChild(problemSelect3);
 				break;
 			}
+
 		},
 		ontouchstart: function() {
 			var playerAnswer = this.type;
@@ -671,9 +695,7 @@ window.onload = function() {
 			if(isAnswer(playerAnswer,problemAnswer)){
                 clearProblemNum++;
                 core.popScene(core.currentScene);
-                console.log(this.BackGroundImagePath);
                 core.pushScene(new BattleScene(this.event_type, this.subject, this.chapter, this.difficulty , this.EnemyImagePath,this.BackGroundImagePath));
-                attackEffect();
             } else {
                 damageEffect();
             }
@@ -790,6 +812,22 @@ window.onload = function() {
 			this.image = core.assets[img];
 			this.x = 0;
 			this.y = 0;
+		}
+	});
+
+    var BattleBackGround = Class.create(Sprite, {
+		initialize: function(isTwoChoiceQuestion) {
+			Sprite.call(this, 800, 600);
+            if(isTwoChoiceQuestion){
+                this.image = core.assets[BATTLE2_IMG];
+    			this.x = 0;
+    			this.y = 0;
+            }else{
+                this.image = core.assets[BATTLE4_IMG];
+    			this.x = 0;
+    			this.y = 0;
+            }
+
 		}
 	});
 
