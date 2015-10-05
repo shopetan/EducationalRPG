@@ -11,9 +11,6 @@ var server = app.listen(app.get('port'), function() {
 var io = require('socket.io')(server);
 io.on('connection', function(socket){
 	socket.on('fetchDB', function(record){
-		console.log("subject:" + record.subject);
-		console.log("chapter:" + record.chapter);
-		console.log("difficulty:" + record.difficulty);
 		Problem.find({"subject":record.subject,
 									"chapter": record.chapter,
 									"difficulty": record.difficulty},
