@@ -50,6 +50,7 @@ var BattleBackGroundImage = [["/images/Memoria_BackGround_Japanese_Enemy.png", "
 var MinMapBlockImage = ["/images/minmapblock.jpeg", "/images/playerblock.jpeg"];
 var BGMSET = [DUNGEON_BGM, BATTLE_BGM, BATTLE_BOSS_BGM, TITLE_BGM, LAST_DUNGEON_BGM, ISLAND_BGM, DUNGEON_SELECT_BGM];
 var SESET = [SE_OK,SE_NG,SE_DEFEATED];
+var DefferedImage = ["D_Memoria_BackGround_Japanese_Enemy.png", "D_Memoria_BackGround_Math_Enemy.png", "D_Memoria_BackGround_Science_Enemy.png", "D_Memoria_BackGround_Society_Enemy.png", "D_Memoria_BackGround_English_Enemy.png", "D_Memoria_BackGround_LastBoss_Enemy.png"];
 
 //ノベルストーリー
 var story = [
@@ -158,6 +159,7 @@ window.onload = function() {
 	core.preload(MinMapBlockImage);
 	core.preload(introNovelImage);
 	core.preload(novelImage);
+	core.preload(DefferedImage);
 
 	function preloadImage(array) {
 		for (var i = 0; i < array.length; i++) {
@@ -463,21 +465,43 @@ window.onload = function() {
 		}
 	});
 	var DungeonClearScene = Class.create(Scene, {
-		initialize: function() {
+		initialize: function(event_type) {
 			Scene.call(this);
+			var clearFlag = false;
 			var img = new Sprite(267,48);
 			img.moveTo(400 - 267 / 2, 600 - 48 / 2);
-			img = core.assets["/images/clear.png"];
-			this.addChild(img);
-			core.popScene(core.currentScene);
+			switch (event_type){
+				case 7:
+					img = core.assets[DefferedImage[5]];
+					this.addChild(img);
+					clearFlag = true;
+					core.popScene(core.currentScene);
+					break;
+				case 6:
+					img = core.assets[DefferedImage[now_subject]];
+					this.addChild(img);
+					core.popScene(core.currentScene);
+					break;
+				default:
+					core.popScene();
+					core.pushScene(new IslandMap(now_subject));
+					break;	
+			}
 			this.backgroundColor = "white";
 		},
 		ontouchstart: function() {
-			core.popScene(core.currentScene);
-			core.popScene(core.currentScene);
-			core.popScene(core.currentScene);
-			core.pushScene(new IslandMap(now_subject));
-			loopBgm_Ctrl(DUNGEON_SELECT_BGM, 'play');
+			if (!clearFlag){
+				core.popScene(core.currentScene);
+				core.popScene(core.currentScene);
+				core.popScene(core.currentScene);
+				core.pushScene(new IslandMap(now_subject));
+			}
+			else{
+				core.popScene(core.currentScene);
+				core.popScene(core.currentScene);
+				core.popScene(core.currentScene);
+				core.pushScene(new AllClearScene());	
+			}
 		}
 	});
 
@@ -492,7 +516,7 @@ window.onload = function() {
 		},
 		ontouchstart: function() {
 			if (Enemy_Num == 0){
-				Presented_Message(core.currentScene, "強力な敵が現れたッ・・・!!", 30);
+				Presented_Message(core.currentScene, "強力な敵が現れたッ・・・!!", 25);
 			}
 			switch(this.direction) {
 				case 0:
@@ -628,6 +652,7 @@ window.onload = function() {
 		msg_box.image = core.assets["/images/Message.png"];
 		var message = new Label();
 		message.text = msg;
+		message.color = "yellow";
 		message.font = ""+size+"px 游ゴシック体";
 		message.moveTo(800 / 2 - 100, 10);
 		addChild_to_scene(scene, msg_box);
@@ -985,9 +1010,10 @@ window.onload = function() {
 			loopBgm_Ctrl(battlebgm, 'stop');
             core.assets[SE_DEFEATED].play();
         	if (event_type == 7) {
+        		core.pushScene(new DungeonClearScene(event_type));
         		core.pushScene(new NovelScene(7,null, battlebgm));
         	} else {
-			core.pushScene(new DungeonClearScene());
+			core.pushScene(new DungeonClearScene(event_type));
 		}
 	}
 
@@ -1081,7 +1107,6 @@ window.onload = function() {
     }
 
 	function gameOver() {
-		loopBgm_Ctrl(battlebgm, 'stop');
 		core.pushScene(new GameOverScene());
 	}
 
@@ -1110,6 +1135,17 @@ window.onload = function() {
 
 		}
 	});
+
+	var AllClearScene = Class.create(Scene, function (){
+		initialize: function (){
+			Scene.call(this, 800, 600);
+			this.addChild(new BackGround("/images/clear.png"));
+		},
+		ontouchstart: function (){
+			core.popScene();
+			core.pushScene(new WelcomeScene());
+		}
+	})
 
 	core.fps = 15;
 	core.onload = function() {
