@@ -734,7 +734,6 @@ window.onload = function() {
                     }else{
                         if(count <= 1 && !(win_flag) ){
                             var isFourChoiceQuestion = records[clearProblemNum].isFourChoiceQuestion;
-                            isFourChoiceQuestion = !(isFourChoiceQuestion)
                             var problemText = records[clearProblemNum].question;
                             var problemAnswer = records[clearProblemNum].answer;
                             var problemSelect = new Array();
