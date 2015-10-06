@@ -3,7 +3,7 @@ var socketio = io.connect('http://localhost:3000');
 enchant();
 
 //DBから受け取るユーザーの進捗情報
-var state_array = [[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[0,1]]; //国数理社英他(全クリア,初回完了)
+var state_array = [[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0]]; //国数理社英他(全クリア,初回完了)
 
 var BATTLE_BGM = './bgm/BATTLE_cyrf_energy.mp3';
 var PLAYER_IMG = '/images/Player.png';
@@ -225,9 +225,7 @@ window.onload = function() {
 		},
 		ontouchstart: function() {
 			this.index++;
-
 			if (this.index == story[this.type].length) {
-				core.popScene(core.currentScene);
 				if (this.battle) {
 					core.pushScene(this.battle);
 				} else {
@@ -236,8 +234,9 @@ window.onload = function() {
 					} else if(this.type == 0) {
 						state_array[5][1] = 1;
 					}
-					core.pushScene(new WorldMap());
 					saveData();
+					core.popScene(core.currentScene);
+					core.pushScene(new WorldMap());
 				}
 			} else {
 
