@@ -17,6 +17,9 @@ var BATTLE_LAST_BOSS_BGM = '/bgm/LASTBOSS_cyrf_lost_shrine.mp3';
 var TITLE_BGM = '/bgm/TITLE_cyrf_waiting_room.mp3';
 var ISLAND_BGM = '/bgm/PSELECT_cyrf_vintage_machine_shop.mp3';
 var DUNGEON_SELECT_BGM = '/bgm/DSELECT_cyrf_termination_another_side.mp3';
+var SE_OK = "/bgm/M_SE_OK_se_maoudamashii_chime10.mp3";
+var SE_NG = "/bgm/M_SE_NG_se_maoudamashii_chime08.mp3";
+var SE_DEFEATED = "/bgm/M_SE_DEFEATED_se_maoudamashii_explosion03.mp3";
 
 //画像
 var dungeonImage_150 = [
@@ -46,6 +49,7 @@ var LastBossImage = "/images/LastBoss01.PNG";
 var BattleBackGroundImage = [["/images/Memoria_BackGround_Japanese_Enemy.png", "/images/Memoria_BackGround_Japanese_Boss.png"], ["/images/Memoria_BackGround_Math_Enemy.png", "/images/Memoria_BackGround_Math_Boss.png"], ["/images/Memoria_BackGround_Science_Enemy.png", "/images/Memoria_BackGround_Science_Boss.png"], ["/images/Memoria_BackGround_Society_Enemy.png", "/images/Memoria_BackGround_Society_Boss.png"], ["/images/Memoria_BackGround_English_Enemy.png", "/images/Memoria_BackGround_English_Boss.png"], ["/images/Memoria_BackGround_LastBoss_Enemy.png", "/images/Memoria_BackGround_LastBoss_Boss.png"]];
 var MinMapBlockImage = ["/images/minmapblock.jpeg", "/images/playerblock.jpeg"];
 var BGMSET = [DUNGEON_BGM, BATTLE_BGM, BATTLE_BOSS_BGM, TITLE_BGM, LAST_DUNGEON_BGM, ISLAND_BGM, DUNGEON_SELECT_BGM];
+var SESET = [SE_OK,SE_NG,SE_DEFEATED];
 
 //ノベルストーリー
 var story = [
@@ -149,6 +153,7 @@ window.onload = function() {
 	preloadImage(dungeonImage_200);
 	preloadImage(BattleBackGroundImage);
 	core.preload(BGMSET);
+    core.preload(SESET);
 	core.preload(LastBossImage);
 	core.preload(MinMapBlockImage);
 	core.preload(introNovelImage);
@@ -496,15 +501,15 @@ window.onload = function() {
 					break;
 				case 1:
 					move_xy(dungeon_x + 1, dungeon_y);
-					moveEffect_x('/images/dungeonMapBg.jpg', 1);	
+					moveEffect_x('/images/dungeonMapBg.jpg', 1);
 					break;
 				case 2:
 					move_xy(dungeon_x, dungeon_y + 1);
-					moveEffect_y('/images/dungeonMapBg.jpg', -1);	
+					moveEffect_y('/images/dungeonMapBg.jpg', -1);
 					break;
 				case 3:
 					move_xy(dungeon_x - 1, dungeon_y);
-					moveEffect_x('/images/dungeonMapBg.jpg', -1);	
+					moveEffect_x('/images/dungeonMapBg.jpg', -1);
 					break;
 			}
 		}
@@ -568,7 +573,7 @@ window.onload = function() {
 		}
 		if (!FiveFlag){
 			Presented_Message(core.currentScene, "目的：敵を全滅せよ", 25);
-		}			
+		}
 
 		for (i = 0; i < 4; i++){
 			direct[i].visible = direction[i];
@@ -957,9 +962,11 @@ window.onload = function() {
             var problemAnswer = this.problemAnswer;
 			if(isAnswer(playerAnswer,problemAnswer)){
                 clearProblemNum++;
+                core.assets[SE_OK].play();
                 core.popScene(core.currentScene);
                 core.pushScene(new BattleScene(this.event_type, this.subject, this.chapter, this.difficulty , this.EnemyImagePath,this.BackGroundImagePath, battlebgm, dungeonbgm));
             } else {
+                core.assets[SE_NG].play();
                 damageEffect();
             }
 		}
@@ -976,6 +983,7 @@ window.onload = function() {
 		state_array[now_subject][now_dungeon] = 1;
         	win_flag = true;
 			loopBgm_Ctrl(battlebgm, 'stop');
+            core.assets[SE_DEFEATED].play();
         	if (event_type == 7) {
 				loopBgm_Ctrl(dungeonbgm, 'play');
         		core.pushScene(new NovelScene(7,null, battlebgm));
