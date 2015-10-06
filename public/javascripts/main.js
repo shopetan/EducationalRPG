@@ -11,6 +11,7 @@ var BATTLE4_IMG = '/images/Battle.png';
 var BATTLE2_IMG = '/images/Battle2.png';
 
 var DUNGEON_BGM = 'bgm/DUNGEON_cyrf_wafes_dungeon01.mp3';
+var TITLE_BGM = 'bgm/TITLE_cyrf_waiting_room.mp3';
 
 //画像
 var dungeonImage_150 = [
@@ -143,6 +144,7 @@ window.onload = function() {
 	preloadImage(BattleBackGroundImage);
 	core.preload(LastBossImage);
 	core.preload(DUNGEON_BGM);
+	core.preload(TITLE_BGM);
 	core.preload(MinMapBlockImage);
 	core.preload(introNovelImage);
 	core.preload(novelImage);
@@ -186,6 +188,23 @@ window.onload = function() {
 			displayName: displayName
 		});
 	}
+
+//Login
+	var WelcomeScene = Class.create(Scene, {
+		initialize: function(subject) {
+			Scene.call(this);
+			this.addChild(new BackGround('/images/Title.png'));
+			loopBgm_Ctrl(TITLE_BGM,'play');
+		},
+		ontouchstart: function() {
+			loopBgm_Ctrl(TITLE_BGM,'stop');
+			if (state_array[5][1] == 0) {
+				core.pushScene(new NovelScene(0,null));
+			} else {
+				core.pushScene(new WorldMap());
+			}
+	  	}
+	});
 
 //Novel
 	var NovelScene = Class.create(Scene, {
@@ -254,21 +273,6 @@ window.onload = function() {
 				}
 			}
 		}
-	});
-
-//Login
-	var WelcomeScene = Class.create(Scene, {
-		initialize: function(subject) {
-			Scene.call(this);
-			this.addChild(new BackGround('/images/Title.png'));
-		},
-		ontouchstart: function() {
-			if (state_array[5][1] == 0) {
-				core.pushScene(new NovelScene(0,null));
-			} else {
-				core.pushScene(new WorldMap());
-			}
-	  	}
 	});
 
 //WorldMap
