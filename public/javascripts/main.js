@@ -7,6 +7,8 @@ var state_array = [[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[
 
 var BATTLE_BGM = './bgm/BATTLE_cyrf_energy.mp3';
 var PLAYER_IMG = '/images/Player.png';
+var BATTLE4_IMG = '/images/Battle.png';
+var BATTLE2_IMG = '/images/Battle2.png';
 
 var DUNGEON_BGM = 'bgm/DUNGEON_cyrf_wafes_dungeon01.mp3';
 
@@ -35,9 +37,64 @@ var boardImage = ['/images/board_j.png','/images/board_m.png','/images/board_sc.
 var directionImage = ["/images/arrow_top.png","/images/arrow_right.png","/images/arrow_bottom.png","/images/arrow_left.png"];
 var battleImage = [PLAYER_IMG,BATTLE4_IMG,BATTLE2_IMG];
 var dungeonMapImage = ["/images/PlayerInDungeon.PNG","/images/minmap1.png","/images/clear.png"];
-var novelImage = ["/images/novel.jpg"];
+var novelImage = ["/images/NovelPart/Novel_Japanese.png","/images/NovelPart/Novel_Math.png","/images/NovelPart/Novel_Science.png","/images/NovelPart/Novel_Society.png","/images/NovelPart/Novel_English.png","/images/NovelPart/Novel_LastIntro.png","/images/NovelPart/Novel_LastBoss.png",];
+var introNovelImage = ["/images/NovelPart/Novel_Intro1.png","/images/NovelPart/Novel_Intro2.png","/images/NovelPart/Novel_Intro3.png",]
 var EnemysImage = [["/images/Japanese_Enemy01.PNG", "/images/Japanese_Enemy02.PNG", "/images/Japanese_Enemy03.PNG", "/images/Japanese_MiddleBoss01.PNG", "/images/Japanese_Boss01.PNG"], ["/images/Math_Enemy01.PNG", "/images/Math_Enemy02.PNG", "/images/Math_Enemy03.PNG", "/images/Math_MiddleBoss01.PNG", "/images/Math_Boss01.PNG"], ["/images/Science_Enemy01.PNG", "/images/Science_Enemy02.PNG", "/images/Science_Enemy03.PNG", "/images/Science_MiddleBoss01.PNG", "/images/Science_Boss01.PNG"], ["/images/Society_Enemy01.PNG", "/images/Society_Enemy02.PNG", "/images/Society_Enemy03.PNG", "/images/Society_MiddleBoss01.PNG", "/images/Society_Boss01.PNG"], ["/images/English_Enemy01.PNG", "/images/English_Enemy02.PNG", "/images/English_Enemy03.PNG", "/images/English_MiddleBoss01.PNG", "/images/English_Boss01.PNG"]];
 var LastBossImage = "/images/LastBoss01.PNG";
+
+//ノベルストーリー
+var story = [
+[["カティ","今日は 9 月 1 日。学校が始まる日だ……","どうしよう、夏休みの宿題、何もやってないぞ。"],
+["カティ","まあ、いっか。何とかなるさ。","とりあえず、学校に行こう。"],
+["カティ","あれ……？おかしいな。","授業の時間なのに、誰もいないぞ。"],
+["黒板","「八月三十二日　日直：カティ」","「夢幻之八月呪縛、愈々脱出不可能也」"],
+["カティ","え、八月三十二日……？嘘、今日は……","それに、この文字は……誰の……"],
+["？？？","俺が見えるか、愚かな種族たる猫人よ。","貴様は「八月の呪縛」に囚われているのだ。"],
+["？？？","呪縛に囚われた貴様には、この世界も必要あるまい。","我々の世界で、無為な永遠を過ごすが良い……"],
+["カティ","な、何だこいつは、呪縛って何のことだ……？","分からない、訳が分からないよ……！"],
+["？？？","夢幻地獄にて、懺悔と絶望を味わうが良い！","我々が直々に相手をしてやろう！"],
+["カティ","こ、黒板に吸い込まれる！！！","うわぁぁぁぁぁぁっ！！！！！"]],
+[["漢橙龍","俺は漢橙龍。「国語島」を統べる龍神だ。","龍神と言っても、今は機械体の身だがな。"],
+["漢橙龍","死の間際に永遠を願ったばかりに、この様だ。","老いもせず朽ち果てもせず、ただ生きるのみ。"],
+["漢橙龍","嘗ての仲間は、皆逝ってしまった……。","永遠の生命とは、こうも儚いものであったか……"],
+["漢橙龍","元の世界に戻りたくば、先ずはこの俺を倒すがいい！","永遠を望んだことの愚かさを教えてやろう！"]],
+[["G.CUBE","貴様がカティか。","私はグレイブキューブ。古代文明の生き残りだ。"],
+["G.CUBE","古代より、怠惰な種族には絶滅あるのみ。","努力を積み重ねてきたからこそ、生存できるのだ。"],
+["G.CUBE","故に、怠惰を積み重ねる者に存在の理由などない。","「あのお方」の手を煩わせるまでもないだろうな。"],
+["G.CUBE","悪いが、貴様にはここで消えてもらう！","貴様自身の怠惰を、心より懺悔せよ！"]],
+[["クラヴィスΩ","この俺の部下を下したか。大したものだ。","俺の名はクラヴィスΩ……見ての通りのロボットだ。"],
+["クラヴィスΩ","人に動かされる生命、自律して動く生命。","貴様はそのどちらを望む？"],
+["クラヴィスΩ","「八月の呪縛」に囚われた貴様には答えられるまい。","いくら自律を望んでも、行動が伴わねばな。"],
+["クラヴィスΩ","機械生命体ですら、自主自律のできる時代。","それすら出来ない生命体になど、用はない！"]],
+[["デザイアAI","第一地球軍、外宇宙方面部隊旗艦デザイア搭載AI……","登録されている声紋の入力を……"],
+["デザイアAI","何だ、乗員ではないのか。","話は聞いているぞ、カティと言ったな。"],
+["デザイアAI","遥か昔、このデザイアにも人間の乗員がいた。","今でこそ、この戦艦は私が……AIが動かしているがな。"],
+["デザイアAI","艦長は……己が欲望に塗れ、傲慢を尽くし、","遂には仲間にも見捨てられ、艦を沈められてしまった。"],
+["デザイアAI","私は学んだ、過ぎた欲望、無用な傲慢……","それこそ全ての生命体の大敵であると！"],
+["デザイアAI","一時の誘惑から、欲望に、傲慢に溺れたこと。","黄泉の国にて、深く絶望せよ！"]],
+[["守護神マルコ","我が防衛網が突破されただと……","衛兵達よ、安らかに眠れ……"],
+["守護神マルコ","……我が名は守護神マルコ、五大従者の一だ。","数々の防衛網を突破した実力、認めてやろう。"],
+["守護神マルコ","しかし、その無計画さでは「八月の呪縛」は","決して突破することは出来まいな。"],
+["守護神マルコ","我は存在する……綿密な計画の下に、我は存在する。","貴様は、所詮計画から外れた存在……"],
+["守護神マルコ","そのような存在に、負けるわけには参らん！","我が完全なる計画の前に、息絶えるが良い！"]],
+[["漢橙龍","五大従者を下し、夢幻城に乗り込んでくるとは……","大したものだ、その努力は褒めてやろう。"],
+["守護神マルコ","もう我等に、五大従者に一切の手は残っていない。","貴様の勝ちだ、カティ。"],
+["デザイアAI","だが、この夢幻城からは逃がさんぞ。","八月の呪縛は、我らが生命が尽きようと永遠に続く！"],
+["G.CUBE","しかし、夢幻城の維持ももう限界だ……","我々も相当に消耗してしまったからな。"],
+["クラヴィスΩ","かくなる上は……我らが盟約、覚えておるな。","「あのお方」の力を、再びお借りする時が来たのだ！"],
+["守護神マルコ","「八月の呪縛」を司りし夢幻の戦神……","召喚の代償は、我等が五大従者全ての生命……！"],
+["漢橙龍","今更何を迷うことがあろうか。","俺達は……俺達の出来ることをするまでだ。"],
+["G.CUBE","後は夢幻の戦神が、夢幻神メンダー様が、","我々に代わり、全ての始末をして下さる！"],
+["クラヴィスΩ","従者達よ、今再び集え！","我らが生命を燃やし、夢幻神を再誕させるのだ！"],
+["五大従者","うおおおおおおおおぉぉぉっっ！！！！！！！！",""],
+["夢幻神メンダー","…………………………………………………","誰だ……我を呼ぶのは……我の身体は……"],
+["夢幻神メンダー","……そうか。漢橙龍、グレイブキューブ、","クラヴィスΩ、マルコ、デザイア……"],
+["夢幻神メンダー","そして、我が盟友を下したのが……貴様、カティか。","「八月の呪縛」も解けかかっておるな……"],
+["夢幻神メンダー","良かろう。最後の勝負、受けて立とうではないか。","我が盟友に誓い、貴様をここで始末する！"]],
+[["夢幻神メンダー","欲望、傲慢、怠惰を克服し","計画と自律を身に着けたか……。"],
+["夢幻神メンダー","「八月の呪縛」も、意義を全うしてくれたか。","呪縛と共に、我の存在も……もう持つまいな。"],
+["夢幻神メンダー","俺の負けだ。","カティよ、貴様を元の世界に戻してやろう……"],
+["夢幻神メンダー","さあ、行け。九月の世界が待っているぞ。","さらばだ、カティ……"]]];
 
 /** エフェクトの位置のバラ付き具合 */
 var EFFECT_RANGE = 64;
@@ -87,6 +144,8 @@ window.onload = function() {
 	core.preload(LastBossImage);
 	core.preload(DUNGEON_BGM);
 	core.preload("/images/minmapblock.jpeg");
+	core.preload(introNovelImage);
+	core.preload(novelImage);
 
 	function preloadImage(array) {
 		for (var i = 0; i < array.length; i++) {
@@ -129,14 +188,73 @@ window.onload = function() {
 	}
 
 //Novel
-	var NovelScene = Class.create(Scene, {
+	var IntroNovelScene = Class.create(Scene, {
 		initialize: function() {
 			Scene.call(this);
-			this.backgroundColor = "red";
+			this.addChild(new BackGround(introNovelImage[0]));
+			this.index = 0;
+			var name = new Label(story[0][this.index][0]);
+			var story1 = new Label(story[0][this.index][1]);
+			var story2 = new Label(story[0][this.index][2]);
+			name.color = "white";
+			story1.color = "white";
+			story2.color = "white";
+			name.font = "25px cursive";
+			story1.font = "25px cursive";
+			story2.font = "25px cursive";
+			name.x = 30;
+			name.y = 363;
+			story1.x = 30;
+			story1.y = 440;
+			story1.width = 700;
+			story2.x = 30;
+			story2.y = 500;
+			story2.width = 700;
+			this.name = name;
+			this.story1 = story1;
+			this.story2 = story2;
+			this.addChild(name);
+			this.addChild(story1);
+			this.addChild(story2);
 		},
 		ontouchstart: function() {
-			core.popScene(core.currentScene);
-			core.pushScene(new WorldMap());
+			this.index++;
+			if (this.index == 10) {
+				core.popScene(core.currentScene);
+				core.pushScene(new WorldMap());
+				state_array[5][1] = 1;
+				saveData();
+			} else {
+				this.name.text =  story[0][this.index][0];
+				this.story1.text =  story[0][this.index][1];
+				this.story2.text =  story[0][this.index][2];
+			}
+
+			if (this.index == 2) {
+				this.insertBefore(new BackGround(introNovelImage[1]),this.name,this.story1,this.story2);
+			} else if (this.index == 6) {
+				this.insertBefore(new BackGround(introNovelImage[2]),this.name,this.story1,this.story2);
+			}
+
+		}
+	});
+
+	var Novel = Class.create(Sprite, {
+		initialize: function(index0,index1) {
+			Sprite.call(this,762,230);
+			this.backgroundColor = "red";
+			var name = new Label(story[index0][index1][0]);
+			var story1 = new Label(story[index0][index1][1]);
+			var story2 = new Label(story[index0][index1][2]);
+			name.color = "white";
+			story1.color = "white";
+			story2.color = "white";
+			name.font = "8px cursive";
+			story1.font = "8px cursive";
+			story2.font = "8px cursive";
+			this.addChild(name);
+			this.addChild(story1);
+			this.addChild(story2);
 		}
 	});
 
@@ -148,9 +266,7 @@ window.onload = function() {
 		},
 		ontouchstart: function() {
 			if (state_array[5][1] == 0) {
-				core.pushScene(new NovelScene());
-				state_array[5][1] = 1;
-				saveData();
+				core.pushScene(new IntroNovelScene());
 			} else {
 				core.pushScene(new WorldMap());
 			}
@@ -434,7 +550,7 @@ window.onload = function() {
 			Sprite.call(this, 150, 150);
 			this.x = 325;
 			this.y = 225;
-			this.image = core.assets["/images/chara.png"];
+			this.image = core.assets["/images/PlayerInDungeon.PNG"];
 		}
 	});
 	var minMap = Class.create(Sprite, {
