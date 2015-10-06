@@ -3,7 +3,7 @@ var socketio = io.connect('http://localhost:3000');
 enchant();
 
 //DBから受け取るユーザーの進捗情報
-var state_array = [[1,1,1,1,0],[1,1,1,1,0],[1,1,1,1,0],[1,1,1,1,0],[1,1,1,1,0],[0,1]]; //国数理社英他(全クリア,初回完了)
+var state_array = [[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[0,1]]; //国数理社英他(全クリア,初回完了)
 
 var BATTLE_BGM = './bgm/BATTLE_cyrf_energy.mp3';
 var PLAYER_IMG = '/images/Player.png';
@@ -18,6 +18,7 @@ var dungeonImage_150 = [
 ["/images/Dungeon_150/DUNGEON_ROCK_01.PNG","/images/Dungeon_150/DUNGEON_ROCK_02.PNG","/images/Dungeon_150/DUNGEON_ROCK_03.PNG","/images/Dungeon_150/DUNGEON_ROCK_04.PNG","/images/Dungeon_200/DUNGEON_ROCK_05.PNG"],
 ["/images/Dungeon_150/DUNGEON_CRYSTAL_01.PNG","/images/Dungeon_150/DUNGEON_CRYSTAL_02.PNG","/images/Dungeon_150/DUNGEON_CRYSTAL_03.PNG","/images/Dungeon_150/DUNGEON_CRYSTAL_04.PNG","/images/Dungeon_200/DUNGEON_CRYSTAL_05.PNG"],
 ["/images/Dungeon_150/DUNGEON_SATELITE_01.PNG","/images/Dungeon_150/DUNGEON_SATELITE_02.PNG","/images/Dungeon_150/DUNGEON_SATELITE_03.PNG","/images/Dungeon_150/DUNGEON_SATELITE_04.PNG","/images/Dungeon_200/DUNGEON_SATELITE_05.PNG"],
+["/images/Dungeon_150/DUNGEON_MARCO_01.PNG","/images/Dungeon_150/DUNGEON_MARCO_02.PNG","/images/Dungeon_150/DUNGEON_MARCO_03.PNG","/images/Dungeon_150/DUNGEON_MARCO_04.PNG","/images/Dungeon_200/DUNGEON_MARCO_05.PNG"],
 ["/images/Dungeon_150/DUNGEON_MARCO_01.PNG","/images/Dungeon_150/DUNGEON_MARCO_02.PNG","/images/Dungeon_150/DUNGEON_MARCO_03.PNG","/images/Dungeon_150/DUNGEON_MARCO_04.PNG","/images/Dungeon_200/DUNGEON_MARCO_05.PNG"]];
 
 var dungeonImage_200 = [
@@ -224,27 +225,35 @@ window.onload = function() {
 		},
 		ontouchstart: function() {
 			this.index++;
+
 			if (this.index == story[this.type].length) {
 				core.popScene(core.currentScene);
-				core.pushScene(this.battle);
+				if (this.battle) {
+					core.pushScene(this.battle);
+				} else {
+					if (this.type == 7) {
+						state_array[5][0] = 1;
+					} else if(this.type == 0) {
+						state_array[5][1] = 1;
+					}
+					core.pushScene(new WorldMap());
+					saveData();
+				}
 			} else {
+
 				this.name.text =  story[this.type][this.index][0];
 				this.story1.text =  story[this.type][this.index][1];
 				this.story2.text =  story[this.type][this.index][2];
-			}
-			//イントロ
-			if (this.type == 0) {
-				if (this.index == 2) {
-					this.insertBefore(new BackGround(introNovelImage[1]),this.name,this.story1,this.story2);
-				} else if (this.index == 6) {
-					this.insertBefore(new BackGround(introNovelImage[2]),this.name,this.story1,this.story2);
-				} else if(this.type == story[this.type].length) {
-					core.pushScene(new WorldMap());
-					state_array[5][1] = 1;
-					saveData();
+
+				//イントロ
+				if (this.type == 0) {
+					if (this.index == 2) {
+						this.insertBefore(new BackGround(introNovelImage[1]),this.name,this.story1,this.story2);
+					} else if (this.index == 6) {
+						this.insertBefore(new BackGround(introNovelImage[2]),this.name,this.story1,this.story2);
+					}
 				}
 			}
-
 		}
 	});
 
@@ -256,7 +265,7 @@ window.onload = function() {
 		},
 		ontouchstart: function() {
 			if (state_array[5][1] == 0) {
-				core.pushScene(new NovelScene(0));
+				core.pushScene(new NovelScene(0,null));
 			} else {
 				core.pushScene(new WorldMap());
 			}
@@ -267,7 +276,7 @@ window.onload = function() {
 	var WorldMap = Class.create(Scene, {
 		initialize: function() {
 			var islandOrigin = [[300,10],[10,200],[610,200],[150,420],[450,420],[300,200]];
-			//data_to_array(user_state);
+			data_to_array(user_state);
 			Scene.call(this);
 			this.addChild(new BackGround(BattleBackGroundImage[5][0]));
 			for (var i = 0; i < islandOrigin.length-1; i++) {
@@ -347,7 +356,9 @@ window.onload = function() {
 		},
 		ontouchstart: function() {
 			now_dungeon = this.number;
-			if (now_dungeon == 4) {
+			if (this.subject == 5) {
+				core.pushScene(new DungeonMap(mapdata6, this.subject, this.number));
+			} else if (now_dungeon == 4) {
 				core.pushScene(new DungeonMap(mapdata5, this.subject, this.number));
 			} else {
 				var pattern = this.subject + this.number;
@@ -518,7 +529,8 @@ window.onload = function() {
 		else if (EventFlag == 7){
             win_flag = false;
 			loopBgm_Ctrl(DUNGEON_BGM, 'stop');
-			core.pushScene(new BattleScene(EventFlag, subject_number, chapter_number, 5, LastBossImage, BattleBackGroundImage[subject_number][1]));
+			var battleScene = new BattleScene(EventFlag, subject_number, chapter_number, 5, LastBossImage, BattleBackGroundImage[subject_number][1]);
+			core.pushScene(new NovelScene(subject_number+1,battleScene));
 //			core.pushScene(new DungeonClearScene());
 		}
 	}
@@ -717,7 +729,7 @@ window.onload = function() {
                             win_battle();
                             return;
                         } else if (event_type >= 5) {
-                            clear_dungeon();
+                            clear_dungeon(event_type);
                             return;
                         }
                     }else{
@@ -878,10 +890,14 @@ window.onload = function() {
         win_flag = true;
         core.popScene(core.currentScene);
 	}
-	function clear_dungeon (argument) {
+	function clear_dungeon (event_type) {
 		state_array[now_subject][now_dungeon] = 1;
-        win_flag = true;
-		core.pushScene(new DungeonClearScene());
+        	win_flag = true;
+        	if (event_type == 7) {
+        		core.pushScene(new NovelScene(7,null))
+        	} else {
+			core.pushScene(new DungeonClearScene());
+		}
 	}
 
 	var GameOverScene = Class.create(Scene, {
@@ -1007,7 +1023,7 @@ window.onload = function() {
 		var status = $("#status").text();
 		user_state = Number(status);
 		console.log("user_state:" + user_state);
-		//data_to_array(user_state);
+		data_to_array(user_state);
 		core.pushScene(new WelcomeScene());
 	};
 	core.start();
