@@ -25,18 +25,18 @@ mongoose.connect('mongodb://localhost/educationalRPG');
 
 // session serializer
 passport.serializeUser(function(req, uid, done) {
-  console.log("passport.serializeUser uid=", uid);
+  //console.log("passport.serializeUser uid=", uid);
   // save userID into session
   done(null, uid);
 });
 // session deserializer
 passport.deserializeUser(function(req, uid, done) {
-  console.log("passport.deserializeUser uid=", uid);
+  //console.log("passport.deserializeUser uid=", uid);
   // get a user by uid from DB
   User.findOne({
     uid: uid
   }, function(err, user) {
-    console.log("findOne: err:", err, "\nuser:", user);
+    //console.log("findOne: err:", err, "\nuser:", user);
     // Then pass "user" to req. It can be used as "req.user" on the next route
     done(null, user);
   });
@@ -53,6 +53,7 @@ passport.use(new GoogleStrategy({
 }, function(accessToken, refreshToken, profile, done) {
 
   process.nextTick(function() {
+    console.log("nextTick");
     var uid = profile.id;
     var displayName = profile.displayName;
     User.findOneAndUpdate({
@@ -60,8 +61,7 @@ passport.use(new GoogleStrategy({
     }, {
       $set: {
         uid: uid,
-        displayName: displayName,
-        status: 0
+        displayName: displayName
       }
     }, {
       upsert: true
