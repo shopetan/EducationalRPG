@@ -1,0 +1,37 @@
+#!/usr/bin/env node
+var debug = require('debug')('chat');
+var app = require('../app');
+var User = require('../models/user.js');
+var Problem = require('../models/problem.js');
+app.set('port', process.env.PORT || 3000);
+
+var server = app.listen(app.get('port'), function() {
+   debug('Express server listening on port ' + server.address().port);
+});
+
+var io = require('socket.io')(server);
+ io.on('connection', function(socket){
+ 	socket.on("updateState", function(data) {
+ 		var uid = data.uid;
+ 		var status = data.status;
+ 		var displayName = data.displayName;
+ 		User.findOneAndUpdate({
+      		uid: uid
+    		}, {
+      	$set: {
+        		uid: uid,
+        		displayName: displayName,
+        		status: status
+      		}
+    		}, {
+      		upsert: true
+    		}, function(err, user) {
+    		});
+ 	});
+
+ 	socket.on('fetchDB', function(record){
+		Problem.find({"subject":record.subject, "chapter": record.chapter, "difficulty": record.difficulty}, function(err, records){
+                socket.emit('returnRecord', records);
+            });
+	});
+ });
