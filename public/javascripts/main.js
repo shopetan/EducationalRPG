@@ -3,7 +3,7 @@ var socketio = io.connect('http://localhost:3000');
 enchant();
 
 //DBから受け取るユーザーの進捗情報
-var state_array = [[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0]]; //国数理社英他(全クリア,初回完了)
+var state_array = [[1,1,1,1,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,1]]; //国数理社英他(全クリア,初回完了)
 
 var BATTLE_BGM = './bgm/BATTLE_cyrf_energy.mp3';
 var PLAYER_IMG = '/images/Player.png';
@@ -188,14 +188,19 @@ window.onload = function() {
 	}
 
 //Novel
-	var IntroNovelScene = Class.create(Scene, {
-		initialize: function() {
+	var NovelScene = Class.create(Scene, {
+		initialize: function(type) {
 			Scene.call(this);
-			this.addChild(new BackGround(introNovelImage[0]));
 			this.index = 0;
-			var name = new Label(story[0][this.index][0]);
-			var story1 = new Label(story[0][this.index][1]);
-			var story2 = new Label(story[0][this.index][2]);
+			this.type = type;
+			if (type == 0) {
+				this.addChild(new BackGround(introNovelImage[0]));
+			} else {
+				this.addChild(new BackGround(novelImage[type-1]));
+			}
+			var name = new Label(story[type][this.index][0]);
+			var story1 = new Label(story[type][this.index][1]);
+			var story2 = new Label(story[type][this.index][2]);
 			name.color = "white";
 			story1.color = "white";
 			story2.color = "white";
@@ -222,39 +227,23 @@ window.onload = function() {
 			if (this.index == 10) {
 				core.popScene(core.currentScene);
 				core.pushScene(new WorldMap());
-				state_array[5][1] = 1;
-				saveData();
 			} else {
-				this.name.text =  story[0][this.index][0];
-				this.story1.text =  story[0][this.index][1];
-				this.story2.text =  story[0][this.index][2];
+				this.name.text =  story[this.type][this.index][0];
+				this.story1.text =  story[this.type][this.index][1];
+				this.story2.text =  story[this.type][this.index][2];
+			}
+			//イントロ
+			if (this.type == 0) {
+				if (this.index == 2) {
+					this.insertBefore(new BackGround(introNovelImage[1]),this.name,this.story1,this.story2);
+				} else if (this.index == 6) {
+					this.insertBefore(new BackGround(introNovelImage[2]),this.name,this.story1,this.story2);
+				} else if(this.type == 10) {
+					state_array[5][1] = 1;
+					saveData();
+				}
 			}
 
-			if (this.index == 2) {
-				this.insertBefore(new BackGround(introNovelImage[1]),this.name,this.story1,this.story2);
-			} else if (this.index == 6) {
-				this.insertBefore(new BackGround(introNovelImage[2]),this.name,this.story1,this.story2);
-			}
-
-		}
-	});
-
-	var Novel = Class.create(Sprite, {
-		initialize: function(index0,index1) {
-			Sprite.call(this,762,230);
-			this.backgroundColor = "red";
-			var name = new Label(story[index0][index1][0]);
-			var story1 = new Label(story[index0][index1][1]);
-			var story2 = new Label(story[index0][index1][2]);
-			name.color = "white";
-			story1.color = "white";
-			story2.color = "white";
-			name.font = "8px cursive";
-			story1.font = "8px cursive";
-			story2.font = "8px cursive";
-			this.addChild(name);
-			this.addChild(story1);
-			this.addChild(story2);
 		}
 	});
 
@@ -266,7 +255,7 @@ window.onload = function() {
 		},
 		ontouchstart: function() {
 			if (state_array[5][1] == 0) {
-				core.pushScene(new IntroNovelScene());
+				core.pushScene(new NovelScene(0));
 			} else {
 				core.pushScene(new WorldMap());
 			}
@@ -277,7 +266,7 @@ window.onload = function() {
 	var WorldMap = Class.create(Scene, {
 		initialize: function() {
 			var islandOrigin = [[300,10],[10,200],[610,200],[150,420],[450,420],[300,200]];
-			data_to_array(user_state);
+			//data_to_array(user_state);
 			Scene.call(this);
 			this.addChild(new BackGround(backgroundImage[5][0]));
 			for (var i = 0; i < islandOrigin.length-1; i++) {
@@ -307,6 +296,7 @@ window.onload = function() {
 		},
 		ontouchstart: function() {
 			core.pushScene(new IslandMap(this.subject));
+			console.log(state_array);
 			now_subject = this.subject;
         	}
 	});
@@ -1046,7 +1036,7 @@ window.onload = function() {
 		var status = $("#status").text();
 		user_state = Number(status);
 		console.log("user_state:" + user_state);
-		data_to_array(user_state);
+		//data_to_array(user_state);
 		core.pushScene(new WelcomeScene());
 	};
 	core.start();
