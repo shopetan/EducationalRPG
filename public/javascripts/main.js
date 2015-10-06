@@ -33,8 +33,8 @@ var dungeonImage_200 = [
 ["/images/Dungeon_200/DUNGEON_MARCO_01.PNG","/images/Dungeon_200/DUNGEON_MARCO_02.PNG","/images/Dungeon_200/DUNGEON_MARCO_03.PNG","/images/Dungeon_200/DUNGEON_MARCO_04.PNG","/images/Dungeon_200/DUNGEON_MARCO_05.PNG"]];
 var boardImage = ['/images/board_j.png','/images/board_m.png','/images/board_sc.png','/images/board_so.png','/images/board_e.png','/images/board_e.png'];
 var directionImage = ["/images/arrow_top.png","/images/arrow_right.png","/images/arrow_bottom.png","/images/arrow_left.png"];
-var battleImage = [PLAYER_IMG];
-var dungeonMapImage = ["/images/chara.png","/images/minmap1.png","/images/clear.png"];
+var battleImage = [PLAYER_IMG,BATTLE4_IMG,BATTLE2_IMG];
+var dungeonMapImage = ["/images/PlayerInDungeon.PNG","/images/minmap1.png","/images/clear.png"];
 var novelImage = ["/images/novel.jpg"];
 var EnemysImage = [["/images/Japanese_Enemy01.PNG", "/images/Japanese_Enemy02.PNG", "/images/Japanese_Enemy03.PNG", "/images/Japanese_MiddleBoss01.PNG", "/images/Japanese_Boss01.PNG"], ["/images/Math_Enemy01.PNG", "/images/Math_Enemy02.PNG", "/images/Math_Enemy03.PNG", "/images/Math_MiddleBoss01.PNG", "/images/Math_Boss01.PNG"], ["/images/Science_Enemy01.PNG", "/images/Science_Enemy02.PNG", "/images/Science_Enemy03.PNG", "/images/Science_MiddleBoss01.PNG", "/images/Science_Boss01.PNG"], ["/images/Society_Enemy01.PNG", "/images/Society_Enemy02.PNG", "/images/Society_Enemy03.PNG", "/images/Society_MiddleBoss01.PNG", "/images/Society_Boss01.PNG"], ["/images/English_Enemy01.PNG", "/images/English_Enemy02.PNG", "/images/English_Enemy03.PNG", "/images/English_MiddleBoss01.PNG", "/images/English_Boss01.PNG"]];
 var LastBossImage = "/images/LastBoss01.PNG";
@@ -597,9 +597,38 @@ window.onload = function() {
                 if(problemSize == 0){
                     return;
                 }else{
-                    for(var i = 0; i < problemSize; i++){
-                        //TODO: Objectを別の変数に格納する．格納した変数はQuestionクラスなどに利用して問題文の提示，問題の正解不正解に応じた関数の実装を行う
-                        //isAnswer()はできているので，後はisKnockDown()という，全ての問題をクリアしたか否かという関数の実装を行う
+                    if(isKnockDown(clearProblemNum, problemSize)){
+                        clearProblemNum = 0;
+                        if (event_type >= 2  && event_type <= 4) {
+                            win_battle();
+                            return;
+                        } else if (event_type >= 5) {
+                            clear_dungeon();
+                            return;
+                        }
+                    }else{
+                        if(count <= 1 && !(win_flag) ){
+                            var isFourChoiceQuestion = records[clearProblemNum].isFourChoiceQuestion;
+                            isFourChoiceQuestion = !(isFourChoiceQuestion)
+                            var problemText = records[clearProblemNum].question;
+                            var problemAnswer = records[clearProblemNum].answer;
+                            var problemSelect = new Array();
+                            problemSelect[0] = records[clearProblemNum].choice0;
+                            problemSelect[1] = records[clearProblemNum].choice1;
+                            problemSelect[2] = records[clearProblemNum].choice2;
+                            problemSelect[3] = records[clearProblemNum].choice3;
+                            core.currentScene.addChild(status);
+                            core.currentScene.addChild(new BackGround(BackGroundImagePath));
+                            core.currentScene.addChild(new BattleBackGround(isFourChoiceQuestion));
+                            core.currentScene.addChild(new Selection(0,isFourChoiceQuestion,problemAnswer,subject,chapter,difficulty,EnemyImagePath,BackGroundImagePath,problemSelect));
+                            core.currentScene.addChild(new Selection(1,isFourChoiceQuestion,problemAnswer,subject,chapter,difficulty,EnemyImagePath,BackGroundImagePath,problemSelect));
+                            core.currentScene.addChild(new Selection(2,isFourChoiceQuestion,problemAnswer,subject,chapter,difficulty,EnemyImagePath,BackGroundImagePath,problemSelect));
+                            core.currentScene.addChild(new Selection(3,isFourChoiceQuestion,problemAnswer,subject,chapter,difficulty,EnemyImagePath,BackGroundImagePath,problemSelect));
+                            core.currentScene.addChild(new Player());
+                            core.currentScene.addChild(new Enemy(EnemyImagePath));
+                            core.currentScene.addChild(new QuestionBase());
+                            core.currentScene.addChild(new Question(problemText));
+                        }
                     }
                 }
             });
@@ -637,11 +666,18 @@ window.onload = function() {
 		}
 	});
     var Question = Class.create(Sprite, {
-		initialize: function() {
-			Sprite.call(this, 500, 100);
-			this.backgroundColor = "rgba(200, 200, 200, 0.5)";
-            this.x = 100;
-        	this.y = 0;
+		initialize: function(problemText) {
+			Sprite.call(this, 800, 100);
+            this.x = 0;
+            this.y = 450;
+            var problemText = new Label(problemText);
+
+            problemText.font = "20px 游ゴシック体";
+
+            problemText.x = 20;
+            problemText.y = 470;
+
+            core.currentScene.addChild(problemText);
 		}
 	});
 
@@ -654,49 +690,84 @@ window.onload = function() {
 		}
 	});
 	var Selection = Class.create(Sprite, {
-		initialize: function(type,choiceQuestion) {
-			var fourChoiceQuestion = [[0,500],[200,500],[400,500],[600,500]];
-            var twoChoiceQuestion  = [[0,500],[400,500],[800,600],[800,600]];
-            if(isFourChoiceQuestion(choiceQuestion)) {
-                Sprite.call(this, 200, 100);
-                this.type = type;
-			    this.x = fourChoiceQuestion[type][0];
-			    this.y = fourChoiceQuestion[type][1];
+		initialize: function(type,isTwoChoiceQuestion,problemAnswer,subject,chapter,difficulty,EnemyImagePath, BackGroundImagePath,problemSelect) {
+
+            var problemSelect0 = new Label(problemSelect[0]);
+            var problemSelect1 = new Label(problemSelect[1]);
+            var problemSelect2 = new Label(problemSelect[2]);
+            var problemSelect3 = new Label(problemSelect[3]);
+
+            problemSelect0.font = "20px 游ゴシック体";
+            problemSelect1.font = "20px 游ゴシック体";
+            problemSelect2.font = "20px 游ゴシック体";
+            problemSelect3.font = "20px 游ゴシック体";
+
+			var fourChoiceQuestion = [[0,550],[200,550],[400,550],[600,550]];
+			var twoChoiceQuestion = [[0,550],[200,550],[400,550],[600,550]];
+            var fourChoiceQuestionText = [[10,550],[210,550],[410,550],[610,550]];
+            var twoChoiceQuestionText  = [[10,550],[410,550],[800,600],[800,600]];
+
+            this.type = type;
+            this.problemAnswer = problemAnswer;
+            this.event_type = event_type;
+            this.subject = subject;
+            this.chapter = chapter;
+            this.difficulty = difficulty;
+            this.EnemyImagePath = EnemyImagePath;
+            this.BackGroundImagePath = BackGroundImagePath;
+            if(isTwoChoiceQuestion) {
+                Sprite.call(this, 200, 50);
+                this.x = twoChoiceQuestion[type][0];
+                this.y = twoChoiceQuestion[type][1];
+                problemSelect0.x = twoChoiceQuestionText[type][0];
+                problemSelect0.y = twoChoiceQuestionText[type][1];
+                problemSelect1.x = twoChoiceQuestionText[type][0];
+                problemSelect1.y = twoChoiceQuestionText[type][1];
+                problemSelect2.x = twoChoiceQuestionText[type][0];
+                problemSelect2.y = twoChoiceQuestionText[type][1];
+                problemSelect3.x = twoChoiceQuestionText[type][0];
+                problemSelect3.y = twoChoiceQuestionText[type][1];
             }
             else {
-                Sprite.call(this, 400, 100);
-                this.type = type;
-			    this.x = twoChoiceQuestion[type][0];
-			    this.y = twoChoiceQuestion[type][1];
+                Sprite.call(this, 400, 50);
+                this.x = fourChoiceQuestion[type][0];
+                this.y = fourChoiceQuestion[type][1];
+                problemSelect0.x = fourChoiceQuestionText[type][0];
+                problemSelect0.y = fourChoiceQuestionText[type][1];
+                problemSelect1.x = fourChoiceQuestionText[type][0];
+                problemSelect1.y = fourChoiceQuestionText[type][1];
+                problemSelect2.x = fourChoiceQuestionText[type][0];
+                problemSelect2.y = fourChoiceQuestionText[type][1];
+                problemSelect3.x = fourChoiceQuestionText[type][0];
+                problemSelect3.y = fourChoiceQuestionText[type][1];
+
             }
 			switch(type) {
 			case 0:
-				this.backgroundColor = "rgba(150, 150, 150, 0.5)";
+                core.currentScene.addChild(problemSelect0);
 				break;
 			case 1:
-				this.backgroundColor = "rgba(100, 100, 100, 0.5)";
+                core.currentScene.addChild(problemSelect1);
 				break;
 			case 2:
-				this.backgroundColor = "rgba(50, 50, 50, 0.5)";
+                core.currentScene.addChild(problemSelect2);
 				break;
 			case 3:
-				this.backgroundColor = "rgba(0, 0, 0, 0.5)";
+                core.currentScene.addChild(problemSelect3);
 				break;
 			}
+
 		},
 		ontouchstart: function() {
 			var playerAnswer = this.type;
-			var loadAnswer = 0;
-			if(isAnswer(playerAnswer,loadAnswer)){
-                		attackEffect();
-                		if (event_type == 5 || event_type == 6 || event_type == 7) {
-                			clear_dungeon();
-                		} else if (event_type == 2 || event_type == 3 || event_type == 4) {
-                			win_battle();
-                		}
-            	} else {
-                		damageEffect();
-            	}
+            var problemAnswer = this.problemAnswer;
+			if(isAnswer(playerAnswer,problemAnswer)){
+                clearProblemNum++;
+                core.popScene(core.currentScene);
+                core.pushScene(new BattleScene(this.event_type, this.subject, this.chapter, this.difficulty , this.EnemyImagePath,this.BackGroundImagePath));
+            } else {
+                damageEffect();
+            }
 		}
 	});
 	function win_battle () {
@@ -835,6 +906,22 @@ window.onload = function() {
 			this.image = core.assets[img];
 			this.x = 0;
 			this.y = 0;
+		}
+	});
+
+    var BattleBackGround = Class.create(Sprite, {
+		initialize: function(isTwoChoiceQuestion) {
+			Sprite.call(this, 800, 600);
+            if(isTwoChoiceQuestion){
+                this.image = core.assets[BATTLE2_IMG];
+    			this.x = 0;
+    			this.y = 0;
+            }else{
+                this.image = core.assets[BATTLE4_IMG];
+    			this.x = 0;
+    			this.y = 0;
+            }
+
 		}
 	});
 
