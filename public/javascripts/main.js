@@ -560,9 +560,9 @@ window.onload = function() {
                             problemSelect[1] = records[clearProblemNum].choice1;
                             problemSelect[2] = records[clearProblemNum].choice2;
                             problemSelect[3] = records[clearProblemNum].choice3;
-                            core.currentScene.addChild(status);
                             core.currentScene.addChild(new BackGround(BackGroundImagePath));
                             core.currentScene.addChild(new BattleBackGround(isFourChoiceQuestion));
+                            core.currentScene.addChild(status);
                             core.currentScene.addChild(new Selection(0,isFourChoiceQuestion,problemAnswer,subject,chapter,difficulty,EnemyImagePath,BackGroundImagePath,problemSelect));
                             core.currentScene.addChild(new Selection(1,isFourChoiceQuestion,problemAnswer,subject,chapter,difficulty,EnemyImagePath,BackGroundImagePath,problemSelect));
                             core.currentScene.addChild(new Selection(2,isFourChoiceQuestion,problemAnswer,subject,chapter,difficulty,EnemyImagePath,BackGroundImagePath,problemSelect));
