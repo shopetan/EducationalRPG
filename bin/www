@@ -12,9 +12,6 @@ var server = app.listen(app.get('port'), function() {
 var io = require('socket.io')(server);
  io.on('connection', function(socket){
  	socket.on("updateState", function(data) {
- 		console.log("state:" + data.status);
- 		console.log("uid:" + data.uid);
- 		console.log("name:" + data.displayName);
  		var uid = data.uid;
  		var status = data.status;
  		var displayName = data.displayName;
@@ -29,7 +26,6 @@ var io = require('socket.io')(server);
     		}, {
       		upsert: true
     		}, function(err, user) {
-      		console.log("findOneAndUpdate err:", err, "user: ", user);
     		});
  	});
 
