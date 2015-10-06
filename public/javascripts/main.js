@@ -201,7 +201,7 @@ window.onload = function() {
 			if (state_array[5][1] == 0) {
 				core.pushScene(new NovelScene(0,null));
 			} else {
-				core.pushScene(new WorldMap());
+				core.pushScene(new WorldMap(1));
 			}
 	  	}
 	});
@@ -255,7 +255,7 @@ window.onload = function() {
 					}
 					saveData();
 					core.popScene(core.currentScene);
-					core.pushScene(new WorldMap());
+					core.pushScene(new WorldMap(0));
 				}
 			} else {
 
@@ -277,7 +277,7 @@ window.onload = function() {
 
 //WorldMap
 	var WorldMap = Class.create(Scene, {
-		initialize: function() {
+		initialize: function(type) {
 			var islandOrigin = [[300,10],[10,200],[610,200],[150,420],[450,420],[300,200]];
 			data_to_array(user_state);
 			Scene.call(this);
@@ -295,7 +295,11 @@ window.onload = function() {
 			}
 			if (isClear) {
 				this.addChild(new Island(islandOrigin[5][0], islandOrigin[5][1], 5));
+				Presented_Message(this,"新たなエリアが現れた！");
+			} else {
+				Presented_Message(this,"すべてのエリアを攻略して、元の世界へ戻ろう！");
 			}
+
 		}
 	});
 	var now_subject;
@@ -335,6 +339,9 @@ window.onload = function() {
 				if (isClear) {
 					var i = dungeonOrigin.length - 1;
 					this.addChild(new Dungeon(dungeonOrigin[i][0], dungeonOrigin[i][1], subject, i));
+					Presented_Message(this,"新たなダンジョンが現れた！");
+				} else {
+					Presented_Message(this,"すべてのダンジョンを攻略しよう！");
 				}
 			}
 		}
@@ -513,7 +520,7 @@ window.onload = function() {
 
 		if (EventFlag >= 2 && EventFlag < 5){
 			var difficulty = EventFlag - 2;
-            win_flag = false;
+            	win_flag = false;
  			loopBgm_Ctrl(DUNGEON_BGM, 'pause');
  			core.pushScene(new BattleScene(EventFlag, subject_number, chapter_number, difficulty, EnemysImage[subject_number][difficulty], BattleBackGroundImage[subject_number][0]));
 		}
@@ -527,8 +534,8 @@ window.onload = function() {
             win_flag = false;
 			loopBgm_Ctrl(DUNGEON_BGM, 'stop');
 			var battleScene = new BattleScene(EventFlag, subject_number, chapter_number, 4, EnemysImage[subject_number][4], BattleBackGroundImage[subject_number][1]);
-			core.pushScene(battleScene);
-			//core.pushScene(new NovelScene(subject_number+1,battleScene));
+			//core.pushScene(battleScene);
+			core.pushScene(new NovelScene(subject_number+1,battleScene));
 		}
 		else if (EventFlag == 7){
             win_flag = false;
@@ -918,7 +925,7 @@ window.onload = function() {
         	this.addChild(label);
         },
         ontouchstart: function() {
-			core.pushScene(new WorldMap);
+			core.pushScene(new WorldMap(1));
 		}
 	});
 
