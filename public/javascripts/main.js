@@ -543,7 +543,7 @@ window.onload = function() {
 			this.image = core.assets["/images/PlayerInDungeon.PNG"];
 		}
 	});
-	var minMap = Class.create(Sprite, {
+		var minMap = Class.create(Sprite, {
 			mapData: [],
 			direction: [],
 			initialize: function (scene, mapdata){
@@ -558,22 +558,29 @@ window.onload = function() {
 				this.backgroundColor = "#ccc";
 				this.opacity = 0.5;
 				scene.addChild(this);
-				for (var i = 0; i < mapdata.length; i++){
+/*				for (var i = 0; i < mapdata.length; i++){
 					for (var j = 0; j < mapdata[0].length; j++){
 						if (mapdata[i][j]){
 							scene.addChild(new MapBlock( 510 + 40 * i, 400 + 40 * j));
 						}
 					}
 				}
+*/
+			scene.addChild(new MapBlock( 510 + 40 * dungeon_x, 400 + 40 * dungeon_y, MinMapBlockImage[0], false));
+			scene.addChild(new MapBlock(510 + 40 * dungeon_x, 400 + 40 * dungeon_y, MinMapBlockImage[1], true));
 			}
 		});
 
 	var MapBlock = Class.create(Sprite, {
-		initialize: function (x, y){
+		initialize: function (x, y, MapBlockImage, playerFlag){
 			Sprite.call(this, 30, 30);
 			this.x = x;
 			this.y = y;
-			this.image = core.assets["/images/minmapblock.jpeg"];
+			this.image = core.assets[MapBlockImage];
+			if (playerFlag){
+				var opacity = 1;
+				this.tl.delay(2).fadeOut(12).fadeIn(12).loop();
+			}
 		}
 	});
 		function addChild_to_scene(scene, sprite){
