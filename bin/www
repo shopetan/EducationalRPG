@@ -33,10 +33,9 @@ var io = require('socket.io')(server);
     		});
  	});
 
- 	socket.on('fetchDB', function(record){
-		//TODO: 問題が全て出揃ったら，data.subject, data.chapter, data.difficultyをfind()の中身指定でrecordを引っ張る処理を記述
-		Problem.find(function(err, records){
-      		socket.emit('returnRecord', records);
-    		});
+ 	socket.on('fetchDm', function(record){
+		Problem.find({"subject":record.subject, "chapter": record.chapter, "difficulty": record.difficulty}, function(err, records){
+                socket.emit('returnRecord', records);
+            });
 	});
  });
