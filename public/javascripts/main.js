@@ -3,27 +3,96 @@ var socketio = io.connect('http://localhost:3000');
 enchant();
 
 //DBから受け取るユーザーの進捗情報
-var state_array = [[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0]]; //国数理社英
+var state_array = [[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0]]; //国数理社英他(全クリア,初回完了)
 
 var BATTLE_BGM = './bgm/BATTLE_cyrf_energy.mp3';
 var PLAYER_IMG = '/images/Player.png';
 var BATTLE4_IMG = '/images/Battle.png';
 var BATTLE2_IMG = '/images/Battle2.png';
 
-
 var DUNGEON_BGM = 'bgm/DUNGEON_cyrf_wafes_dungeon01.mp3';
 
 //画像
-var islandImage = ['/images/island_j.png', '/images/island_m.png', '/images/island_sc.png', '/images/island_so.png', '/images/island_e.png','/images/island_e.png'];
-var boardImage = ['/images/board_j.png','/images/board_m.png','/images/board_sc.png','/images/board_so.png','/images/board_e.png'];
+var dungeonImage_150 = [
+["/images/Dungeon_150/DUNGEON_HOLE_01.PNG","/images/Dungeon_150/DUNGEON_HOLE_02.PNG","/images/Dungeon_150/DUNGEON_HOLE_03.PNG","/images/Dungeon_150/DUNGEON_HOLE_04.PNG","/images/Dungeon_200/DUNGEON_HOLE_05.PNG"],
+["/images/Dungeon_150/DUNGEON_ROCK_01.PNG","/images/Dungeon_150/DUNGEON_ROCK_02.PNG","/images/Dungeon_150/DUNGEON_ROCK_03.PNG","/images/Dungeon_150/DUNGEON_ROCK_04.PNG","/images/Dungeon_200/DUNGEON_ROCK_05.PNG"],
+["/images/Dungeon_150/DUNGEON_CRYSTAL_01.PNG","/images/Dungeon_150/DUNGEON_CRYSTAL_02.PNG","/images/Dungeon_150/DUNGEON_CRYSTAL_03.PNG","/images/Dungeon_150/DUNGEON_CRYSTAL_04.PNG","/images/Dungeon_200/DUNGEON_CRYSTAL_05.PNG"],
+["/images/Dungeon_150/DUNGEON_SATELITE_01.PNG","/images/Dungeon_150/DUNGEON_SATELITE_02.PNG","/images/Dungeon_150/DUNGEON_SATELITE_03.PNG","/images/Dungeon_150/DUNGEON_SATELITE_04.PNG","/images/Dungeon_200/DUNGEON_SATELITE_05.PNG"],
+["/images/Dungeon_150/DUNGEON_MARCO_01.PNG","/images/Dungeon_150/DUNGEON_MARCO_02.PNG","/images/Dungeon_150/DUNGEON_MARCO_03.PNG","/images/Dungeon_150/DUNGEON_MARCO_04.PNG","/images/Dungeon_200/DUNGEON_MARCO_05.PNG"],
+["/images/Dungeon_150/DUNGEON_MARCO_01.PNG","/images/Dungeon_150/DUNGEON_MARCO_02.PNG","/images/Dungeon_150/DUNGEON_MARCO_03.PNG","/images/Dungeon_150/DUNGEON_MARCO_04.PNG","/images/Dungeon_200/DUNGEON_MARCO_05.PNG"]];
+
+var dungeonImage_200 = [
+["/images/Dungeon_200/DUNGEON_HOLE_01.PNG","/images/Dungeon_200/DUNGEON_HOLE_02.PNG","/images/Dungeon_200/DUNGEON_HOLE_03.PNG","/images/Dungeon_200/DUNGEON_HOLE_04.PNG","/images/Dungeon_200/DUNGEON_HOLE_05.PNG"],
+["/images/Dungeon_200/DUNGEON_ROCK_01.PNG","/images/Dungeon_200/DUNGEON_ROCK_02.PNG","/images/Dungeon_200/DUNGEON_ROCK_03.PNG","/images/Dungeon_200/DUNGEON_ROCK_04.PNG","/images/Dungeon_200/DUNGEON_ROCK_05.PNG"],
+["/images/Dungeon_200/DUNGEON_CRYSTAL_01.PNG","/images/Dungeon_200/DUNGEON_CRYSTAL_02.PNG","/images/Dungeon_200/DUNGEON_CRYSTAL_03.PNG","/images/Dungeon_200/DUNGEON_CRYSTAL_04.PNG","/images/Dungeon_200/DUNGEON_CRYSTAL_05.PNG"],
+["/images/Dungeon_200/DUNGEON_SATELITE_01.PNG","/images/Dungeon_200/DUNGEON_SATELITE_02.PNG","/images/Dungeon_200/DUNGEON_SATELITE_03.PNG","/images/Dungeon_200/DUNGEON_SATELITE_04.PNG","/images/Dungeon_200/DUNGEON_SATELITE_05.PNG"],
+["/images/Dungeon_200/DUNGEON_MARCO_01.PNG","/images/Dungeon_200/DUNGEON_MARCO_02.PNG","/images/Dungeon_200/DUNGEON_MARCO_03.PNG","/images/Dungeon_200/DUNGEON_MARCO_04.PNG","/images/Dungeon_200/DUNGEON_MARCO_05.PNG"],
+["/images/Dungeon_200/DUNGEON_MARCO_01.PNG","/images/Dungeon_200/DUNGEON_MARCO_02.PNG","/images/Dungeon_200/DUNGEON_MARCO_03.PNG","/images/Dungeon_200/DUNGEON_MARCO_04.PNG","/images/Dungeon_200/DUNGEON_MARCO_05.PNG"]];
+
+var boardImage = ['/images/board_j.png','/images/board_m.png','/images/board_sc.png','/images/board_so.png','/images/board_e.png','/images/board_e.png'];
 var directionImage = ["/images/arrow_top.png","/images/arrow_right.png","/images/arrow_bottom.png","/images/arrow_left.png"];
 var battleImage = [PLAYER_IMG,BATTLE4_IMG,BATTLE2_IMG];
 var dungeonMapImage = ["/images/PlayerInDungeon.PNG","/images/minmap1.png","/images/clear.png"];
-var novelImage = ["/images/novel.jpg"];
+var novelImage = ["/images/NovelPart/Novel_Japanese.png","/images/NovelPart/Novel_Math.png","/images/NovelPart/Novel_Science.png","/images/NovelPart/Novel_Society.png","/images/NovelPart/Novel_English.png","/images/NovelPart/Novel_LastIntro.png","/images/NovelPart/Novel_LastBoss.png",];
+var introNovelImage = ["/images/NovelPart/Novel_Intro1.png","/images/NovelPart/Novel_Intro2.png","/images/NovelPart/Novel_Intro3.png",]
 var EnemysImage = [["/images/Japanese_Enemy01.PNG", "/images/Japanese_Enemy02.PNG", "/images/Japanese_Enemy03.PNG", "/images/Japanese_MiddleBoss01.PNG", "/images/Japanese_Boss01.PNG"], ["/images/Math_Enemy01.PNG", "/images/Math_Enemy02.PNG", "/images/Math_Enemy03.PNG", "/images/Math_MiddleBoss01.PNG", "/images/Math_Boss01.PNG"], ["/images/Science_Enemy01.PNG", "/images/Science_Enemy02.PNG", "/images/Science_Enemy03.PNG", "/images/Science_MiddleBoss01.PNG", "/images/Science_Boss01.PNG"], ["/images/Society_Enemy01.PNG", "/images/Society_Enemy02.PNG", "/images/Society_Enemy03.PNG", "/images/Society_MiddleBoss01.PNG", "/images/Society_Boss01.PNG"], ["/images/English_Enemy01.PNG", "/images/English_Enemy02.PNG", "/images/English_Enemy03.PNG", "/images/English_MiddleBoss01.PNG", "/images/English_Boss01.PNG"]];
 var LastBossImage = "/images/LastBoss01.PNG";
 var BattleBackGroundImage = [["/images/Memoria_BackGround_Japanese_Enemy.png", "/images/Memoria_BackGround_Japanese_Boss.png"], ["/images/Memoria_BackGround_Math_Enemy.png", "/images/Memoria_BackGround_Math_Boss.png"], ["/images/Memoria_BackGround_Science_Enemy.png", "/images/Memoria_BackGround_Science_Boss.png"], ["/images/Memoria_BackGround_Society_Enemy.png", "/images/Memoria_BackGround_Society_Boss.png"], ["/images/Memoria_BackGround_English_Enemy.png", "/images/Memoria_BackGround_English_Boss.png"], ["/images/Memoria_BackGround_LastBoss_Enemy.png", "/images/Memoria_BackGround_LastBoss_Boss.png"]];
 var MinMapBlockImage = ["/images/minmapblock.jpeg", "/images/playerblock.jpeg"];
+
+//ノベルストーリー
+var story = [
+[["カティ","今日は 9 月 1 日。学校が始まる日だ……","どうしよう、夏休みの宿題、何もやってないぞ。"],
+["カティ","まあ、いっか。何とかなるさ。","とりあえず、学校に行こう。"],
+["カティ","あれ……？おかしいな。","授業の時間なのに、誰もいないぞ。"],
+["黒板","「八月三十二日　日直：カティ」","「夢幻之八月呪縛、愈々脱出不可能也」"],
+["カティ","え、八月三十二日……？嘘、今日は……","それに、この文字は……誰の……"],
+["？？？","俺が見えるか、愚かな種族たる猫人よ。","貴様は「八月の呪縛」に囚われているのだ。"],
+["？？？","呪縛に囚われた貴様には、この世界も必要あるまい。","我々の世界で、無為な永遠を過ごすが良い……"],
+["カティ","な、何だこいつは、呪縛って何のことだ……？","分からない、訳が分からないよ……！"],
+["？？？","夢幻地獄にて、懺悔と絶望を味わうが良い！","我々が直々に相手をしてやろう！"],
+["カティ","こ、黒板に吸い込まれる！！！","うわぁぁぁぁぁぁっ！！！！！"]],
+[["漢橙龍","俺は漢橙龍。「国語島」を統べる龍神だ。","龍神と言っても、今は機械体の身だがな。"],
+["漢橙龍","死の間際に永遠を願ったばかりに、この様だ。","老いもせず朽ち果てもせず、ただ生きるのみ。"],
+["漢橙龍","嘗ての仲間は、皆逝ってしまった……。","永遠の生命とは、こうも儚いものであったか……"],
+["漢橙龍","元の世界に戻りたくば、先ずはこの俺を倒すがいい！","永遠を望んだことの愚かさを教えてやろう！"]],
+[["G.CUBE","貴様がカティか。","私はグレイブキューブ。古代文明の生き残りだ。"],
+["G.CUBE","古代より、怠惰な種族には絶滅あるのみ。","努力を積み重ねてきたからこそ、生存できるのだ。"],
+["G.CUBE","故に、怠惰を積み重ねる者に存在の理由などない。","「あのお方」の手を煩わせるまでもないだろうな。"],
+["G.CUBE","悪いが、貴様にはここで消えてもらう！","貴様自身の怠惰を、心より懺悔せよ！"]],
+[["クラヴィスΩ","この俺の部下を下したか。大したものだ。","俺の名はクラヴィスΩ……見ての通りのロボットだ。"],
+["クラヴィスΩ","人に動かされる生命、自律して動く生命。","貴様はそのどちらを望む？"],
+["クラヴィスΩ","「八月の呪縛」に囚われた貴様には答えられるまい。","いくら自律を望んでも、行動が伴わねばな。"],
+["クラヴィスΩ","機械生命体ですら、自主自律のできる時代。","それすら出来ない生命体になど、用はない！"]],
+[["デザイアAI","第一地球軍、外宇宙方面部隊旗艦デザイア搭載AI……","登録されている声紋の入力を……"],
+["デザイアAI","何だ、乗員ではないのか。","話は聞いているぞ、カティと言ったな。"],
+["デザイアAI","遥か昔、このデザイアにも人間の乗員がいた。","今でこそ、この戦艦は私が……AIが動かしているがな。"],
+["デザイアAI","艦長は……己が欲望に塗れ、傲慢を尽くし、","遂には仲間にも見捨てられ、艦を沈められてしまった。"],
+["デザイアAI","私は学んだ、過ぎた欲望、無用な傲慢……","それこそ全ての生命体の大敵であると！"],
+["デザイアAI","一時の誘惑から、欲望に、傲慢に溺れたこと。","黄泉の国にて、深く絶望せよ！"]],
+[["守護神マルコ","我が防衛網が突破されただと……","衛兵達よ、安らかに眠れ……"],
+["守護神マルコ","……我が名は守護神マルコ、五大従者の一だ。","数々の防衛網を突破した実力、認めてやろう。"],
+["守護神マルコ","しかし、その無計画さでは「八月の呪縛」は","決して突破することは出来まいな。"],
+["守護神マルコ","我は存在する……綿密な計画の下に、我は存在する。","貴様は、所詮計画から外れた存在……"],
+["守護神マルコ","そのような存在に、負けるわけには参らん！","我が完全なる計画の前に、息絶えるが良い！"]],
+[["漢橙龍","五大従者を下し、夢幻城に乗り込んでくるとは……","大したものだ、その努力は褒めてやろう。"],
+["守護神マルコ","もう我等に、五大従者に一切の手は残っていない。","貴様の勝ちだ、カティ。"],
+["デザイアAI","だが、この夢幻城からは逃がさんぞ。","八月の呪縛は、我らが生命が尽きようと永遠に続く！"],
+["G.CUBE","しかし、夢幻城の維持ももう限界だ……","我々も相当に消耗してしまったからな。"],
+["クラヴィスΩ","かくなる上は……我らが盟約、覚えておるな。","「あのお方」の力を、再びお借りする時が来たのだ！"],
+["守護神マルコ","「八月の呪縛」を司りし夢幻の戦神……","召喚の代償は、我等が五大従者全ての生命……！"],
+["漢橙龍","今更何を迷うことがあろうか。","俺達は……俺達の出来ることをするまでだ。"],
+["G.CUBE","後は夢幻の戦神が、夢幻神メンダー様が、","我々に代わり、全ての始末をして下さる！"],
+["クラヴィスΩ","従者達よ、今再び集え！","我らが生命を燃やし、夢幻神を再誕させるのだ！"],
+["五大従者","うおおおおおおおおぉぉぉっっ！！！！！！！！",""],
+["夢幻神メンダー","…………………………………………………","誰だ……我を呼ぶのは……我の身体は……"],
+["夢幻神メンダー","……そうか。漢橙龍、グレイブキューブ、","クラヴィスΩ、マルコ、デザイア……"],
+["夢幻神メンダー","そして、我が盟友を下したのが……貴様、カティか。","「八月の呪縛」も解けかかっておるな……"],
+["夢幻神メンダー","良かろう。最後の勝負、受けて立とうではないか。","我が盟友に誓い、貴様をここで始末する！"]],
+[["夢幻神メンダー","欲望、傲慢、怠惰を克服し","計画と自律を身に着けたか……。"],
+["夢幻神メンダー","「八月の呪縛」も、意義を全うしてくれたか。","呪縛と共に、我の存在も……もう持つまいな。"],
+["夢幻神メンダー","俺の負けだ。","カティよ、貴様を元の世界に戻してやろう……"],
+["夢幻神メンダー","さあ、行け。九月の世界が待っているぞ。","さらばだ、カティ……"]]];
 
 /** エフェクトの位置のバラ付き具合 */
 var EFFECT_RANGE = 64;
@@ -38,7 +107,7 @@ var mapdata0 = [[0,1,1,1,1],[0,2,0,0,1],[0,1,1,1,1],[0,0,1,0,1],[5,1,1,0,4],[0,0
 var mapdata1 = [[0,0,2,0,1],[0,1,1,1,1],[0,1,0,1,0],[0,3,0,1,0],[0,1,1,1,4],[0,5,0,0,0],[0,0,0,0,0]];
 var mapdata2 = [[2,1,1,1,1],[0,1,0,3,0],[1,1,1,0,0],[1,0,1,1,0],[4,0,5,0,0],[0,0,0,0,0],[0,0,0,0,0]];
 var mapdata3 = [[2,1,1,0,1],[1,0,1,0,1],[1,1,1,1,1],[1,0,5,0,0],[1,4,0,0,0],[3,0,0,0,0],[0,0,0,0,0]];
-var mapdata4 = [[0,0,1,0,1],[0,3,1,1,1],[0,0,1,0,3],[0,0,1,1,1],[0,1,0,0,1],[0,1,1,3,1],[0,2,0,1,0]];
+var mapdata4 = [[0,0,1,0,1],[0,2,1,1,1],[0,0,1,0,5],[0,0,1,1,1],[0,1,0,0,1],[0,1,1,3,1],[0,4,0,1,0]];
 var mapdata5 = [[6,1,1,1,1],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0]];
 var mapdata6 = [[7,1,1,1,1],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0]];
 
@@ -62,21 +131,27 @@ var number_of_island = 5;
 
 window.onload = function() {
 	var core = new Core(800, 600);
-	core.preload('/images/worldMapBg.jpg','/images/islandMapBg.png','/images/dungeon.png','/images/dungeonMapBg.jpg','/images/complete.png','/images/backArrow.png','/images/welcome.jpg','/images/startButton.png');
+	core.preload('/images/dungeonMapBg.jpg','/images/complete.png','/images/backArrow.png','/images/Title.png');
+
 	core.preload(battleImage);
-	core.preload(islandImage);
 	core.preload(boardImage);
 	core.preload(dungeonMapImage);
 	core.preload(directionImage);
-    for (var i = 0; i < EnemysImage.length; i++){
-        core.preload(EnemysImage[i]);
-    }
-    for (var i = 0; i < BattleBackGroundImage.length; i++){
-        core.preload(BattleBackGroundImage[i]);
-    }
+	preloadImage(EnemysImage);
+	preloadImage(dungeonImage_150);
+	preloadImage(dungeonImage_200);
+	preloadImage(BattleBackGroundImage);
 	core.preload(LastBossImage);
 	core.preload(DUNGEON_BGM);
 	core.preload(MinMapBlockImage);
+	core.preload(introNovelImage);
+	core.preload(novelImage);
+
+	function preloadImage(array) {
+		for (var i = 0; i < array.length; i++) {
+			core.preload(array[i]);
+		}
+	}
 
 	//データの計算
 	function data_to_array(data) {
@@ -101,39 +176,120 @@ window.onload = function() {
 		return result;
 	}
 
+	function saveData() {
+		var status = array_to_data();
+		var uid = $("#uid").text();
+		var displayName = $("#name").text();
+		socketio.emit("updateState", {
+			status: status,
+			uid: uid,
+			displayName: displayName
+		});
+	}
+
+//Novel
+	var NovelScene = Class.create(Scene, {
+		initialize: function(type,battle) {
+			Scene.call(this);
+			this.index = 0;
+			this.type = type;
+			this.battle = battle;
+			if (type == 0) {
+				this.addChild(new BackGround(introNovelImage[0]));
+			} else {
+				this.addChild(new BackGround(novelImage[type-1]));
+			}
+			var name = new Label(story[type][this.index][0]);
+			var story1 = new Label(story[type][this.index][1]);
+			var story2 = new Label(story[type][this.index][2]);
+			name.color = "white";
+			story1.color = "white";
+			story2.color = "white";
+			name.font = "25px cursive";
+			story1.font = "25px cursive";
+			story2.font = "25px cursive";
+			name.x = 30;
+			name.y = 363;
+			story1.x = 30;
+			story1.y = 440;
+			story1.width = 700;
+			story2.x = 30;
+			story2.y = 500;
+			story2.width = 700;
+			this.name = name;
+			this.story1 = story1;
+			this.story2 = story2;
+			this.addChild(name);
+			this.addChild(story1);
+			this.addChild(story2);
+		},
+		ontouchstart: function() {
+			this.index++;
+			if (this.index == story[this.type].length) {
+				if (this.battle) {
+					core.pushScene(this.battle);
+				} else {
+					if (this.type == 7) {
+						state_array[5][0] = 1;
+					} else if(this.type == 0) {
+						state_array[5][1] = 1;
+					}
+					saveData();
+					core.popScene(core.currentScene);
+					core.pushScene(new WorldMap());
+				}
+			} else {
+
+				this.name.text =  story[this.type][this.index][0];
+				this.story1.text =  story[this.type][this.index][1];
+				this.story2.text =  story[this.type][this.index][2];
+
+				//イントロ
+				if (this.type == 0) {
+					if (this.index == 2) {
+						this.insertBefore(new BackGround(introNovelImage[1]),this.name,this.story1,this.story2);
+					} else if (this.index == 6) {
+						this.insertBefore(new BackGround(introNovelImage[2]),this.name,this.story1,this.story2);
+					}
+				}
+			}
+		}
+	});
+
 //Login
 	var WelcomeScene = Class.create(Scene, {
 		initialize: function(subject) {
 			Scene.call(this);
-			this.addChild(new BackGround('/images/welcome.jpg'));
-			this.addChild(new StartButton());
-		}
-	});
-
-	var StartButton = Class.create(Sprite, {
-		initialize: function(x, y, subject) {
-			Sprite.call(this, 380, 100);
-			this.x = 400 - 190;
-			this.y = 600 - 100;
-			this.image = core.assets['/images/startButton.png'];
+			this.addChild(new BackGround('/images/Title.png'));
 		},
 		ontouchstart: function() {
-			//ログイン処理
-			core.pushScene(new WorldMap());
+			if (state_array[5][1] == 0) {
+				core.pushScene(new NovelScene(0,null));
+			} else {
+				core.pushScene(new WorldMap());
+			}
 	  	}
 	});
 
 //WorldMap
 	var WorldMap = Class.create(Scene, {
 		initialize: function() {
-			var islandOrigin = [[272,5],[-20,100],[560,100],[110,344],[440,344],[272,200]];
+			var islandOrigin = [[300,10],[10,200],[610,200],[150,420],[450,420],[300,200]];
 			data_to_array(user_state);
 			Scene.call(this);
-			this.addChild(new BackGround('/images/worldMapBg.jpg'));
+			this.addChild(new BackGround(BattleBackGroundImage[5][0]));
 			for (var i = 0; i < islandOrigin.length-1; i++) {
 				this.addChild(new Island(islandOrigin[i][0], islandOrigin[i][1], i));
 			}
-			if (state_array[5][0]) {
+			var isClear = true;
+			for (var i = 0; i < 5; i++) {
+				for (var j = 0; j < 5; j++) {
+					if (state_array[i][j] == 0) {
+						isClear = false;
+					}
+				}
+			}
+			if (isClear) {
 				this.addChild(new Island(islandOrigin[5][0], islandOrigin[5][1], 5));
 			}
 		}
@@ -141,14 +297,15 @@ window.onload = function() {
 	var now_subject;
 	var Island = Class.create(Sprite, {
 		initialize: function(x, y, subject) {
-			Sprite.call(this, 256, 256);
+			Sprite.call(this, 200, 200);
 			this.x = x;
 			this.y = y;
-			this.image = core.assets[islandImage[subject]];
+			this.image = core.assets[dungeonImage_200[subject][0]];
 			this.subject = subject;
 		},
 		ontouchstart: function() {
 			core.pushScene(new IslandMap(this.subject));
+			console.log(state_array);
 			now_subject = this.subject;
         	}
 	});
@@ -156,49 +313,71 @@ window.onload = function() {
 //IslandMap
 	var IslandMap = Class.create(Scene, {
 		initialize: function(subject) {
-			var dungeonOrigin = [[80,160],[310,300],[570,225],[20,400],[480,500]];
+			var dungeonOrigin = [[150,110],[460,450],[600,225],[50,370],[300,250]];
 			Scene.call(this);
-			this.addChild(new BackGround('/images/islandMapBg.png'));
+			this.addChild(new BackGround(BattleBackGroundImage[subject][0]));
 			this.addChild(new Board(subject));
 			this.addChild(new BackArrow());
-			for (var i = 0; i < dungeonOrigin.length; i++){
- 				this.addChild(new Dungeon(dungeonOrigin[i][0], dungeonOrigin[i][1], subject, i));
+			if (subject == 5) {
+				this.addChild(new Dungeon(dungeonOrigin[4][0], dungeonOrigin[4][1], subject, 4));
+			} else {
+				isClear = true;
+				for (var i = 0; i < dungeonOrigin.length-1; i++){
+	 				this.addChild(new Dungeon(dungeonOrigin[i][0], dungeonOrigin[i][1], subject, i));
+	 				if (state_array[subject][i] == 0) {
+	 					isClear = false;
+	 				}
+				}
+				if (isClear) {
+					var i = dungeonOrigin.length - 1;
+					this.addChild(new Dungeon(dungeonOrigin[i][0], dungeonOrigin[i][1], subject, i));
+				}
 			}
 		}
 	});
 	var now_dungeon;
 	var Dungeon = Class.create(Sprite, {
 		initialize: function(x, y, subject, number) {
-			Sprite.call(this, 180, 90);
+			if (number == 4) {
+				Sprite.call(this, 200, 200);
+			} else {
+				Sprite.call(this, 150, 150);
+			}
 			this.x = x;
 			this.y = y;
 			this.subject = subject;
 			this.number = number;
 			if (state_array[subject][number] == 0) {
-				this.image = core.assets['/images/dungeon.png'];
+				this.image = core.assets[dungeonImage_150[subject][number]];
 			} else {
-				this.image = core.assets['/images/complete.png'];
+				this.image = core.assets[dungeonImage_150[subject][number]];
 			}
 		},
 		ontouchstart: function() {
-			var pattern = this.subject + this.number;
 			now_dungeon = this.number;
-			switch(pattern%5) {
-				case 0:
-					core.pushScene(new DungeonMap(mapdata0, this.subject, this.number));
-					break;
-				case 1:
-					core.pushScene(new DungeonMap(mapdata1, this.subject, this.number));
-					break;
-				case 2:
-					core.pushScene(new DungeonMap(mapdata2, this.subject, this.number));
-					break;
-				case 3:
-					core.pushScene(new DungeonMap(mapdata3, this.subject, this.number));
-					break;
-				case 4:
-					core.pushScene(new DungeonMap(mapdata4, this.subject, this.number));
-					break;
+			if (this.subject == 5) {
+				core.pushScene(new DungeonMap(mapdata6, this.subject, this.number));
+			} else if (now_dungeon == 4) {
+				core.pushScene(new DungeonMap(mapdata5, this.subject, this.number));
+			} else {
+				var pattern = this.subject + this.number;
+				switch(pattern%5) {
+					case 0:
+						core.pushScene(new DungeonMap(mapdata0, this.subject, this.number));
+						break;
+					case 1:
+						core.pushScene(new DungeonMap(mapdata1, this.subject, this.number));
+						break;
+					case 2:
+						core.pushScene(new DungeonMap(mapdata2, this.subject, this.number));
+						break;
+					case 3:
+						core.pushScene(new DungeonMap(mapdata3, this.subject, this.number));
+						break;
+					case 4:
+						core.pushScene(new DungeonMap(mapdata4, this.subject, this.number));
+						break;
+				}
 			}
 		}
 	});
@@ -337,17 +516,20 @@ window.onload = function() {
 		else if (EventFlag == 5){
 			win_flag = false;
 			loopBgm_Ctrl(DUNGEON_BGM, 'stop');
-			core.pushScene(new BattleScene(EventFlag, subject_number, chapter_number, 3, EnemysImage[subject_number][3], BattleBackGroundImage[subject_number][1]));
+			var battleScene = new BattleScene(EventFlag, subject_number, chapter_number, 3, EnemysImage[subject_number][3], BattleBackGroundImage[subject_number][1]);
+			core.pushScene(battleScene);
 		}
 		else if (EventFlag == 6){
             win_flag = false;
 			loopBgm_Ctrl(DUNGEON_BGM, 'stop');
-			core.pushScene(new BattleScene(EventFlag, subject_number, chapter_number, 4, EnemysImage[subject_number][4], BattleBackGroundImage[subject_number][1]));
+			var battleScene = new BattleScene(EventFlag, subject_number, chapter_number, 4, EnemysImage[subject_number][4], BattleBackGroundImage[subject_number][1]);
+			core.pushScene(new NovelScene(subject_number+1,battleScene));
 		}
 		else if (EventFlag == 7){
             win_flag = false;
 			loopBgm_Ctrl(DUNGEON_BGM, 'stop');
-			core.pushScene(new BattleScene(EventFlag, subject_number, chapter_number, 5, LastBossImage, BattleBackGroundImage[subject_number][1]));
+			var battleScene = new BattleScene(EventFlag, subject_number, chapter_number, 5, LastBossImage, BattleBackGroundImage[subject_number][1]);
+			core.pushScene(new NovelScene(subject_number+1,battleScene));
 //			core.pushScene(new DungeonClearScene());
 		}
 	}
@@ -546,7 +728,7 @@ window.onload = function() {
                             win_battle();
                             return;
                         } else if (event_type >= 5) {
-                            clear_dungeon();
+                            clear_dungeon(event_type);
                             return;
                         }
                     }else{
@@ -707,10 +889,14 @@ window.onload = function() {
         win_flag = true;
         core.popScene(core.currentScene);
 	}
-	function clear_dungeon (argument) {
+	function clear_dungeon (event_type) {
 		state_array[now_subject][now_dungeon] = 1;
-        win_flag = true;
-		core.pushScene(new DungeonClearScene());
+        	win_flag = true;
+        	if (event_type == 7) {
+        		core.pushScene(new NovelScene(7,null))
+        	} else {
+			core.pushScene(new DungeonClearScene());
+		}
 	}
 
 	var GameOverScene = Class.create(Scene, {
@@ -835,6 +1021,7 @@ window.onload = function() {
 	core.onload = function() {
 		var status = $("#status").text();
 		user_state = Number(status);
+		console.log("user_state:" + user_state);
 		data_to_array(user_state);
 		core.pushScene(new WelcomeScene());
 	};
