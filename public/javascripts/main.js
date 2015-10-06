@@ -978,7 +978,6 @@ window.onload = function() {
         	win_flag = true;
 			loopBgm_Ctrl(battlebgm, 'stop');
         	if (event_type == 7) {
-				loopBgm_Ctrl(dungeonbgm, 'play');
         		core.pushScene(new NovelScene(7,null, battlebgm));
         	} else {
 			core.pushScene(new DungeonClearScene());
@@ -996,6 +995,7 @@ window.onload = function() {
         	label.font = '48px "Arial"';
         	label.text = 'Game Over !!! <br/>';
         	this.addChild(label);
+        	loopBgm_Ctrl(battlebgm, 'stop');
         },
         ontouchstart: function() {
 			core.pushScene(new WorldMap);
@@ -1074,6 +1074,7 @@ window.onload = function() {
     }
 
 	function gameOver() {
+		loopBgm_Ctrl(battlebgm, 'stop');
 		core.pushScene(new GameOverScene());
 	}
 
