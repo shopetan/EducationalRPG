@@ -3,7 +3,7 @@ var socketio = io.connect('http://localhost:3000');
 enchant();
 
 //DBから受け取るユーザーの進捗情報
-var state_array = [[1,1,1,1,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,1]]; //国数理社英他(全クリア,初回完了)
+var state_array = [[1,1,1,1,0],[1,1,1,1,0],[1,1,1,1,0],[1,1,1,1,0],[1,1,1,1,0],[0,1]]; //国数理社英他(全クリア,初回完了)
 
 var BATTLE_BGM = './bgm/BATTLE_cyrf_energy.mp3';
 var PLAYER_IMG = '/images/Player.png';
@@ -188,10 +188,11 @@ window.onload = function() {
 
 //Novel
 	var NovelScene = Class.create(Scene, {
-		initialize: function(type) {
+		initialize: function(type,battle) {
 			Scene.call(this);
 			this.index = 0;
 			this.type = type;
+			this.battle = battle;
 			if (type == 0) {
 				this.addChild(new BackGround(introNovelImage[0]));
 			} else {
@@ -223,9 +224,9 @@ window.onload = function() {
 		},
 		ontouchstart: function() {
 			this.index++;
-			if (this.index == 10) {
+			if (this.index == story[this.type].length) {
 				core.popScene(core.currentScene);
-				core.pushScene(new WorldMap());
+				core.pushScene(this.battle);
 			} else {
 				this.name.text =  story[this.type][this.index][0];
 				this.story1.text =  story[this.type][this.index][1];
@@ -237,7 +238,8 @@ window.onload = function() {
 					this.insertBefore(new BackGround(introNovelImage[1]),this.name,this.story1,this.story2);
 				} else if (this.index == 6) {
 					this.insertBefore(new BackGround(introNovelImage[2]),this.name,this.story1,this.story2);
-				} else if(this.type == 10) {
+				} else if(this.type == story[this.type].length) {
+					core.pushScene(new WorldMap());
 					state_array[5][1] = 1;
 					saveData();
 				}
@@ -504,12 +506,14 @@ window.onload = function() {
 		else if (EventFlag == 5){
 			win_flag = false;
 			loopBgm_Ctrl(DUNGEON_BGM, 'stop');
-			core.pushScene(new BattleScene(EventFlag, subject_number, chapter_number, 3, EnemysImage[subject_number][3], BattleBackGroundImage[subject_number][1]));
+			var battleScene = new BattleScene(EventFlag, subject_number, chapter_number, 3, EnemysImage[subject_number][3], BattleBackGroundImage[subject_number][1]);
+			core.pushScene(battleScene);
 		}
 		else if (EventFlag == 6){
             win_flag = false;
 			loopBgm_Ctrl(DUNGEON_BGM, 'stop');
-			core.pushScene(new BattleScene(EventFlag, subject_number, chapter_number, 4, EnemysImage[subject_number][4], BattleBackGroundImage[subject_number][1]));
+			var battleScene = new BattleScene(EventFlag, subject_number, chapter_number, 4, EnemysImage[subject_number][4], BattleBackGroundImage[subject_number][1]);
+			core.pushScene(new NovelScene(subject_number+1,battleScene));
 		}
 		else if (EventFlag == 7){
             win_flag = false;
