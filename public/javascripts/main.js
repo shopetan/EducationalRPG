@@ -267,7 +267,7 @@ window.onload = function() {
 				if (this.type == 0) {
 					if (this.index == 2) {
 						this.insertBefore(new BackGround(introNovelImage[1]),this.name,this.story1,this.story2);
-					} else if (this.index == 6) {
+					} else if (this.index == 5) {
 						this.insertBefore(new BackGround(introNovelImage[2]),this.name,this.story1,this.story2);
 					}
 				}
@@ -527,7 +527,8 @@ window.onload = function() {
             win_flag = false;
 			loopBgm_Ctrl(DUNGEON_BGM, 'stop');
 			var battleScene = new BattleScene(EventFlag, subject_number, chapter_number, 4, EnemysImage[subject_number][4], BattleBackGroundImage[subject_number][1]);
-			core.pushScene(new NovelScene(subject_number+1,battleScene));
+			core.pushScene(battleScene);
+			//core.pushScene(new NovelScene(subject_number+1,battleScene));
 		}
 		else if (EventFlag == 7){
             win_flag = false;
@@ -895,6 +896,7 @@ window.onload = function() {
 	}
 	function clear_dungeon (event_type) {
 		state_array[now_subject][now_dungeon] = 1;
+		saveData();
         	win_flag = true;
         	if (event_type == 7) {
         		core.pushScene(new NovelScene(7,null))
@@ -1025,8 +1027,8 @@ window.onload = function() {
 	core.onload = function() {
 		var status = $("#status").text();
 		user_state = Number(status);
-		console.log("user_state:" + user_state);
 		data_to_array(user_state);
+		console.log("state_array:" + state_array);
 		core.pushScene(new WelcomeScene());
 	};
 	core.start();
