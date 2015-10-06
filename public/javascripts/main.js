@@ -50,7 +50,7 @@ var BattleBackGroundImage = [["/images/Memoria_BackGround_Japanese_Enemy.png", "
 var MinMapBlockImage = ["/images/minmapblock.jpeg", "/images/playerblock.jpeg"];
 var BGMSET = [DUNGEON_BGM, BATTLE_BGM, BATTLE_BOSS_BGM, TITLE_BGM, LAST_DUNGEON_BGM, ISLAND_BGM, DUNGEON_SELECT_BGM];
 var SESET = [SE_OK,SE_NG,SE_DEFEATED];
-var DefferedImage = ["D_Memoria_BackGround_Japanese_Enemy.png", "D_Memoria_BackGround_Math_Enemy.png", "D_Memoria_BackGround_Science_Enemy.png", "D_Memoria_BackGround_Society_Enemy.png", "D_Memoria_BackGround_English_Enemy.png", "D_Memoria_BackGround_LastBoss_Enemy.png"];
+var DefferedImage = ["/images/D_Memoria_BackGround_Japanese_Enemy.png", "/images/D_Memoria_BackGround_Math_Enemy.png", "/images/D_Memoria_BackGround_Science_Enemy.png", "/images/D_Memoria_BackGround_Society_Enemy.png", "/images/D_Memoria_BackGround_English_Enemy.png", "/images/D_Memoria_BackGround_LastBoss_Enemy.png"];
 
 //ノベルストーリー
 var story = [
@@ -1136,7 +1136,7 @@ window.onload = function() {
 		}
 	});
 
-	var AllClearScene = Class.create(Scene, function (){
+	var AllClearScene = Class.create(Scene, {
 		initialize: function (){
 			Scene.call(this, 800, 600);
 			this.addChild(new BackGround("/images/clear.png"));
@@ -1145,7 +1145,7 @@ window.onload = function() {
 			core.popScene();
 			core.pushScene(new WelcomeScene());
 		}
-	})
+	});
 
 	core.fps = 15;
 	core.onload = function() {
