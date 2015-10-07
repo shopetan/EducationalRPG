@@ -151,7 +151,7 @@ var number_of_island = 5;
 
 window.onload = function() {
 	var core = new Core(800, 600);
-	core.preload('/images/dungeonMapBg.jpg','/images/complete.png','/images/backArrow.png','/images/Title.png','/images/CMP.png');
+	core.preload('/images/dungeonMapBg.jpg','/images/complete.png','/images/Other.png','/images/Title.png','/images/CMP.png');
 
 	core.preload(battleImage);
 	core.preload(boardImage);
@@ -465,8 +465,10 @@ window.onload = function() {
 	});
 	var BackArrow = Class.create(Sprite, {
 		initialize: function(state) {
-			Sprite.call(this, 180, 70);
-			this.image = core.assets['/images/backArrow.png'];
+			Sprite.call(this, 160, 40);
+			this.image = core.assets['/images/Other.png'];
+			this.x = 5;
+			this.y = 5;
 		},
 		ontouchstart: function() {
 			loopBgm_Ctrl(DUNGEON_SELECT_BGM, 'stop');
@@ -706,13 +708,15 @@ window.onload = function() {
 	}
 	function Presented_Message(scene, msg, size){
 		var msg_box = new Sprite(400, 50);
-		msg_box.moveTo(800 / 2 - 150 , 0);
+		msg_box.moveTo(800 / 2 - 200 , 0);
 		msg_box.image = core.assets["/images/Message.png"];
 		var message = new Label();
 		message.text = msg;
 		message.color = "yellow";
 		message.font = ""+size+"px 游ゴシック体";
-		message.moveTo(800 / 2 - 100, 10);
+		message.width = 350;
+		message.textAlign = "center";
+		message.moveTo(800 / 2 - 175, 15);
 		addChild_to_scene(scene, msg_box);
 		addChild_to_scene(scene, message);
 	}
