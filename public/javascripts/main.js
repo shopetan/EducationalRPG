@@ -51,6 +51,8 @@ var MinMapBlockImage = ["/images/minmapblock.jpeg", "/images/playerblock.jpeg"];
 var BGMSET = [DUNGEON_BGM, BATTLE_BGM, BATTLE_BOSS_BGM, TITLE_BGM, LAST_DUNGEON_BGM, ISLAND_BGM, DUNGEON_SELECT_BGM];
 var SESET = [SE_OK,SE_NG,SE_DEFEATED];
 var DefferedImage = ["/images/D_Memoria_BackGround_Japanese_Enemy.png", "/images/D_Memoria_BackGround_Math_Enemy.png", "/images/D_Memoria_BackGround_Science_Enemy.png", "/images/D_Memoria_BackGround_Society_Enemy.png", "/images/D_Memoria_BackGround_English_Enemy.png", "/images/D_Memoria_BackGround_LastBoss_Enemy.png"];
+var DungeonBGImage = ["/images/DungeonSelect_RES/D_Memoria_BackGround_Japanese_Enemy.png","/images/DungeonSelect_RES/D_Memoria_BackGround_Math_Enemy.png","/images/DungeonSelect_RES/D_Memoria_BackGround_Science_Enemy.png","/images/DungeonSelect_RES/D_Memoria_BackGround_Society_Enemy.png","/images/DungeonSelect_RES/D_Memoria_BackGround_English_Enemy.png","/images/DungeonSelect_RES/D_Memoria_BackGround_LastBoss_Enemy.png"];
+var SubjectSelectImage = ["/images/SUB_NAMED/DUNGEON_HOLE_01.PNG","/images/SUB_NAMED/DUNGEON_CRYSTAL_01.PNG","/images/SUB_NAMED/DUNGEON_ROCK_01.PNG","/images/SUB_NAMED/DUNGEON_SATELITE_01.PNG","/images/SUB_NAMED/DUNGEON_MARCO_01.PNG","/images/SUB_NAMED/LASTBOSS_DUNGEON.png"];
 
 //ノベルストーリー
 var story = [
@@ -160,6 +162,8 @@ window.onload = function() {
 	core.preload(introNovelImage);
 	core.preload(novelImage);
 	core.preload(DefferedImage);
+	core.preload(DungeonBGImage);
+	core.preload(SubjectSelectImage);
 
 	function preloadImage(array) {
 		for (var i = 0; i < array.length; i++) {
@@ -293,7 +297,7 @@ window.onload = function() {
 //WorldMap
 	var WorldMap = Class.create(Scene, {
 		initialize: function(type) {
-			var islandOrigin = [[300,10],[10,200],[610,200],[150,420],[450,420],[300,200]];
+			var islandOrigin = [[300,60],[10,200],[600,200],[130,400],[470,400],[300,260]];
 			data_to_array(user_state);
 			Scene.call(this);
 			this.addChild(new BackGround(BattleBackGroundImage[5][0]));
@@ -310,9 +314,9 @@ window.onload = function() {
 			}
 			if (isClear) {
 				this.addChild(new Island(islandOrigin[5][0], islandOrigin[5][1], 5));
-				Presented_Message(this,"新たなエリアが現れた！");
+				Presented_Message(this,"新たなエリアが現れた！",25);
 			} else {
-				Presented_Message(this,"すべてのエリアを攻略して、元の世界へ戻ろう！");
+				Presented_Message(this,"すべてのエリアを攻略して元の世界へ戻ろう！",14);
 			}
 			loopBgm_Ctrl(ISLAND_BGM, 'play');
 		}
@@ -323,7 +327,7 @@ window.onload = function() {
 			Sprite.call(this, 200, 200);
 			this.x = x;
 			this.y = y;
-			this.image = core.assets[dungeonImage_200[subject][0]];
+			this.image = core.assets[SubjectSelectImage[subject]];
 			this.subject = subject;
 		},
 		ontouchstart: function() {
@@ -339,7 +343,7 @@ window.onload = function() {
 		initialize: function(subject) {
 			var dungeonOrigin = [[150,110],[460,450],[600,225],[50,370],[300,250]];
 			Scene.call(this);
-			this.addChild(new BackGround(BattleBackGroundImage[subject][0]));
+			this.addChild(new BackGround(DungeonBGImage[subject]));
 			this.addChild(new Board(subject));
 			this.addChild(new BackArrow());
 			loopBgm_Ctrl(DUNGEON_SELECT_BGM, 'play');
