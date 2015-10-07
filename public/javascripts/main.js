@@ -523,19 +523,19 @@ window.onload = function() {
 			switch(this.direction) {
 				case 0:
 					move_xy(dungeon_x, dungeon_y - 1);
-					moveEffect_y(BattleBackGroundImage[now_subject][0], 1);
+					moveEffect_y(DungeonBackGroundImage[now_subject], 1);
 					break;
 				case 1:
 					move_xy(dungeon_x + 1, dungeon_y);
-					moveEffect_x(BattleBackGroundImage[now_subject][0], 1);
+					moveEffect_x(DungeonBackGroundImage[now_subject], 1);
 					break;
 				case 2:
 					move_xy(dungeon_x, dungeon_y + 1);
-					moveEffect_y(BattleBackGroundImage[now_subject][0], -1);
+					moveEffect_y(DungeonBackGroundImage[now_subject], -1);
 					break;
 				case 3:
 					move_xy(dungeon_x - 1, dungeon_y);
-					moveEffect_x(BattleBackGroundImage[now_subject][0], -1);
+					moveEffect_x(DungeonBackGroundImage[now_subject], -1);
 					break;
 			}
 		}
@@ -583,12 +583,12 @@ window.onload = function() {
 			else {
 				direction[3] = true;
 			}
+			if (!FiveFlag){
+				Presented_Message(core.currentScene, "目的：敵を全滅せよ", 25);
+			}
 		}
 
-		if (!FiveFlag){
-			Presented_Message(core.currentScene, "目的：敵を全滅せよ", 25);
-		}
-
+		
 		for (i = 0; i < 4; i++){
 			direct[i].visible = direction[i];
 		}
