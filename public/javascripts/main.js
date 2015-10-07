@@ -53,6 +53,12 @@ var SESET = [SE_OK,SE_NG,SE_DEFEATED];
 var DefferedImage = ["/images/D_Memoria_BackGround_Japanese_Enemy.png", "/images/D_Memoria_BackGround_Math_Enemy.png", "/images/D_Memoria_BackGround_Science_Enemy.png", "/images/D_Memoria_BackGround_Society_Enemy.png", "/images/D_Memoria_BackGround_English_Enemy.png", "/images/D_Memoria_BackGround_LastBoss_Enemy.png"];
 var DungeonBGImage = ["/images/DungeonSelect_RES/D_Memoria_BackGround_Japanese_Enemy.png","/images/DungeonSelect_RES/D_Memoria_BackGround_Math_Enemy.png","/images/DungeonSelect_RES/D_Memoria_BackGround_Science_Enemy.png","/images/DungeonSelect_RES/D_Memoria_BackGround_Society_Enemy.png","/images/DungeonSelect_RES/D_Memoria_BackGround_English_Enemy.png","/images/DungeonSelect_RES/D_Memoria_BackGround_LastBoss_Enemy.png"];
 var SubjectSelectImage = ["/images/SUB_NAMED/DUNGEON_HOLE_01.PNG","/images/SUB_NAMED/DUNGEON_CRYSTAL_01.PNG","/images/SUB_NAMED/DUNGEON_ROCK_01.PNG","/images/SUB_NAMED/DUNGEON_SATELITE_01.PNG","/images/SUB_NAMED/DUNGEON_MARCO_01.PNG","/images/SUB_NAMED/LASTBOSS_DUNGEON.png"];
+var DungeonSelectImage = [
+["/images/CAT_NAMED/DUNGEON_HOLE_01.PNG","/images/CAT_NAMED/DUNGEON_HOLE_02.PNG","/images/CAT_NAMED/DUNGEON_HOLE_03.PNG","/images/CAT_NAMED/DUNGEON_HOLE_04.PNG","/images/BOSS_NAMED/DUNGEON_HOLE_02.PNG"],
+["/images/CAT_NAMED/DUNGEON_CRYSTAL_01.PNG","/images/CAT_NAMED/DUNGEON_CRYSTAL_02.PNG","/images/CAT_NAMED/DUNGEON_CRYSTAL_03.PNG","/images/CAT_NAMED/DUNGEON_CRYSTAL_04.PNG","/images/BOSS_NAMED/DUNGEON_CRYSTAL_02.PNG"],
+["/images/CAT_NAMED/DUNGEON_ROCK_01.PNG","/images/CAT_NAMED/DUNGEON_ROCK_02.PNG","/images/CAT_NAMED/DUNGEON_ROCK_03.PNG","/images/CAT_NAMED/DUNGEON_ROCK_04.PNG","/images/BOSS_NAMED/DUNGEON_ROCK_02.PNG"],
+["/images/CAT_NAMED/DUNGEON_SATELITE_01.PNG","/images/CAT_NAMED/DUNGEON_SATELITE_02.PNG","/images/CAT_NAMED/DUNGEON_SATELITE_03.PNG","/images/CAT_NAMED/DUNGEON_SATELITE_04.PNG","/images/BOSS_NAMED/DUNGEON_SATELITE_02.PNG"],
+["/images/CAT_NAMED/DUNGEON_MARCO_01.PNG","/images/CAT_NAMED/DUNGEON_MARCO_02.PNG","/images/CAT_NAMED/DUNGEON_MARCO_03.PNG","/images/CAT_NAMED/DUNGEON_MARCO_04.PNG","/images/BOSS_NAMED/DUNGEON_MARCO_02.PNG"]];
 
 //ノベルストーリー
 var story = [
@@ -145,7 +151,7 @@ var number_of_island = 5;
 
 window.onload = function() {
 	var core = new Core(800, 600);
-	core.preload('/images/dungeonMapBg.jpg','/images/complete.png','/images/backArrow.png','/images/Title.png');
+	core.preload('/images/dungeonMapBg.jpg','/images/complete.png','/images/backArrow.png','/images/Title.png','/images/CMP.png');
 
 	core.preload(battleImage);
 	core.preload(boardImage);
@@ -164,6 +170,7 @@ window.onload = function() {
 	core.preload(DefferedImage);
 	core.preload(DungeonBGImage);
 	core.preload(SubjectSelectImage);
+	preloadImage(DungeonSelectImage);
 
 	function preloadImage(array) {
 		for (var i = 0; i < array.length; i++) {
@@ -341,35 +348,35 @@ window.onload = function() {
 //IslandMap
 	var IslandMap = Class.create(Scene, {
 		initialize: function(subject) {
-			var dungeonOrigin = [[150,110],[460,450],[600,225],[50,370],[300,250]];
+			var dungeonOrigin = [[130,110],[480,440],[600,225],[50,370],[300,250]];
 			Scene.call(this);
 			this.addChild(new BackGround(DungeonBGImage[subject]));
-			this.addChild(new Board(subject));
+			//this.addChild(new Board(subject));
 			this.addChild(new BackArrow());
 			loopBgm_Ctrl(DUNGEON_SELECT_BGM, 'play');
 			if (subject == 5) {
-				this.addChild(new Dungeon(dungeonOrigin[4][0], dungeonOrigin[4][1], subject, 4));
+				new Dungeon(dungeonOrigin[4][0], dungeonOrigin[4][1], subject, 4, this);
 			} else {
 				isClear = true;
 				for (var i = 0; i < dungeonOrigin.length-1; i++){
-	 				this.addChild(new Dungeon(dungeonOrigin[i][0], dungeonOrigin[i][1], subject, i));
+	 				new Dungeon(dungeonOrigin[i][0], dungeonOrigin[i][1], subject, i, this);
 	 				if (state_array[subject][i] == 0) {
 	 					isClear = false;
 	 				}
 				}
 				if (isClear) {
 					var i = dungeonOrigin.length - 1;
-					this.addChild(new Dungeon(dungeonOrigin[i][0], dungeonOrigin[i][1], subject, i));
-					Presented_Message(this,"新たなダンジョンが現れた！");
+					new Dungeon(dungeonOrigin[i][0], dungeonOrigin[i][1], subject, i ,this);
+					Presented_Message(this,"新たなダンジョンが現れた！",20);
 				} else {
-					Presented_Message(this,"すべてのダンジョンを攻略しよう！");
+					Presented_Message(this,"すべてのダンジョンを攻略しよう！",18);
 				}
 			}
 		}
 	});
 	var now_dungeon;
 	var Dungeon = Class.create(Sprite, {
-		initialize: function(x, y, subject, number) {
+		initialize: function(x, y, subject, number,scene) {
 			if (number == 4) {
 				Sprite.call(this, 200, 200);
 			} else {
@@ -379,11 +386,53 @@ window.onload = function() {
 			this.y = y;
 			this.subject = subject;
 			this.number = number;
-			if (state_array[subject][number] == 0) {
-				this.image = core.assets[dungeonImage_150[subject][number]];
-			} else {
-				this.image = core.assets[dungeonImage_150[subject][number]];
+			this.image = core.assets[DungeonSelectImage[subject][number]];
+			scene.addChild(this);
+			if (state_array[subject][number] == 1) {
+				scene.addChild(new Complete(x,y,subject,number));
 			}
+		},
+		ontouchstart: function() {
+			now_dungeon = this.number;
+			loopBgm_Ctrl(DUNGEON_SELECT_BGM, 'stop');
+			if (this.subject == 5) {
+				core.pushScene(new DungeonMap(mapdata6, this.subject, this.number));
+			} else if (now_dungeon == 4) {
+				core.pushScene(new DungeonMap(mapdata5, this.subject, this.number));
+			} else {
+				var pattern = this.subject + this.number;
+				switch(pattern%5) {
+					case 0:
+						core.pushScene(new DungeonMap(mapdata0, this.subject, this.number));
+						break;
+					case 1:
+						core.pushScene(new DungeonMap(mapdata1, this.subject, this.number));
+						break;
+					case 2:
+						core.pushScene(new DungeonMap(mapdata2, this.subject, this.number));
+						break;
+					case 3:
+						core.pushScene(new DungeonMap(mapdata3, this.subject, this.number));
+						break;
+					case 4:
+						core.pushScene(new DungeonMap(mapdata4, this.subject, this.number));
+						break;
+				}
+			}
+		}
+	});
+	var Complete = Class.create(Sprite, {
+		initialize: function(x, y, subject, number) {
+			if (number == 4) {
+				Sprite.call(this, 200, 200);
+			} else {
+				Sprite.call(this, 150, 150);
+			}
+			this.x = x;
+			this.y = y-50;
+			this.subject = subject;
+			this.number = number;
+			this.image = core.assets['/images/CMP.png'];
 		},
 		ontouchstart: function() {
 			now_dungeon = this.number;
