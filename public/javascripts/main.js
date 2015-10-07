@@ -50,7 +50,8 @@ var BattleBackGroundImage = [["/images/Memoria_BackGround_Japanese_Enemy.png", "
 var MinMapBlockImage = ["/images/minmapblock.jpeg", "/images/playerblock.jpeg"];
 var BGMSET = [DUNGEON_BGM, BATTLE_BGM, BATTLE_BOSS_BGM, TITLE_BGM, LAST_DUNGEON_BGM, ISLAND_BGM, DUNGEON_SELECT_BGM];
 var SESET = [SE_OK,SE_NG,SE_DEFEATED];
-var DefferedImage = ["/images/D_Memoria_BackGround_Japanese_Enemy.png", "/images/D_Memoria_BackGround_Math_Enemy.png", "/images/D_Memoria_BackGround_Science_Enemy.png", "/images/D_Memoria_BackGround_Society_Enemy.png", "/images/D_Memoria_BackGround_English_Enemy.png", "/images/D_Memoria_BackGround_LastBoss_Enemy.png"];
+var DefeatedImage = ["/images/Defeated_Memoria_BackGround_Japanese_Enemy.png", "/images/Defeated_Memoria_BackGround_Math_Enemy.png", "/images/Defeated_Memoria_BackGround_Science_Enemy.png", "/images/Defeated_Memoria_BackGround_Society_Enemy.png", "/images/Defeated_Memoria_BackGround_English_Enemy.png", "/images/Defeated_Memoria_BackGround_LastBoss_Enemy.png"];
+var DungeonBackGroundImage = ["/images/D_Memoria_BackGround_Japanese_Enemy.png", "/images/D_Memoria_BackGround_Math_Enemy.png", "/images/D_Memoria_BackGround_Science_Enemy.png", "/images/D_Memoria_BackGround_Society_Enemy.png", "/images/D_Memoria_BackGround_English_Enemy.png", "/images/D_Memoria_BackGround_LastBoss_Enemy.png"];
 
 //ノベルストーリー
 var story = [
@@ -159,7 +160,8 @@ window.onload = function() {
 	core.preload(MinMapBlockImage);
 	core.preload(introNovelImage);
 	core.preload(novelImage);
-	core.preload(DefferedImage);
+	core.preload(DefeatedImage);
+	core.preload(DungeonBackGroundImage);
 
 	function preloadImage(array) {
 		for (var i = 0; i < array.length; i++) {
@@ -337,7 +339,7 @@ window.onload = function() {
 		initialize: function(subject) {
 			var dungeonOrigin = [[150,110],[460,450],[600,225],[50,370],[300,250]];
 			Scene.call(this);
-			this.addChild(new BackGround(BattleBackGroundImage[subject][0]));
+			this.addChild(new BackGround(DungeonBackGroundImage[subject]));
 			this.addChild(new Board(subject));
 			this.addChild(new BackArrow());
 			loopBgm_Ctrl(DUNGEON_SELECT_BGM, 'play');
@@ -441,7 +443,7 @@ window.onload = function() {
 			Enemy_Num = 3;
 			this.subject = subject;
 			now_chapter = chapter;
-			this.addChild(new BackGround('/images/dungeonMapBg.jpg'));
+			this.addChild(new BackGround(DungeonBackGroundImage[now_subject]));
 			for (i = 0; i < 4; i++){
 				var d = new Direction(i);
 				this.addChild(d);
@@ -472,13 +474,13 @@ window.onload = function() {
 			img.moveTo(400 - 267 / 2, 600 - 48 / 2);
 			switch (event_type){
 				case 7:
-					img = core.assets[DefferedImage[5]];
+					img = core.assets[DefeatedImage[5]];
 					this.addChild(img);
 					clearFlag = true;
 					core.popScene(core.currentScene);
 					break;
 				case 6:
-					img = core.assets[DefferedImage[now_subject]];
+					img = core.assets[DefeatedImage[now_subject]];
 					this.addChild(img);
 					core.popScene(core.currentScene);
 					break;
@@ -521,19 +523,19 @@ window.onload = function() {
 			switch(this.direction) {
 				case 0:
 					move_xy(dungeon_x, dungeon_y - 1);
-					moveEffect_y('/images/dungeonMapBg.jpg', 1);
+					moveEffect_y(BattleBackGroundImage[now_subject][0], 1);
 					break;
 				case 1:
 					move_xy(dungeon_x + 1, dungeon_y);
-					moveEffect_x('/images/dungeonMapBg.jpg', 1);
+					moveEffect_x(BattleBackGroundImage[now_subject][0], 1);
 					break;
 				case 2:
 					move_xy(dungeon_x, dungeon_y + 1);
-					moveEffect_y('/images/dungeonMapBg.jpg', -1);
+					moveEffect_y(BattleBackGroundImage[now_subject][0], -1);
 					break;
 				case 3:
 					move_xy(dungeon_x - 1, dungeon_y);
-					moveEffect_x('/images/dungeonMapBg.jpg', -1);
+					moveEffect_x(BattleBackGroundImage[now_subject][0], -1);
 					break;
 			}
 		}
@@ -541,11 +543,12 @@ window.onload = function() {
 	function next_map(mapdata, now_x, now_y){
 		direction = [false,false,false,false];
 		console.log(mapdata[now_x][now_y], now_x, now_y);
-
+		var FiveFlag = false;
 		if ((now_y != 0) && (mapdata[now_x][now_y - 1] != 0)){
 			if (mapdata[now_x][now_y - 1] == 5 && Enemy_Num > 0){
 				Presented_Message(core.currentScene, "怪しい気配がする・・・", 25);
 				direction[0] = false;
+				FiveFlag = true;
 			}
 			else {
 				direction[0] = true;
@@ -555,6 +558,7 @@ window.onload = function() {
 			if (mapdata[now_x][now_y - 1] == 5 && Enemy_Num > 0){
 				Presented_Message(core.currentScene, "怪しい気配がする・・・", 25);
 				direction[1] = false;
+				FiveFlag = true;
 			}
 			else {
 				direction[1] = true;
@@ -564,6 +568,7 @@ window.onload = function() {
 			if (mapdata[now_x][now_y + 1] == 5 && Enemy_Num > 0){
 				Presented_Message(core.currentScene, "怪しい気配がする・・・", 25);
 				direction[2] = false;
+				FiveFlag = true;
 			}
 			else {
 				direction[2] = true;
@@ -573,28 +578,13 @@ window.onload = function() {
 			if (mapdata[now_x - 1][now_y] == 5 && Enemy_Num > 0){
 				Presented_Message(core.currentScene, "怪しい気配がする・・・", 25);
 				direction[3] = false;
+				FiveFlag = true;
 			}
 			else {
 				direction[3] = true;
 			}
 		}
-		var FiveFlag = false;
-		if (now_x > 0 && now_y > 0){
-			if (mapdata[now_x - 1][now_y] == 5){
-				FiveFlag = true;
-			}
-			if (mapdata[now_x][now_y - 1] == 5){
-				FiveFlag = true;
-			}
-		}
-		if (now_x < mapdata.length - 1 && now_y < mapdata[0].length - 1){
-			if (mapdata[now_x + 1][now_y] == 5){
-				FiveFlag = true;
-			}
-			if (mapdata[now_x][now_y + 1] == 5){
-				FiveFlag = true;
-			}
-		}
+
 		if (!FiveFlag){
 			Presented_Message(core.currentScene, "目的：敵を全滅せよ", 25);
 		}
@@ -631,7 +621,7 @@ window.onload = function() {
 		}
 		else if (EventFlag == 7){
             win_flag = false;
-			loopBgm_Ctrl(DUNGEON_BGM, 'stop');
+			loopBgm_Ctrl(LAST_DUNGEON_BGM, 'stop');
 			loopBgm_Ctrl(BATTLE_LAST_BOSS_BGM, 'play');
 			var battleScene = new BattleScene(EventFlag, subject_number, chapter_number, 5, LastBossImage, BattleBackGroundImage[subject_number][1], BATTLE_LAST_BOSS_BGM, LAST_DUNGEON_BGM);
 			core.pushScene(new NovelScene(subject_number+1,battleScene,BATTLE_LAST_BOSS_BGM));
@@ -671,11 +661,6 @@ window.onload = function() {
 			direction: [],
 			initialize: function (scene, mapdata){
 				Sprite.call(this, 300, 250);
-				var text = new Label();
-				text.text = "ミニマップ";
-				text.x = 520;
-				text.y = 420;
-				scene.addChild(text);
 				this.x = 500;
 				this.y = 400;
 				this.image = core.assets["/images/MiniMap.png"];
