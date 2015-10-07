@@ -501,9 +501,10 @@ window.onload = function() {
 			Enemy_Num = 3;
 			this.subject = subject;
 			now_chapter = chapter;
-			this.addChild(new BackGround('/images/dungeonMapBg.jpg'));
+            this.addChild(new BackGround(DungeonBGImage[subject]));
+
 			for (i = 0; i < 4; i++){
-				var d = new Direction(i);
+				var d = new Direction(i,subject);
 				this.addChild(d);
 				direct[i] = d;
 			}
@@ -566,13 +567,14 @@ window.onload = function() {
 	});
 
 	var Direction = Class.create(Sprite, {
-		initialize: function(direction) {
+		initialize: function(direction,subject) {
 			var origin = [[350,50],[650,250],[350,450],[50,250]];
 			Sprite.call(this, 120, 120);
 			this.x = origin[direction][0];
 			this.y = origin[direction][1];
 			this.image = core.assets[directionImage[direction]];
 			this.direction = direction;
+            this.subject = subject;
 		},
 		ontouchstart: function() {
 			if (Enemy_Num == 0){
@@ -581,19 +583,19 @@ window.onload = function() {
 			switch(this.direction) {
 				case 0:
 					move_xy(dungeon_x, dungeon_y - 1);
-					moveEffect_y('/images/dungeonMapBg.jpg', 1);
+					moveEffect_y(DungeonBGImage[this.subject], 1);
 					break;
 				case 1:
 					move_xy(dungeon_x + 1, dungeon_y);
-					moveEffect_x('/images/dungeonMapBg.jpg', 1);
+					moveEffect_x(DungeonBGImage[this.subject], 1);
 					break;
 				case 2:
 					move_xy(dungeon_x, dungeon_y + 1);
-					moveEffect_y('/images/dungeonMapBg.jpg', -1);
+					moveEffect_y(DungeonBGImage[this.subject], -1);
 					break;
 				case 3:
 					move_xy(dungeon_x - 1, dungeon_y);
-					moveEffect_x('/images/dungeonMapBg.jpg', -1);
+					moveEffect_x(DungeonBGImage[this.subject], -1);
 					break;
 			}
 		}
