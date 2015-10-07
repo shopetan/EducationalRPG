@@ -22,22 +22,6 @@ var SE_NG = "/bgm/M_SE_NG_se_maoudamashii_chime08.mp3";
 var SE_DEFEATED = "/bgm/M_SE_DEFEATED_se_maoudamashii_explosion03.mp3";
 
 //画像
-var dungeonImage_150 = [
-["/images/Dungeon_150/DUNGEON_HOLE_01.PNG","/images/Dungeon_150/DUNGEON_HOLE_02.PNG","/images/Dungeon_150/DUNGEON_HOLE_03.PNG","/images/Dungeon_150/DUNGEON_HOLE_04.PNG","/images/Dungeon_200/DUNGEON_HOLE_05.PNG"],
-["/images/Dungeon_150/DUNGEON_ROCK_01.PNG","/images/Dungeon_150/DUNGEON_ROCK_02.PNG","/images/Dungeon_150/DUNGEON_ROCK_03.PNG","/images/Dungeon_150/DUNGEON_ROCK_04.PNG","/images/Dungeon_200/DUNGEON_ROCK_05.PNG"],
-["/images/Dungeon_150/DUNGEON_CRYSTAL_01.PNG","/images/Dungeon_150/DUNGEON_CRYSTAL_02.PNG","/images/Dungeon_150/DUNGEON_CRYSTAL_03.PNG","/images/Dungeon_150/DUNGEON_CRYSTAL_04.PNG","/images/Dungeon_200/DUNGEON_CRYSTAL_05.PNG"],
-["/images/Dungeon_150/DUNGEON_SATELITE_01.PNG","/images/Dungeon_150/DUNGEON_SATELITE_02.PNG","/images/Dungeon_150/DUNGEON_SATELITE_03.PNG","/images/Dungeon_150/DUNGEON_SATELITE_04.PNG","/images/Dungeon_200/DUNGEON_SATELITE_05.PNG"],
-["/images/Dungeon_150/DUNGEON_MARCO_01.PNG","/images/Dungeon_150/DUNGEON_MARCO_02.PNG","/images/Dungeon_150/DUNGEON_MARCO_03.PNG","/images/Dungeon_150/DUNGEON_MARCO_04.PNG","/images/Dungeon_200/DUNGEON_MARCO_05.PNG"],
-["/images/Dungeon_150/DUNGEON_MARCO_01.PNG","/images/Dungeon_150/DUNGEON_MARCO_02.PNG","/images/Dungeon_150/DUNGEON_MARCO_03.PNG","/images/Dungeon_150/DUNGEON_MARCO_04.PNG","/images/Dungeon_200/DUNGEON_MARCO_05.PNG"]];
-
-var dungeonImage_200 = [
-["/images/Dungeon_200/DUNGEON_HOLE_01.PNG","/images/Dungeon_200/DUNGEON_HOLE_02.PNG","/images/Dungeon_200/DUNGEON_HOLE_03.PNG","/images/Dungeon_200/DUNGEON_HOLE_04.PNG","/images/Dungeon_200/DUNGEON_HOLE_05.PNG"],
-["/images/Dungeon_200/DUNGEON_ROCK_01.PNG","/images/Dungeon_200/DUNGEON_ROCK_02.PNG","/images/Dungeon_200/DUNGEON_ROCK_03.PNG","/images/Dungeon_200/DUNGEON_ROCK_04.PNG","/images/Dungeon_200/DUNGEON_ROCK_05.PNG"],
-["/images/Dungeon_200/DUNGEON_CRYSTAL_01.PNG","/images/Dungeon_200/DUNGEON_CRYSTAL_02.PNG","/images/Dungeon_200/DUNGEON_CRYSTAL_03.PNG","/images/Dungeon_200/DUNGEON_CRYSTAL_04.PNG","/images/Dungeon_200/DUNGEON_CRYSTAL_05.PNG"],
-["/images/Dungeon_200/DUNGEON_SATELITE_01.PNG","/images/Dungeon_200/DUNGEON_SATELITE_02.PNG","/images/Dungeon_200/DUNGEON_SATELITE_03.PNG","/images/Dungeon_200/DUNGEON_SATELITE_04.PNG","/images/Dungeon_200/DUNGEON_SATELITE_05.PNG"],
-["/images/Dungeon_200/DUNGEON_MARCO_01.PNG","/images/Dungeon_200/DUNGEON_MARCO_02.PNG","/images/Dungeon_200/DUNGEON_MARCO_03.PNG","/images/Dungeon_200/DUNGEON_MARCO_04.PNG","/images/Dungeon_200/DUNGEON_MARCO_05.PNG"],
-["/images/Dungeon_200/DUNGEON_MARCO_01.PNG","/images/Dungeon_200/DUNGEON_MARCO_02.PNG","/images/Dungeon_200/DUNGEON_MARCO_03.PNG","/images/Dungeon_200/DUNGEON_MARCO_04.PNG","/images/Dungeon_200/DUNGEON_MARCO_05.PNG"]];
-
 var boardImage = ['/images/board_j.png','/images/board_m.png','/images/board_sc.png','/images/board_so.png','/images/board_e.png','/images/board_e.png'];
 var directionImage = ["/images/arrow_up.png","/images/arrow_right.png","/images/arrow_down.png","/images/arrow_left.png"];
 var battleImage = [PLAYER_IMG,BATTLE4_IMG,BATTLE2_IMG];
@@ -154,12 +138,12 @@ window.onload = function() {
 	core.preload('/images/dungeonMapBg.jpg','/images/complete.png','/images/Other.png','/images/Title.png','/images/CMP.png');
 
 	core.preload(battleImage);
-	core.preload(boardImage);
+	//core.preload(boardImage);
 	core.preload(dungeonMapImage);
 	core.preload(directionImage);
 	preloadImage(EnemysImage);
-	preloadImage(dungeonImage_150);
-	preloadImage(dungeonImage_200);
+	//preloadImage(dungeonImage_150);
+	//preloadImage(dungeonImage_200);
 	preloadImage(BattleBackGroundImage);
 	core.preload(BGMSET);
 	core.preload(SESET);
@@ -476,14 +460,14 @@ window.onload = function() {
 			core.popScene();
 		}
 	});
-	var Board = Class.create(Sprite, {
+	/*var Board = Class.create(Sprite, {
 		initialize: function(subject) {
 			Sprite.call(this, 200, 100);
 			this.x = 300;
 			this.y = 0;
 			this.image = core.assets[boardImage[subject]];
 		}
-	});
+	});*/
 
 //DungeonMap
 	var dungeon_x;
