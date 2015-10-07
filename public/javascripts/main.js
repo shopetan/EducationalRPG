@@ -138,7 +138,7 @@ window.onload = function() {
 	core.preload('/images/dungeonMapBg.jpg','/images/complete.png','/images/Other.png','/images/Title.png','/images/CMP.png');
 
 	core.preload(battleImage);
-	//core.preload(boardImage);
+	core.preload(boardImage);
 	core.preload(dungeonMapImage);
 	core.preload(directionImage);
 	preloadImage(EnemysImage);
@@ -206,7 +206,7 @@ window.onload = function() {
 		ontouchstart: function() {
 			loopBgm_Ctrl(TITLE_BGM,'stop');
 			if (state_array[5][1] == 0) {
-				core.pushScene(new NovelScene(0,null));
+				core.pushScene(new NovelScene(0,null,TITLE_BGM));
 			} else {
 				core.pushScene(new WorldMap(1));
 			}
@@ -700,9 +700,9 @@ window.onload = function() {
 		message.text = msg;
 		message.color = "yellow";
 		message.font = ""+size+"px 游ゴシック体";
-		message.width = 350;
+		message.width = 400;
 		message.textAlign = "center";
-		message.moveTo(800 / 2 - 175, 15);
+		message.moveTo(800 / 2 - 200, 15);
 		addChild_to_scene(scene, msg_box);
 		addChild_to_scene(scene, message);
 	}
